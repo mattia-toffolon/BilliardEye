@@ -1,2 +1,2 @@
 # BilliardEye
-A sport video analysis for billiard matches
+A sport video analysis software for billiard matches
