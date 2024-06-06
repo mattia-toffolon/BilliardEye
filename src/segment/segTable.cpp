@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <iostream>
 
 
 #include <opencv2/core.hpp>
@@ -27,45 +28,87 @@ bool arelinessimilar(const struct linestr a, const struct linestr b, double thre
 }
 
 
-Mat binarykmeans(const Mat in){
-    int blurSize=9;
+Mat nonbinarykmeans(const Mat in, int k = 3, int blurSize = 31){
     Mat img;
-    GaussianBlur(in, img, Size(blurSize,blurSize), 0);
+    
+    GaussianBlur(in,img, Size(blurSize,blurSize),0);
     Mat p = Mat::zeros(img.cols*img.rows, 5, CV_32F);
 
     std::vector<Mat> bgr;
     split(img, bgr);
 
     for(int i=0; i<img.cols*img.rows; i++) {
-        p.at<float>(i,0) = static_cast<float>(i/img.cols) / img.rows;
-        p.at<float>(i,1) = static_cast<float>(i%img.cols) / img.cols;
+        p.at<float>(i,0) = static_cast<float>(i%img.cols)/img.cols;
+        p.at<float>(i,1) = static_cast<float>(i/img.cols)/img.rows;
         p.at<float>(i,2) = bgr[0].data[i] / 255.0;
         p.at<float>(i,3) = bgr[1].data[i] / 255.0;
         p.at<float>(i,4) = bgr[2].data[i] / 255.0;
     }
 
     Mat labs,ctrs;
-    kmeans(p, 2, labs, TermCriteria( TermCriteria::EPS+TermCriteria::MAX_ITER, 10, 1.0), 3, KMEANS_PP_CENTERS, ctrs);
+    kmeans(p, k, labs, TermCriteria( TermCriteria::EPS+TermCriteria::MAX_ITER, 10, 1.0), 3, KMEANS_PP_CENTERS, ctrs);
 
-    int colors[2] = {255,0};
 
+    Point2f imgcenter = Point2f(img.rows/2,img.cols/2);
+    int index = -1;
+    std::vector<int> count(k,0);
+    std::vector<float> points(k,0);
+    for(int i=0; i<img.cols*img.rows; i++) {
+        //clust.at<float>(i/img.cols, i%img.cols) = static_cast<float>(colors[labs.at<int>(0,i)]);
+        count[labs.at<int>(0,i)] +=1;
+        points[labs.at<int>(0,i)] += std::pow(norm(Point2f(i/img.cols, i%img.cols)-imgcenter),2);
+    }
+    float min = points[0]/count[0];
+    index = 0;
+    for(int i = 1; i < k;i++){
+        float curdist = points[i]/count[i];
+        std::cout<<curdist<<std::endl;
+        if(curdist<min){
+            index = i;
+            min = curdist;
+        }
+    }
+    //for(int c = 0; c < ctrs.rows; c++){
+    //    Mat row = ctrs.row(c);
+    //    Point2f curcent = Point2f(row.at<float>(0)*img.rows,row.at<float>(0)*img.cols);
+    //    if(norm(imgcenter-curcent) < curdist){
+    //        index = c;
+    //        bestCenter = curcent;
+    //        curdist = norm(imgcenter-curcent);
+    //    }
+    //}
 
     Mat clust = Mat(in.rows, in.cols, CV_32F);
     for(int i=0; i<img.cols*img.rows; i++) {
-        clust.at<float>(i/img.cols, i%img.cols) = static_cast<float>(colors[labs.at<int>(0,i)]);
+        //clust.at<float>(i/img.cols, i%img.cols) = static_cast<float>(colors[labs.at<int>(0,i)]);
+        if(labs.at<int>(0,i)==index){
+            clust.at<float>(i/img.cols, i%img.cols) = 255; 
+        }
     }
 
     clust.convertTo(clust, CV_8U);
-    //imshow(WINDOW_NAME, clust);
-    //waitKey(0);
+    imshow(WINDOW_NAME, clust);
+    waitKey(0);
+    //for(int i = 0; i < 4; i++){
+    //    Mat thresh;
+    //    threshold(clust, thresh, colors[i], 255, THRESH_BINARY);
+    //    imshow(WINDOW_NAME, thresh);
+    //    waitKey(0);
+    //}
     return clust;
 }
 
 Mat greatest_island(Mat input){
     Mat labels, stats, centroids;
-    Mat in;
-    Mat kernel = Mat::ones(15, 15, CV_8U);
-    morphologyEx(input, in, MORPH_CLOSE, kernel);
+    Mat in(input);
+    int kerSize = 9;
+    Mat kernel = Mat::ones(kerSize, kerSize, CV_8U);
+    //morphologyEx(input, in, MORPH_CLOSE, kernel);
+    erode(input, in, kernel);
+
+    imshow(WINDOW_NAME, in);
+    waitKey(0);
+
     int nlabels = cv::connectedComponentsWithStats(in, labels, stats, centroids, 4, CV_32S);
     int max_label = 0;
     int max_area = 0;
@@ -91,7 +134,9 @@ Mat greatest_island(Mat input){
 std::vector<struct linestr> line4line(Mat img, double thresh){
     //canny
     Mat disp;
-    Canny(img, disp, 128, 100);
+    Mat kernl = Mat::ones(15,15,CV_8U); 
+    morphologyEx(img, disp, MORPH_CLOSE, kernl);
+    Canny(disp, disp, 128, 100);
     //imshow(WINDOW_NAME, disp);
     //waitKey(0);
     //hough
@@ -114,15 +159,17 @@ std::vector<struct linestr> line4line(Mat img, double thresh){
         bool sim = false;
         for(struct linestr g : good){
             if(arelinessimilar(g, tmpline, img.cols/10.0)){
+                std::cout<<"yikes";
                 sim = true;
                 break;
             }
         }
         if(!sim){
+            std::cout<<"yep"<<tmpline.start<<tmpline.stop<<std::endl;
             good.push_back(tmpline);
             line(show, pt1, pt2, Scalar(0,0,255), 3, LINE_AA);
-            //imshow(WINDOW_NAME, show);
-            //waitKey(0);
+            imshow(WINDOW_NAME, show);
+            waitKey(0);
         }
         if(good.size() >= 4){
             break;
