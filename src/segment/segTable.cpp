@@ -28,7 +28,7 @@ bool arelinessimilar(const struct linestr a, const struct linestr b, double thre
 }
 
 
-Mat nonbinarykmeans(const Mat in, int k = 3, int blurSize = 31){
+Mat nonbinarykmeans(const Mat in, int k, int blurSize){
     Mat img;
     
     GaussianBlur(in,img, Size(blurSize,blurSize),0);

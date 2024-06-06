@@ -9,7 +9,7 @@ struct linestr{
     cv::Point2f stop;
 };
 bool arelinessimilar(const struct linestr a, const struct linestr b, double thresh);
-cv::Mat binarykmeans(const cv::Mat in);
+cv::Mat nonbinarykmeans(const cv::Mat in, int k=3, int blurSize=31);
 cv::Mat greatest_island(cv::Mat input);
 std::vector<struct linestr> line4line(cv::Mat img, double thresh);
 std::vector<cv::Point2f> find_vertices(std::vector<struct linestr> lines, int max_col, int max_row);
