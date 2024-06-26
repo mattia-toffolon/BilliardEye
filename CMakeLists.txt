@@ -14,5 +14,11 @@ add_library(segTable
 )
 target_include_directories(segTable PRIVATE ${OpenCV_INCLUDE_DIRS})
 
+add_library(ballType
+    ./include/recognition/ballType.h
+    ./src/recognition/ballType.cpp
+)
+
 add_executable(segBill ./src/main.cpp)
 target_link_libraries(segBill segTable ${OpenCV_LIBS} )
+target_link_libraries(segBill ballType ${OpenCV_LIBS})

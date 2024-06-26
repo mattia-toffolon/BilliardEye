@@ -1,0 +1,5 @@
+.vscode/
+build/
+
+# main should be used individually
+src/main.cpp
