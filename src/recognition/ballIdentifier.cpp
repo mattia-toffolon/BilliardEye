@@ -24,6 +24,9 @@ float ballFullness(Mat ballCrop)
     Mat thresholded;
     threshold(ballCrop,thresholded,0,255,THRESH_BINARY | THRESH_OTSU);
 
+    namedWindow("W");
+    imshow("W",thresholded);
+
     // next part should be adapted to the inscribed circle of the area
     int nonZero = countNonZero(thresholded);
     int area = ballCrop.size[0] * ballCrop.size[1];
