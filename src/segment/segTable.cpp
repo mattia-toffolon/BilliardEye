@@ -78,7 +78,7 @@ Mat nonbinarykmeans(const Mat in, int k, int blurSize){
     //    }
     //}
 
-    Mat clust = Mat(in.rows, in.cols, CV_32F);
+    Mat clust = Mat::zeros(in.rows, in.cols, CV_32F);
     for(int i=0; i<img.cols*img.rows; i++) {
         //clust.at<float>(i/img.cols, i%img.cols) = static_cast<float>(colors[labs.at<int>(0,i)]);
         if(labs.at<int>(0,i)==index){
@@ -106,7 +106,12 @@ Mat greatest_island(Mat input){
     //morphologyEx(input, in, MORPH_CLOSE, kernel);
     erode(input, in, kernel);
 
-    imshow(WINDOW_NAME, in);
+    for(int col = 0; col<in.cols; col++){
+        for(int row = 0; row<in.rows; row++){
+            in.at<char>(row, col) = static_cast<char>(in.at<char>(row,col) == 0 ? 0 : 255);
+        }
+    }
+    imshow("cazzo1", in);
     waitKey(0);
 
     int nlabels = cv::connectedComponentsWithStats(in, labels, stats, centroids, 4, CV_32S);
@@ -118,14 +123,20 @@ Mat greatest_island(Mat input){
             max_area =stats.at<int>(i, CC_STAT_AREA);
         }
     }
+    int colors[8] = {50,200,225,250,75,100,150,175};
     Mat disp = Mat::zeros(in.size(), in.type());
+    Mat disp2 = Mat::zeros(in.size(), in.type());
     for(int col = 0; col<labels.cols; col++){
         for(int row = 0; row<labels.rows; row++){
             if(labels.at<int>(row,col)==max_label){
                 disp.at<char>(row, col) = static_cast<char>(255);
             }
+            disp2.at<char>(row, col) = static_cast<char>(colors[labels.at<int>(row,col)]);
         }
     }
+    imshow("cazzo", disp2);
+    waitKey(0);
+
     //imshow(WINDOW_NAME, disp);
     //waitKey(0);
     return disp;
@@ -213,4 +224,23 @@ std::vector<Point> order_points(std::vector<Point> point4){
         points_ord[3] = tmp;
     }
     return points_ord;
+}
+Vec3b meanMask(Mat img, Mat mask){
+    int b,g,r; 
+    b = 0;
+    g = 0;
+    r = 0;
+    double count = 0;
+    for(int row = 0; row < img.rows; row++){
+        for(int col = 0; col < img.cols; col++){
+            if(mask.at<char>(row, col) != 0){
+                count++;
+                Vec3b cur = img.at<Vec3b>(row,col);
+                b += cur[0];
+                g += cur[1];
+                r += cur[2];
+            }
+        }
+    }
+    return Vec3b(static_cast<char>(b/count),static_cast<char>(g/count),static_cast<char>(r/count));
 }
