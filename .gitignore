@@ -1,5 +1,6 @@
 .vscode/
 build/
+data/
 
 # main should be used individually
 src/main.cpp
