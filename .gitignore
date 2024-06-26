@@ -4,3 +4,5 @@ data/
 
 # main should be used individually
 src/main.cpp
+
+my_hours.txt
