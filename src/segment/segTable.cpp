@@ -27,6 +27,31 @@ bool arelinessimilar(const struct linestr a, const struct linestr b, double thre
     return (dist1 < thresh && dist4 < thresh) || (dist2 < thresh && dist3 < thresh);
 }
 
+Mat simplekmeans(const Mat in, int k, char* colors){
+    std::vector<Mat> bgr;
+    Mat img(in);
+    split(img, bgr);
+
+    Mat p = Mat::zeros(img.cols*img.rows, 5, CV_32F);
+
+    for(int i=0; i<img.cols*img.rows; i++) {
+        p.at<float>(i,0) = static_cast<float>(i%img.cols)/img.cols;
+        p.at<float>(i,1) = static_cast<float>(i/img.cols)/img.rows;
+        p.at<float>(i,2) = bgr[0].data[i] / 255.0;
+        p.at<float>(i,3) = bgr[1].data[i] / 255.0;
+        p.at<float>(i,4) = bgr[2].data[i] / 255.0;
+    }
+
+    Mat clust = Mat::zeros(img.rows, img.cols, CV_8U);
+    Mat labs,ctrs;
+    kmeans(p, k, labs, TermCriteria( TermCriteria::EPS+TermCriteria::MAX_ITER, 10, 1.0), 3, KMEANS_PP_CENTERS, ctrs);
+
+    for(int i=0; i<img.cols*img.rows; i++) {
+        clust.at<float>(i/img.cols, i%img.cols) = static_cast<float>(colors[labs.at<int>(0,i)]);
+    }
+
+    return clust;
+}
 
 Mat nonbinarykmeans(const Mat in, int k, int blurSize){
     Mat img;
@@ -87,8 +112,8 @@ Mat nonbinarykmeans(const Mat in, int k, int blurSize){
     }
 
     clust.convertTo(clust, CV_8U);
-    imshow(WINDOW_NAME, clust);
-    waitKey(0);
+    //imshow(WINDOW_NAME, clust);
+    //waitKey(0);
     //for(int i = 0; i < 4; i++){
     //    Mat thresh;
     //    threshold(clust, thresh, colors[i], 255, THRESH_BINARY);
@@ -111,8 +136,6 @@ Mat greatest_island(Mat input){
             in.at<char>(row, col) = static_cast<char>(in.at<char>(row,col) == 0 ? 0 : 255);
         }
     }
-    imshow("cazzo1", in);
-    waitKey(0);
 
     int nlabels = cv::connectedComponentsWithStats(in, labels, stats, centroids, 4, CV_32S);
     int max_label = 0;
@@ -134,8 +157,6 @@ Mat greatest_island(Mat input){
             disp2.at<char>(row, col) = static_cast<char>(colors[labels.at<int>(row,col)]);
         }
     }
-    imshow("cazzo", disp2);
-    waitKey(0);
 
     //imshow(WINDOW_NAME, disp);
     //waitKey(0);
@@ -179,8 +200,8 @@ std::vector<struct linestr> line4line(Mat img, double thresh){
             std::cout<<"yep"<<tmpline.start<<tmpline.stop<<std::endl;
             good.push_back(tmpline);
             line(show, pt1, pt2, Scalar(0,0,255), 3, LINE_AA);
-            imshow(WINDOW_NAME, show);
-            waitKey(0);
+            //imshow(WINDOW_NAME, show);
+            //waitKey(0);
         }
         if(good.size() >= 4){
             break;
