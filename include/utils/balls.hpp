@@ -11,4 +11,5 @@ struct Ball{
     cv::Rect2d bbox;
     BallType type; 
 };
+std::vector<Ball> readBallsFile(std::string filename);
 #endif
