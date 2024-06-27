@@ -265,3 +265,17 @@ Vec3b meanMask(Mat img, Mat mask){
     }
     return Vec3b(static_cast<char>(b/count),static_cast<char>(g/count),static_cast<char>(r/count));
 }
+Mat threshHue(const cv::Mat in, const cv::Vec3b color, int thresh){
+    Mat x(1,1,CV_8UC3);
+    x.at<Vec3b>(0,0) = color;
+    cvtColor(x, x, COLOR_BGR2HSV);
+    char hue = x.at<Vec3b>(0,0)[0];
+
+    Mat img2,ret;
+    std::vector<Mat> spl;
+    cvtColor(in, img2, COLOR_BGR2HSV);
+    split(img2, spl);
+    img2 = spl[0];
+    inRange(img2, Scalar(hue-thresh < 0? 0 :hue-thresh), Scalar(hue+thresh>254? 254 : hue+thresh), ret);
+    return ret;
+}
