@@ -14,6 +14,12 @@ add_library(segTable
 )
 target_include_directories(segTable PRIVATE ${OpenCV_INCLUDE_DIRS})
 
+add_library(segBalls 
+    ./include/segment/segBalls.h
+    ./src/segment/segBalls.cpp
+)
+target_include_directories(segBalls PRIVATE ${OpenCV_INCLUDE_DIRS})
+
 add_library(ballIdentifier
     ./include/recognition/ballIdentifier.h
     ./src/recognition/ballIdentifier.cpp
@@ -32,8 +38,15 @@ add_library(balls
 )
 target_include_directories(balls PRIVATE ${OpenCV_INCLUDE_DIRS})
 
+add_library(drawBBoxes
+    ./include/utils/drawBBoxes.hpp
+    ./src/utils/drawBBoxes.cpp
+)
+target_include_directories(drawBBoxes PRIVATE ${OpenCV_INCLUDE_DIRS})
+
 add_executable(segBill ./src/main.cpp)
 target_link_libraries(segBill segTable ${OpenCV_LIBS} )
+target_link_libraries(segBill segBalls ${OpenCV_LIBS} )
 target_link_libraries(segBill ballIdentifier ${OpenCV_LIBS})
 target_link_libraries(segBill videoReader ${OpenCV_LIBS})
-target_link_libraries(segBill balls ${OpenCV_LIBS})
+target_link_libraries(segBill drawBBoxes ${OpenCV_LIBS})
