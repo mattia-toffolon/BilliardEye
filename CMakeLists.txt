@@ -44,6 +44,12 @@ add_library(drawBBoxes
 )
 target_include_directories(drawBBoxes PRIVATE ${OpenCV_INCLUDE_DIRS})
 
+add_library(side_recognition
+    ./include/recognition/side_recognition.hpp
+    ./src/recognition/side_recognition.cpp
+)
+target_include_directories(side_recognition PRIVATE ${OpenCV_INCLUDE_DIRS})
+
 add_executable(segBill ./src/main.cpp)
 target_link_libraries(segBill segTable ${OpenCV_LIBS} )
 target_link_libraries(segBill segBalls ${OpenCV_LIBS} )

@@ -87,7 +87,7 @@ Mat nonbinarykmeans(const Mat in, int k, int blurSize){
     index = 0;
     for(int i = 1; i < k;i++){
         float curdist = points[i]/count[i];
-        std::cout<<curdist<<std::endl;
+        //std::cout<<curdist<<std::endl;
         if(curdist<min){
             index = i;
             min = curdist;
@@ -191,13 +191,13 @@ std::vector<struct linestr> line4line(Mat img, double thresh){
         bool sim = false;
         for(struct linestr g : good){
             if(arelinessimilar(g, tmpline, img.cols/10.0)){
-                std::cout<<"yikes";
+                //std::cout<<"yikes";
                 sim = true;
                 break;
             }
         }
         if(!sim){
-            std::cout<<"yep"<<tmpline.start<<tmpline.stop<<std::endl;
+            //std::cout<<"yep"<<tmpline.start<<tmpline.stop<<std::endl;
             good.push_back(tmpline);
             line(show, pt1, pt2, Scalar(0,0,255), 3, LINE_AA);
             //imshow(WINDOW_NAME, show);
@@ -231,8 +231,8 @@ std::vector<Point2f> find_vertices(std::vector<struct linestr> lines, int max_co
     return good;
 }
 
-std::vector<Point> order_points(std::vector<Point> point4){
-    std::vector<Point> points_ord(point4.begin(),point4.end());
+std::vector<Point2f> order_points(std::vector<Point2f> point4){
+    std::vector<Point2f> points_ord(point4.begin(),point4.end());
     std::sort(points_ord.begin(), points_ord.end(), [&](Point p1, Point p2){return p1.y<p2.y;});
     if(points_ord[0].x>points_ord[1].x){
         Point tmp = points_ord[0];
