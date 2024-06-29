@@ -13,6 +13,6 @@ class TrackBalls{
     std::vector<Ball> bbs;
     public:
     TrackBalls(cv::Mat frame, std::vector<Ball> bb);
-    std::vector<Ball> update(cv::Mat frame);
+    std::vector<Ball> update(cv::Mat frame, std::vector<int> &removed);
 };
 #endif

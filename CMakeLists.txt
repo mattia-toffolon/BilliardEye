@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(BilliardEye)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(OpenCV REQUIRED)
@@ -49,6 +49,12 @@ add_library(side_recognition
     ./src/recognition/side_recognition.cpp
 )
 target_include_directories(side_recognition PRIVATE ${OpenCV_INCLUDE_DIRS})
+
+add_library(ball_tracking
+    ./include/tracking/TrackBalls.hpp
+    ./src/tracking/TrackBalls.cpp
+)
+target_include_directories(ball_tracking PRIVATE ${OpenCV_INCLUDE_DIRS})
 
 add_executable(segBill ./src/main.cpp)
 target_link_libraries(segBill segTable ${OpenCV_LIBS} )

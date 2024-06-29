@@ -4,15 +4,15 @@ using namespace cv;
 TrackBalls::TrackBalls(Mat frame, std::vector<Ball> bb){
     legacy::TrackerCSRT::Params params;
     for(auto r : bb){
-        bbs.push_back(r);
+        Ball curb{r.bbox, r.type};
+        bbs.push_back(curb);
         auto cur = TrackerCSRT::create();
         cur->init(frame, r.bbox);
         multi.push_back(cur);
     }
 }
 
-std::vector<Ball> TrackBalls::update(Mat frame){
-    std::vector<int> removed;
+std::vector<Ball> TrackBalls::update(Mat frame, std::vector<int> &removed){
     for(int i = 0; i <multi.size(); i++){
         auto tr = multi[i];
         Rect bb = Rect(bbs[i].bbox);
