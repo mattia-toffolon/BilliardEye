@@ -29,4 +29,22 @@ BallType getBallType(cv::Mat image, cv::Rect2d window);
  */
 float ballFullness(cv::Mat ballCrop);
 
+/**
+ * @brief Perform k-means clustering and return associated labels
+ * 
+ * @param points points to cluster
+ * @param k number of clusters
+ * @return std::vector<int> labels (in same input order)
+ */
+std::vector<int> clusterIndexes(std::vector<cv::Point3f> points, int k);
+
+/**
+ * @brief Return relative share of found colors in image
+ * 
+ * @param img image to partition 
+ * @param k number of clusters
+ * @return vector<float> percentages of each cluster
+ */
+std::vector<float> clusterPercentage(cv::Mat img, int k);
+
 #endif /* BALLTYPE_H */
