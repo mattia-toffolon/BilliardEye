@@ -135,3 +135,17 @@ vector<float> clusterPercentage(Mat img, int k)
 
     return ans;
 }
+
+Mat drawClusters(Mat img, int k)
+{
+    Mat newImg;
+    cvtColor(img,newImg,COLOR_BGR2GRAY);
+    vector<int> labels = clusterIndexes(colorSpaceTransform(img),k);
+    for (int r=0; r<img.rows; r++)
+        for (int c=0; c<img.cols; c++)
+        {
+            int index = r*img.cols + c;
+            newImg.at<uchar>(r,c) = (labels[index]/(k-1))*255;
+        }
+    return newImg;
+}

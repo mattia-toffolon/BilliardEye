@@ -47,4 +47,14 @@ std::vector<int> clusterIndexes(std::vector<cv::Point3f> points, int k);
  */
 std::vector<float> clusterPercentage(cv::Mat img, int k);
 
+/**
+ * @brief Return an image that shows the labeled clusters
+ * 
+ * @param img image to label
+ * @param labels row-col list of labels
+ * @param k number of clusters
+ * @return cv::Mat labeled image
+ */
+cv::Mat drawClusters(cv::Mat img, int k);
+
 #endif /* BALLTYPE_H */
