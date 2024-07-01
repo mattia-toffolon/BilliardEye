@@ -98,7 +98,7 @@ Mat equalizedMasked(Mat img, InputArray mask)
     img.copyTo(output);
     uchar min = 255;
     uchar max = 0;
-    for (int r=0; r<img.cols; r++)
+    for (int r=0; r<img.rows; r++)
     {
         for (int c=0; c<img.cols; c++)
         {
@@ -110,7 +110,7 @@ Mat equalizedMasked(Mat img, InputArray mask)
         }
     }
     //std::cout << (int)min << " " << (int)max << "\n";
-    for (int r=0; r<img.cols; r++)
+    for (int r=0; r<img.rows; r++)
     {
         for (int c=0; c<img.cols; c++)
         {
