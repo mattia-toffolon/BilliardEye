@@ -44,11 +44,11 @@ add_library(drawBBoxes
 )
 target_include_directories(drawBBoxes PRIVATE ${OpenCV_INCLUDE_DIRS})
 
-# add_library(side_recognition
-#     ./include/recognition/side_recognition.hpp
-#     ./src/recognition/side_recognition.cpp
-# )
-# target_include_directories(side_recognition PRIVATE ${OpenCV_INCLUDE_DIRS})
+add_library(side_recognition
+    ./include/recognition/side_recognition.hpp
+    ./src/recognition/side_recognition.cpp
+)
+target_include_directories(side_recognition PRIVATE ${OpenCV_INCLUDE_DIRS})
 
 add_library(getTableColor
     ./include/utils/getTableColor.hpp
@@ -69,3 +69,4 @@ target_link_libraries(segBill ballIdentifier ${OpenCV_LIBS})
 target_link_libraries(segBill videoReader ${OpenCV_LIBS})
 target_link_libraries(segBill drawBBoxes ${OpenCV_LIBS})
 target_link_libraries(segBill getTableColor ${OpenCV_LIBS})
+target_link_libraries(segBill side_recognition ${OpenCV_LIBS})
