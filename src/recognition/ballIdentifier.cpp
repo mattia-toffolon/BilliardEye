@@ -71,9 +71,10 @@ BallType getBallType(Mat ballCrop)
 float ballWhiteness(Mat ballCrop,float thresh)
 {
     Mat transformed = equalizedMasked(ballCrop,noArray());
-    threshold(transformed,transformed,thresh*255,255,THRESH_BINARY);
+    Mat thresholded;
+    threshold(transformed,thresholded,thresh*255,255,THRESH_BINARY);
 
-    int whites = countNonZero(transformed);
+    int whites = countNonZero(thresholded);
     int totalPixels = transformed.rows * transformed.cols;
     return (float)whites / (float)totalPixels;
 }
@@ -81,63 +82,6 @@ float ballWhiteness(Mat ballCrop,float thresh)
 // -----------------
 // UTILITY FUNCTIONS
 // -----------------
-
-/**
- * @brief Utility function to get color space of image
- * 
- * @param img image to transform
- * @return std::vector<Point3f> color of pixels of img
- */
-vector<Point3f> colorSpaceTransform(Mat img)
-{
-    vector<Point3f> ans;
-    for (int r=0; r<img.rows; r++)
-        for (int c=0; c<img.cols; c++)
-            ans.push_back(static_cast<Point3f>(img.at<Vec3b>(r,c)));
-    return ans;
-}
-
-vector<int> clusterIndexes(std::vector<Point3f> points, int k)
-{
-    vector<int> output;
-    kmeans(
-        points,
-        k,
-        output,
-        TermCriteria(TermCriteria::Type::COUNT,100,0),
-        5,
-        KMEANS_PP_CENTERS
-    );
-    return output;
-}
-
-vector<float> clusterPercentage(Mat img, int k)
-{
-    vector<int> labels = clusterIndexes(colorSpaceTransform(img),k);
-    vector<float> ans(k,0);
-    for (int l : labels)
-        ans[l]++;
-    for (int i=0; i<k; i++)
-    {
-        ans[i] /= labels.size();
-    }
-
-    return ans;
-}
-
-Mat drawClusters(Mat img, int k)
-{
-    Mat newImg;
-    cvtColor(img,newImg,COLOR_BGR2GRAY);
-    vector<int> labels = clusterIndexes(colorSpaceTransform(img),k);
-    for (int r=0; r<img.rows; r++)
-        for (int c=0; c<img.cols; c++)
-        {
-            int index = r*img.cols + c;
-            newImg.at<uchar>(r,c) = (labels[index]/(k-1))*255;
-        }
-    return newImg;
-}
 
 Mat equalizedMasked(Mat img, InputArray mask)
 {
