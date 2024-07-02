@@ -32,11 +32,9 @@ Mat simplekmeans(const Mat in, int k, char* colors){
     Mat img(in);
     split(img, bgr);
 
-    Mat p = Mat::zeros(img.cols*img.rows, 5, CV_32F);
+    Mat p = Mat::zeros(img.cols*img.rows, 3, CV_32F);
 
     for(int i=0; i<img.cols*img.rows; i++) {
-        p.at<float>(i,0) = static_cast<float>(i%img.cols)/img.cols;
-        p.at<float>(i,1) = static_cast<float>(i/img.cols)/img.rows;
         p.at<float>(i,2) = bgr[0].data[i] / 255.0;
         p.at<float>(i,3) = bgr[1].data[i] / 255.0;
         p.at<float>(i,4) = bgr[2].data[i] / 255.0;
@@ -47,7 +45,7 @@ Mat simplekmeans(const Mat in, int k, char* colors){
     kmeans(p, k, labs, TermCriteria( TermCriteria::EPS+TermCriteria::MAX_ITER, 10, 1.0), 3, KMEANS_PP_CENTERS, ctrs);
 
     for(int i=0; i<img.cols*img.rows; i++) {
-        clust.at<float>(i/img.cols, i%img.cols) = static_cast<float>(colors[labs.at<int>(0,i)]);
+        clust.at<char>(i/img.cols, i%img.cols) = static_cast<char>(colors[labs.at<int>(0,i)]);
     }
 
     return clust;
@@ -128,8 +126,8 @@ Mat greatest_island(Mat input){
     Mat in(input);
     int kerSize = 9;
     Mat kernel = Mat::ones(kerSize, kerSize, CV_8U);
-    //morphologyEx(input, in, MORPH_CLOSE, kernel);
-    erode(input, in, kernel);
+    morphologyEx(input, in, MORPH_OPEN, kernel);
+    //erode(input, in, kernel);
 
     for(int col = 0; col<in.cols; col++){
         for(int row = 0; row<in.rows; row++){
