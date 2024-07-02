@@ -127,3 +127,87 @@ Mat equalizedMasked(Mat img, InputArray mask)
     }
     return output;
 }
+
+vector<Ball> classifyBalls(Mat image, vector<Rect2d> windows)
+{
+    vector<Ball> ans;
+
+    vector<int> cueballs;
+    vector<int> striped;
+    vector<int> solid;
+
+    for (int i=0;i<windows.size();i++)
+    {
+        Mat window = image(windows[i]);
+        switch (getBallType(window))
+        {
+        case BallType::CUE:
+            cueballs.push_back(i);
+            break;
+        case BallType::STRIPED:
+            striped.push_back(i);
+            break;
+        case BallType::SOLID:
+            solid.push_back(i);
+            break;
+        }
+    }
+
+    // Take the brightest cueball candidate
+    assert(cueballs.size() >= 1);
+    int brightest_cueball = 0;
+    float max_brightness = 0;
+    for (int i=0;i<cueballs.size();i++)
+    {
+        Mat grayCrop;
+        cvtColor(image(windows[cueballs[i]]),grayCrop,COLOR_BGR2GRAY);
+        float brightness = mean(grayCrop)[0]; 
+        if (brightness > max_brightness)
+        {
+            max_brightness = brightness;
+            brightest_cueball = i;
+        }
+    }
+    Ball final_cueball = {windows[cueballs[brightest_cueball]],BallType::CUE};
+    cueballs.erase(cueballs.begin() + brightest_cueball);
+    ans.push_back(final_cueball);
+
+    // Assume other cueballs are misclassified striped balls
+    for (int i=0;i<cueballs.size();i++)
+    {
+        ans.push_back({windows[cueballs[i]],BallType::STRIPED});
+    }
+
+    // Push striped balls
+    for (int i=0;i<striped.size();i++)
+    {
+        ans.push_back({windows[striped[i]],BallType::STRIPED});
+    }
+
+    // Take the darkest solid ball
+    assert(solid.size() >= 1);
+    int darkest_solid = 0;
+    float min_brightness = 255;
+    for (int i=0;i<solid.size();i++)
+    {
+        Mat grayCrop;
+        cvtColor(image(windows[solid[i]]),grayCrop,COLOR_BGR2GRAY);
+        float brightness = mean(grayCrop)[0]; 
+        if (brightness < min_brightness)
+        {
+            min_brightness = brightness;
+            darkest_solid = i;
+        }
+    }
+    Ball final_8ball = {windows[solid[darkest_solid]],BallType::EIGHT};
+    solid.erase(solid.begin() + darkest_solid);
+    ans.push_back(final_8ball);
+
+    // Push rest of solid balls
+    for (int i=0;i<solid.size();i++)
+    {
+        ans.push_back({windows[solid[i]],BallType::SOLID});
+    }
+
+    return ans;
+}
