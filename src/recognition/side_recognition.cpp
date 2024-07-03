@@ -24,7 +24,7 @@ std::vector<Mat> getRotatedborders(const std::vector<Point2f> points, const Mat 
             rect.size.height = thick;
         else
             rect.size.width = thick;
-        std::vector<Point2f> boundingpoints;
+        Point2f boundingpoints[4];
         rect.points(boundingpoints);
         Mat M, rotated, cropped;
         float angle = rect.angle;
