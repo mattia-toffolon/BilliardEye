@@ -145,7 +145,7 @@ Mat subtractTable(Mat img) {
     // imshow("window", img);
     // waitKey(0);
     Vec3b tableColor = getTableColor(img);
-    Mat out = Mat(img);
+    Mat out = img.clone();
 
     for(int i=0; i<out.rows; i++) {
         for(int j=0; j<out.cols; j++) {
@@ -157,6 +157,74 @@ Mat subtractTable(Mat img) {
 
     return out;
 }
+
+vector<Rect> getBBoxes(Mat img, Mat tableMask) {
+
+    Mat img_BGR = img.clone();
+    Mat img_HSV;
+    cvtColor(img_BGR, img_HSV, COLOR_BGR2HSV);
+    // imshow("window", img_BGR);
+    // waitKey(0);
+    // imshow("window", img_HSV);
+    // waitKey(0);
+
+    Mat crop_BGR = Mat::zeros(img_BGR.size(), img_BGR.type());
+    Mat crop_HSV = Mat::zeros(img_HSV.size(), img_HSV.type());
+    img_BGR.copyTo(crop_BGR, tableMask);
+    img_HSV.copyTo(crop_HSV, tableMask);
+    // imshow("window", crop_BGR);
+    // waitKey(0);
+    // imshow("window", crop_HSV);
+    // waitKey(0);
+
+    Mat sub_BGR = subtractTable(crop_BGR);
+    Mat sub_HSV = subtractTable(crop_HSV);
+    // imshow("window", sub_BGR);
+    // waitKey(0);
+    // imshow("window", sub_HSV);
+    // waitKey(0);
+
+    Mat gray_BGR, gray_HSV;
+    cvtColor(sub_BGR, gray_BGR, COLOR_BGR2GRAY);
+    Mat HSV_levels[3];
+    split(sub_HSV, HSV_levels);
+    gray_HSV = HSV_levels[2];
+    // imshow("window", gray_BGR);
+    // waitKey(0);
+    // imshow("window", gray_HSV);
+    // waitKey(0);
+
+    vector<Vec3f> circles_BGR = circlesFinder(gray_BGR, HOUGH_GRADIENT, 1, gray_BGR.rows/32, 90, 11, 5, 15, false);
+    vector<Vec3f> circles_HSV = circlesFinder(gray_HSV, HOUGH_GRADIENT, 1, gray_HSV.rows/32, 90, 11, 5, 15, false);
+    // vector<Rect> bboxes_BGR = bboxConverter(circles_BGR);
+    // drawBBoxes(img, bboxes_BGR);
+    // vector<Rect> bboxes_HSV = bboxConverter(circles_HSV);
+    // drawBBoxes(img, bboxes_HSV);
+
+    vector<Vec3f> circles( circles_BGR.size() + circles_HSV.size() );
+    copy(circles_BGR.begin(), circles_BGR.end(), circles.begin());
+    copy(circles_HSV.begin(), circles_HSV.end(), circles.begin() + circles_BGR.size());
+    // vector<Rect> bboxes_tmp = bboxConverter(circles);
+    // drawBBoxes(img, bboxes_tmp);
+
+    vector<Vec3b> tableColors_BGR = getTableColorVariations(crop_BGR, false);
+    vector<Vec3b> tableColors_HSV = getTableColorVariations(crop_HSV, true);
+    // for(Vec3b c : tableColors_BGR) cout<<c<<" ";
+    // cout<<endl<<endl;
+    // vector<Vec3b> tableColors_HSV = getTableColorVariations(crop_HSV, true);
+    // for(Vec3b c : tableColors_HSV) cout<<c<<" ";
+
+    vector<Vec3f> filtered_circles1 = circlesFilter(img_BGR, circles, tableColors_BGR);
+    vector<Vec3f> filtered_circles2 = circlesFilter(img_HSV, circles, tableColors_HSV);
+
+    vector<Vec3f> filtered_circles( filtered_circles1.size() + filtered_circles2.size() );
+    copy(filtered_circles1.begin(), filtered_circles1.end(), filtered_circles1.begin());
+    copy(filtered_circles2.begin(), filtered_circles2.end(), filtered_circles.begin() + filtered_circles1.size());
+
+    vector<Rect> bboxes = bboxConverter(filtered_circles);
+    return bboxes;
+}
+
 
 // To be perfected...
 // Mat quantizeColors(Mat img, int delta) {
