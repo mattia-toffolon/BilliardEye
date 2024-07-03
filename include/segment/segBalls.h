@@ -9,7 +9,7 @@ std::vector<cv::Vec3f> circlesFinder(cv::Mat img, int method, double dp, double 
 
 std::vector<cv::Rect> bboxConverter(std::vector<cv::Vec3f> circles);
 
-void circlesFilter(cv::Mat img, std::vector<cv::Vec3f>& circles, std::vector<cv::Vec3b> tableColors);
+std::vector<cv::Vec3f> circlesFilter(cv::Mat img, std::vector<cv::Vec3f> circles, std::vector<cv::Vec3b> tableColors);
 
 float squaredEuclideanDist(cv::Vec3b pixel, cv::Vec3b center);
 

@@ -13,7 +13,7 @@ void drawBBoxes(Mat img, vector<Rect> bboxes) {
         return;
     }
 
-    Mat tmp = Mat(img);
+    Mat tmp = img.clone();
 
     for(Rect r : bboxes) {
         Point p1 = Point(r.x, r.y);

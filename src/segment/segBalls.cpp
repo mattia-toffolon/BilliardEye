@@ -36,13 +36,25 @@ vector<Vec3f> circlesFinder(Mat img, int method, double dp, double minDist, doub
     if(out.empty()) cout<<"No circles found"<<endl;
 
     if(draw) {
+
+        Mat old = img.clone();
+
         for(Vec3i c : out) {
             Point center = Point(c[0], c[1]);
             int radius = c[2];
-            circle(img, center, radius, Scalar(0,0,255), 2, LINE_AA);
+            circle(img, center, radius, Scalar(255,255,255), 1, LINE_AA);
         }
         imshow("window", img);
         waitKey(0);
+
+        // Mat canvas = Mat::zeros(img.rows, 2*img.cols, img.type());
+        // Mat roi1 = canvas(Rect(0, 0, old.cols, old.rows));
+        // old.copyTo(roi1);
+        // Mat roi2 = canvas(Rect(img.cols, 0, img.cols, img.rows));
+        // img.copyTo(roi2);
+        // imshow("window", canvas);
+        // waitKey(0);
+
     }
 
     return out;
@@ -55,10 +67,10 @@ vector<Rect> bboxConverter(vector<Vec3f> circles) {
     return bboxes;
 }
 
-void circlesFilter(Mat img, vector<cv::Vec3f>& circles, vector<Vec3b> tableColors) {
+vector<Vec3f> circlesFilter(Mat img, vector<Vec3f> circles, vector<Vec3b> tableColors) {
 
     vector<cv::Vec3f> balls;
-    const int THR = 600;
+    const int THR = 1000;
 
     for(Vec3f c : circles) {
         Mat mask1 = Mat::zeros(img.size(), CV_8U);
@@ -67,7 +79,7 @@ void circlesFilter(Mat img, vector<cv::Vec3f>& circles, vector<Vec3b> tableColor
         Mat roi = Mat::zeros(img.size(), CV_8U);
         circle(mask1, Point(c[0], c[1]), 1.5*c[2], Scalar(255), -1);
         bitwise_not(mask1, mask1);
-        circle(mask2, Point(c[0], c[1]), 2.5*c[2], Scalar(255), -1);
+        circle(mask2, Point(c[0], c[1]), 3*c[2], Scalar(255), -1);
         bitwise_and(mask1, mask2, mask3);
 
         Scalar avg = mean(img, mask3);
@@ -87,7 +99,7 @@ void circlesFilter(Mat img, vector<cv::Vec3f>& circles, vector<Vec3b> tableColor
         // waitKey(0);
     }
 
-    circles.swap(balls);
+    return balls;
 }
 
 float squaredEuclideanDist(Vec3b pixel, Vec3b center) {
