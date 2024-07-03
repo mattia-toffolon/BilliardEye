@@ -9,10 +9,14 @@ std::vector<cv::Vec3f> circlesFinder(cv::Mat img, int method, double dp, double 
 
 std::vector<cv::Rect> bboxConverter(std::vector<cv::Vec3f> circles);
 
+std::vector<cv::Vec3f> circlesFilter(cv::Mat img, std::vector<cv::Vec3f> circles, std::vector<cv::Vec3b> tableColors);
+
 float squaredEuclideanDist(cv::Vec3b pixel, cv::Vec3b center);
 
 cv::Vec3b getClusterCentroid(cv::Vec3b pixel, std::vector<cv::Vec3b> centers); 
 
-cv::Mat quantizeColors(cv::Mat img);
+// cv::Mat quantizeColors(cv::Mat img, int delta);
+
+cv::Mat subtractTable(cv::Mat img);
 
 #endif

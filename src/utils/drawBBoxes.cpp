@@ -13,12 +13,14 @@ void drawBBoxes(Mat img, vector<Rect> bboxes) {
         return;
     }
 
+    Mat tmp = img.clone();
+
     for(Rect r : bboxes) {
         Point p1 = Point(r.x, r.y);
         Point p2 = Point(r.x+r.width, r.y+r.height);
-        rectangle(img, p1, p2, Scalar(0,0,255), 2, LINE_AA);
+        rectangle(tmp, p1, p2, Scalar(0,0,255), 1, LINE_AA);
     }   
 
-    imshow("window", img);
+    imshow("window", tmp);
     waitKey(0);
 }
