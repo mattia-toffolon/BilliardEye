@@ -1,8 +1,5 @@
 #ifndef TRACK_BALLS
 #define TRACK_BALLS
-#include <opencv2/core.hpp>
-#include <opencv2/core/types.hpp>
-#include <opencv2/core/version.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/tracking.hpp>

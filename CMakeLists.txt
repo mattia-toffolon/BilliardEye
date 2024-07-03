@@ -62,6 +62,18 @@ add_library(ball_tracking
 )
 target_include_directories(ball_tracking PRIVATE ${OpenCV_INCLUDE_DIRS})
 
+add_library(rendering
+    ./include/rendering/render_table.hpp
+    ./src/rendering/render_table.cpp
+)
+target_include_directories(rendering PRIVATE ${OpenCV_INCLUDE_DIRS})
+
+add_library(table_transform
+    ./include/utils/transformPoints.hpp
+    ./src/utils/transformPoints.cpp
+)
+target_include_directories(table_transform PRIVATE ${OpenCV_INCLUDE_DIRS})
+
 add_executable(segBill ./src/main.cpp)
 target_link_libraries(segBill segTable ${OpenCV_LIBS} )
 target_link_libraries(segBill segBalls ${OpenCV_LIBS} )
@@ -71,3 +83,6 @@ target_link_libraries(segBill drawBBoxes ${OpenCV_LIBS})
 target_link_libraries(segBill getTableColor ${OpenCV_LIBS})
 target_link_libraries(segBill side_recognition ${OpenCV_LIBS})
 target_link_libraries(segBill balls ${OpenCV_LIBS})
+target_link_libraries(segBill table_transform ${OpenCV_LIBS})
+target_link_libraries(segBill ball_tracking ${OpenCV_LIBS})
+target_link_libraries(segBill rendering drawBBoxes ${OpenCV_LIBS})
