@@ -70,33 +70,50 @@ vector<Rect> bboxConverter(vector<Vec3f> circles) {
 vector<Vec3f> circlesFilter(Mat img, vector<Vec3f> circles, vector<Vec3b> tableColors) {
 
     vector<cv::Vec3f> balls;
-    const int THR = 1000;
+    const int THR2 = 1500;
+    const int THR1 = 500;
 
     for(Vec3f c : circles) {
+
         Mat mask1 = Mat::zeros(img.size(), CV_8U);
-        Mat mask2 = Mat::zeros(img.size(), CV_8U);
-        Mat mask3 = Mat::zeros(img.size(), CV_8U);
-        Mat roi = Mat::zeros(img.size(), CV_8U);
-        circle(mask1, Point(c[0], c[1]), 1.5*c[2], Scalar(255), -1);
-        bitwise_not(mask1, mask1);
-        circle(mask2, Point(c[0], c[1]), 3*c[2], Scalar(255), -1);
-        bitwise_and(mask1, mask2, mask3);
+        circle(mask1, Point(c[0], c[1]), c[2], Scalar(255), -1);
+        Scalar avg = mean(img, mask1);
+        Vec3b mean1 = Vec3b(round(avg[0]), round(avg[1]), round(avg[2]));
 
-        Scalar avg = mean(img, mask3);
-        Vec3b mean = Vec3b(round(avg[0]), round(avg[1]), round(avg[2]));
-
-        float min_dist = squaredEuclideanDist(mean, tableColors[0]);
+        float min_dist = squaredEuclideanDist(mean1, tableColors[0]);
         for(int i=0; i<tableColors.size(); i++){
-            float dist = squaredEuclideanDist(mean, tableColors[i]);
+            float dist = squaredEuclideanDist(mean1, tableColors[i]);
             min_dist = (dist<min_dist ? dist : min_dist);
         }
         // cout<<min_dist<<endl;
+        // img.copyTo(roi, mask4);
+        // imshow("window", roi);
+        // waitKey(0);
+        if(min_dist < THR1) continue;
 
-        if(min_dist < THR) balls.push_back(c);
+        Mat mask2 = Mat::zeros(img.size(), CV_8U);
+        Mat mask3 = Mat::zeros(img.size(), CV_8U);
+        Mat mask4 = Mat::zeros(img.size(), CV_8U);
+        Mat roi = Mat::zeros(img.size(), CV_8U);
+        circle(mask2, Point(c[0], c[1]), 1.2*c[2], Scalar(255), -1);
+        bitwise_not(mask2, mask2);
+        circle(mask3, Point(c[0], c[1]), 2.5*c[2], Scalar(255), -1);
+        bitwise_and(mask2, mask3, mask4);
 
+        avg = mean(img, mask4);
+        Vec3b mean2 = Vec3b(round(avg[0]), round(avg[1]), round(avg[2]));
+
+        min_dist = squaredEuclideanDist(mean2, tableColors[0]);
+        for(int i=0; i<tableColors.size(); i++){
+            float dist = squaredEuclideanDist(mean2, tableColors[i]);
+            min_dist = (dist<min_dist ? dist : min_dist);
+        }
+        // cout<<min_dist<<endl;
+        // roi = Mat::zeros(img.size(), CV_8U);
         // img.copyTo(roi, mask3);
         // imshow("window", roi);
         // waitKey(0);
+        if(min_dist < THR2) balls.push_back(c);
     }
 
     return balls;
