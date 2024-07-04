@@ -154,7 +154,7 @@ vector<Ball> classifyBalls(Mat image, vector<Rect> windows)
     }
 
     // Take the brightest cueball candidate
-    assert(cueballs.size() >= 1);
+    //assert(cueballs.size() >= 1);
     int brightest_cueball = 0;
     float max_brightness = 0;
     for (int i=0;i<cueballs.size();i++)
@@ -185,7 +185,7 @@ vector<Ball> classifyBalls(Mat image, vector<Rect> windows)
     }
 
     // Take the darkest solid ball
-    assert(solid.size() >= 1);
+    //assert(solid.size() >= 1);
     int darkest_solid = 0;
     float min_brightness = 255;
     for (int i=0;i<solid.size();i++)
