@@ -74,6 +74,12 @@ add_library(table_transform
 )
 target_include_directories(table_transform PRIVATE ${OpenCV_INCLUDE_DIRS})
 
+add_library(perfTesting
+    ./include/utils/perfTesting.h
+    ./src/utils/perfTesting.cpp
+)
+target_include_directories(perfTesting PRIVATE ${OpenCV_INCLUDE_DIRS})
+
 add_executable(segBill ./src/main.cpp)
 target_link_libraries(segBill segTable ${OpenCV_LIBS} )
 target_link_libraries(segBill segBalls ${OpenCV_LIBS} )
@@ -86,3 +92,4 @@ target_link_libraries(segBill balls ${OpenCV_LIBS})
 target_link_libraries(segBill table_transform ${OpenCV_LIBS})
 target_link_libraries(segBill ball_tracking ${OpenCV_LIBS})
 target_link_libraries(segBill rendering drawBBoxes ${OpenCV_LIBS})
+target_link_libraries(segBill perfTesting ${OpenCV_LIBS})
