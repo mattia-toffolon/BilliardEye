@@ -52,6 +52,6 @@ cv::Mat equalizedMasked(cv::Mat img, cv::InputArray mask=cv::noArray());
  * @param windows sequence of windows inside the image containing the balls to classify
  * @return std::vector<Ball> estimated `Ball` objects
  */
-std::vector<Ball> classifyBalls(cv::Mat image, std::vector<cv::Rect2d> windows);
+std::vector<Ball> classifyBalls(cv::Mat image, std::vector<cv::Rect> windows);
 
 #endif /* BALLTYPE_H */

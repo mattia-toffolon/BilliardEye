@@ -128,7 +128,7 @@ Mat equalizedMasked(Mat img, InputArray mask)
     return output;
 }
 
-vector<Ball> classifyBalls(Mat image, vector<Rect2d> windows)
+vector<Ball> classifyBalls(Mat image, vector<Rect> windows)
 {
     vector<Ball> ans;
 
