@@ -9,5 +9,6 @@ cv::Vec3b getUpperTableColor(cv::Mat& img);
 
 cv::Vec3b getLowerTableColor(cv::Mat& img);
 
+std::vector<cv::Vec3b> getTableColorVariations(cv::Mat& img, bool HSV);
 
 #endif
