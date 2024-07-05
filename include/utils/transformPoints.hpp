@@ -2,10 +2,12 @@
 #define TRANSFORMPOINTS
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-//utility to get the perspective transform given the vertices of
-//the table, the width and height refer to the image itself
-//rotated indicates if to rotate the table, as it expects the first
-//side to be the short one of the table, if this is not the case 
-//rotated should be set to true
+/**
+ * @brief utility to get the perspective transform given the vertices of the table 
+ * @param width width of the destination image
+ * @param height height of the destination image
+ * @param points vertices of the table, the points should be ordered (see segment/segTable.h->orderPoints)
+ * @param rotated true if the first side is not the short one
+ */
 cv::Mat transPoints(std::vector<cv::Point2f> points, int width, int height, bool rotated = false);
 #endif

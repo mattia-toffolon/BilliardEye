@@ -12,4 +12,5 @@ struct Ball{
     BallType type; 
 };
 std::vector<Ball> readBallsFile(std::string filename);
+void writeBallsFile(std::string filename, std::vector<Ball> balls);
 #endif

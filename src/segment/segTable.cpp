@@ -31,6 +31,7 @@ bool arelinessimilar(const struct linestr a, const struct linestr b, double thre
 }
 
 //see nonbinarykmeans for full explanation
+//TODO: remove?
 Mat simplekmeans(const Mat in, int k, char* colors){
     std::vector<Mat> bgr;
     Mat img(in);
@@ -91,6 +92,7 @@ Mat nonbinarykmeans(const Mat in, int k, int blurSize){
         points[labs.at<int>(0,i)] += std::pow(norm(Point2f(i/img.cols, i%img.cols)-imgcenter),2);
     }
 
+    //use normalized distance
     float min = points[0]/count[0];
     int index = 0;
     for(int i = 1; i < k;i++){
@@ -165,6 +167,9 @@ std::vector<struct linestr> line4line(Mat img, double thresh){
 
     //hough
     std::vector<Vec3f> lines;
+    //from opencv documentation, modifications were made to
+    //theta and threshold to avoid incorrect lines because of
+    //noisy borders
     HoughLines(disp, lines,1, CV_PI/90, 30);
     Mat show;
     cvtColor(disp, show, COLOR_GRAY2BGR);

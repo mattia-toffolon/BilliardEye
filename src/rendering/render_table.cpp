@@ -65,3 +65,6 @@ cv::Mat TableRenderer::nextFrame(){
     return screen;
 }
 
+std::vector<Ball> TableRenderer::getBalls(){
+    return this->bbs;
+}

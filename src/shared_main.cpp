@@ -34,7 +34,10 @@ int main(int argc, char** argv) {
     Mat img = vid.lastFrame();
     Mat mask;
     auto points = find_table(img, mask);
-    bool rotate = isShortFirst(getRotatedborders(points, img));
+    Mat gray;
+    cvtColor(img, gray, COLOR_BGR2GRAY);
+    Canny(gray, gray, 100,300);
+    bool rotate = isShortFirst(getRotatedborders(points, gray));
     imshow(WINDOW_NAME, mask);
     waitKey(0);
     Mat trans = transPoints(points, img.cols, img.rows,!rotate);
@@ -47,16 +50,12 @@ int main(int argc, char** argv) {
     Mat segmentedTable = Mat::zeros(img.size(), img.type());
     img.copyTo(segmentedTable, mask);
     Mat sub = subtractTable(segmentedTable);
-    Mat gray;
     cvtColor(sub, gray, COLOR_BGR2GRAY);
 
     std::vector<Vec3f> circles = circlesFinder(gray, HOUGH_GRADIENT, 1, gray.rows/32, 90, 12, 5, 15, false);
     std::vector<Rect> bboxes = bboxConverter(circles);
     std::vector<Rect2d> bboxes2;
-    for(Rect r : bboxes){
-        bboxes2.push_back(r);
-    }
-    std::vector<Ball> balls = classifyBalls(img, bboxes2);
+    std::vector<Ball> balls = classifyBalls(img, bboxes);
     drawBBoxes(img, bboxes);
     TrackBalls tracker(img, balls);
     int width = img.cols;
@@ -72,7 +71,10 @@ int main(int argc, char** argv) {
         imshow(WINDOW_NAME, fr);
         waitKey(0);
     }
-
+    std::string filename = "/balls.txt";
+    writeBallsFile(argv[2] + filename, rend.getBalls());
+    std::string imgname = "/mask.png";
+    cv::imwrite(argv[2] + imgname[2], mask);
     cv::Mat layer = cv::Mat::zeros(img.size(), CV_8UC3);
     std::vector<std::vector<Point>> poli;
     std::vector<Point> poli1;

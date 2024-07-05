@@ -39,10 +39,13 @@ std::vector<Mat> getRotatedborders(const std::vector<Point2f> points, const Mat 
         ret.push_back(cropped);
 
     }
+
     return ret;
 
 }
 bool isShortFirst(std::vector<cv::Mat> sides){
+    //0: first and third side
+    //1: second and fourth
     double acc[]{0,0};
 
     for(int i = 0; i < 4; i++){
@@ -50,9 +53,9 @@ bool isShortFirst(std::vector<cv::Mat> sides){
         if(cropped.rows > cropped.cols){
             cropped = cropped.t();
         }
-        int corner = 30;
-        Mat sec1, sec2, sec3;
+        //apply sobel over x axis
         Sobel(cropped, cropped, CV_8U, 1, 0);
+
         Scalar tmpacc = sum(cropped(Rect(cropped.cols/4, 0, cropped.cols/2, cropped.rows)))/(cropped.rows*cropped.cols/2);
         acc[i%2]+=tmpacc[0];
     }
