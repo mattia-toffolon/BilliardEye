@@ -44,7 +44,7 @@ vector<float> manyToManyIoU(vector<Rect> regions1, vector<Rect> regions2)
 map<float,float> precisionRecallCurve(
     vector<Rect> regions1, 
     vector<Rect> regions2,
-    float threshold=0.5
+    float threshold
 )
 {
     map<float,float> ans;
