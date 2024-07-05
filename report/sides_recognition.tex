@@ -13,23 +13,20 @@ considered sides most of the times.\par
 The next approach was to try template matching between different segments of the image,
 as the center contains a hole which should make the match significantly worse than
 between the left and right segment. This does not work for two reasons:
-\begin{list}
-    \item because of the perspective the hole can appear in a part of the segment of  \
-        the image that is not the center one
-    \item because of the illumination and small imprecisions on the table segmentation \
-        the matching would fail even on the segments which should result similar
-\end{list}
+\begin{itemize}
+    \item because of the perspective the hole can appear in a part of the segment of the image that is not the center one
+    \item because of the illumination and small imprecisions on the table segmentation the matching would fail even on the segments which should result similar
+\end{itemize}
 \par
 Ultimately the way to recognize the sides was the following:
-\begin{list}
+\begin{itemize}
     \item apply the Canny tranform on the initial image
     \item extract the rectangles from the transformed image
     \item rotate the rectangles so that they are horizontal
     \item apply sobel on the x axis
-    \item sum over the contribution on the middle two quarters of the image (normalized \ 
-        over the number of pixels contained)
+    \item sum over the contribution on the middle two quarters of the image (normalized over the number of pixels contained)
     \item determine the longer sides by the highest contribution
-\end{list}
+\end{itemize}
 This works because of the nature of the edges on the sides: on shorter sides there
 are only parallel lines, instead on longer there are strong lines orthogonal given by the holes.
 Only the middle two quarters are considers as to avoid counting the corner holes as edges.
