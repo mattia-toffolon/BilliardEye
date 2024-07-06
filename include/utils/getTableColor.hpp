@@ -5,6 +5,8 @@
 
 cv::Vec3b getTableColor(cv::Mat& img);
 
+std::vector<cv::Vec3b> getTableColors(cv::Mat& img, int levels);
+
 cv::Vec3b getUpperTableColor(cv::Mat& img);
 
 cv::Vec3b getLowerTableColor(cv::Mat& img);
