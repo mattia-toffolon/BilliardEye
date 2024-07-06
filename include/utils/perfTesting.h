@@ -48,11 +48,26 @@ std::vector<float> manyToManyIoU(std::vector<cv::Rect> regions1, std::vector<cv:
 /**
  * @brief Calculates a (discrete) precision-recall curve over given BBs
  * 
+ * @param predictions predicted areas
+ * @param truths ground truth areas
+ * @param threshold how much IoU should be considered a positive match
  */
 std::map<float,float> precisionRecallCurve(
-    std::vector<cv::Rect> regions1, 
-    std::vector<cv::Rect> regions2,
+    std::vector<cv::Rect> predictions, 
+    std::vector<cv::Rect> truths,
     float threshold=0.5
+);
+
+/**
+ * @brief Calclate average precision of discrete precision-recall curve 
+ * using the Pascal VOC method
+ * 
+ * @param prCurve the discrete P-R curve as outputted by `precisionRecallCurve`
+ * @param steps how many discrete steps to divide the graph into while integrating
+ */
+float averagePrecision(
+    std::map<float,float> prCurve,
+    int steps=11
 );
 
 #endif /* PERFTESTING_H */

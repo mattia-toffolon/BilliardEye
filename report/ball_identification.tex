@@ -1,1 +1,22 @@
-TODO
+The task of ball identification is as such: 
+given a precise window inside an image that is assumed to 
+contain a ball of the game of pool, we want to identify 
+which type it belongs to (whether cueball, 8-ball, striped or 
+solid color). We assume we don't need to identify the precise 
+number of the ball outside of the number 8 one.
+
+The main insight into this task is the fact that the most 
+identifying element of a ball is its amount of white paint. 
+A cueball is completely covered in it, a striped ball is 
+covered about halfway and a solid or 8-ball has only a small 
+white circle around its number. If we can find a way to 
+reliably count the proportion of white pixels in the ball area 
+and a corresponding expected range associated with each class 
+the remaining task will only be one of distinguishing the 
+8-ball from the other solid color balls.
+
+The main challenges of this sub-task are:
+- ensuring robustness to 
+  illumination changes
+- coping with specific ball color (some of them might 
+  be of a brightness approaching white)
