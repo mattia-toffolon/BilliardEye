@@ -42,11 +42,44 @@ vector<float> manyToManyIoU(vector<Rect> regions1, vector<Rect> regions2)
 }
 
 map<float,float> precisionRecallCurve(
-    vector<Rect> regions1, 
-    vector<Rect> regions2,
+    vector<Rect> predictions, 
+    vector<Rect> truths,
     float threshold
 )
 {
     map<float,float> ans;
+    
+    float truePos = 0;
+    float falsePos = 0;
+    float precision, recall;
+    float numPrediction = predictions.size();
+    float numTruths = truths.size();
+
+    for (float iou : manyToManyIoU(predictions,truths))
+    {
+        if (iou >= threshold)
+            truePos++;
+        else
+            falsePos++;
+
+        precision = truePos / (truePos + falsePos);
+        recall = truePos / numTruths;
+
+        if (ans.count(recall))
+        {
+            ans[recall] = std::max(ans[recall],precision);
+        }
+        else
+            ans[recall] = precision;
+    }
+
+    return ans;
+}
+
+float averagePrecision(
+    map<float,float> prCurve,
+    int steps
+)
+{
     // TODO
 }
