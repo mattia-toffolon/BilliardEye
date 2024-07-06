@@ -1,5 +1,7 @@
 #include <iostream>
+#include <opencv2/imgproc.hpp>
 #include "utils/getTableColor.hpp"
+
 
 using namespace std;
 using namespace cv;
@@ -20,6 +22,24 @@ Vec3b getTableColor(Mat& img) {
     }
     if(counter==0) return Vec3b(0,0,0);
     return Vec3b(acc[0]/counter, acc[1]/counter, acc[2]/counter);
+}
+
+vector<Vec3b> getTableColors(Mat& img, int levels) {
+    vector<Vec3b> colors;
+    int delta = (int)(img.rows/levels);
+    Mat mask, roi;
+    for(int i=0; i<levels; i++) {
+        mask = Mat::zeros(img.size(), CV_8U);
+        Point2d p1 = Point(0, i*delta);
+        Point2d p2 = Point(img.cols-1, (i+1)*delta);
+        rectangle(mask, p2, p1, Scalar(255), -1);
+        roi = Mat::zeros(img.size(), CV_8U);
+        img.copyTo(roi, mask);
+        // imshow("window", roi);
+        // waitKey(0);
+        colors.push_back(getTableColor(roi));
+    }
+    return colors;
 }
 
 // Same but for the only for the upper half

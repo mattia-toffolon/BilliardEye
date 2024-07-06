@@ -67,11 +67,69 @@ vector<Rect> bboxConverter(vector<Vec3f> circles) {
     return bboxes;
 }
 
-vector<Vec3f> circlesFilter(Mat img, vector<Vec3f> circles, vector<Vec3b> tableColors) {
+// vector<Vec3f> circlesFilter(Mat img, vector<Vec3f> circles, vector<Vec3b> tableColors, bool draw) {
+
+//     vector<cv::Vec3f> balls;
+//     const int THR1 = 200;
+//     const int THR2 = 1600;
+//     Mat roi;
+
+//     for(Vec3f c : circles) {
+
+//         Mat mask1 = Mat::zeros(img.size(), CV_8U);
+//         circle(mask1, Point(c[0], c[1]), c[2], Scalar(255), -1);
+//         Scalar avg = mean(img, mask1);
+//         Vec3b mean1 = Vec3b(round(avg[0]), round(avg[1]), round(avg[2]));
+
+//         float min_dist = squaredEuclideanDist(mean1, tableColors[0]);
+//         for(int i=0; i<tableColors.size(); i++){
+//             float dist = squaredEuclideanDist(mean1, tableColors[i]);
+//             min_dist = (dist<min_dist ? dist : min_dist);
+//         }
+//         if(draw) {
+//             cout<<min_dist<<endl;
+//             roi = Mat::zeros(img.size(), CV_8U);
+//             img.copyTo(roi, mask1);
+//             imshow("window", roi);
+//             waitKey(0);
+//         }
+//         if(min_dist < THR1) continue;
+
+//         Mat mask2 = Mat::zeros(img.size(), CV_8U);
+//         Mat mask3 = Mat::zeros(img.size(), CV_8U);
+//         Mat mask4 = Mat::zeros(img.size(), CV_8U);
+//         circle(mask2, Point(c[0], c[1]), 1.2*c[2], Scalar(255), -1);
+//         bitwise_not(mask2, mask2);
+//         circle(mask3, Point(c[0], c[1]), 2.5*c[2], Scalar(255), -1);
+//         bitwise_and(mask2, mask3, mask4);
+
+//         avg = mean(img, mask4);
+//         Vec3b mean2 = Vec3b(round(avg[0]), round(avg[1]), round(avg[2]));
+
+//         min_dist = squaredEuclideanDist(mean2, tableColors[0]);
+//         for(int i=0; i<tableColors.size(); i++){
+//             float dist = squaredEuclideanDist(mean2, tableColors[i]);
+//             min_dist = (dist<min_dist ? dist : min_dist);
+//         }
+//         if(draw) {
+//             cout<<min_dist<<endl;
+//             roi = Mat::zeros(img.size(), CV_8U);
+//             img.copyTo(roi, mask4);
+//             imshow("window", roi);
+//             waitKey(0);
+//         }
+//         if(min_dist < THR2) balls.push_back(c);
+//     }
+
+//     return balls;
+// }
+
+vector<Vec3f> circlesFilter(Mat img, vector<Vec3f> circles, vector<Vec3b> tableColors, int levels, bool draw) {
 
     vector<cv::Vec3f> balls;
-    const int THR2 = 1500;
-    const int THR1 = 500;
+    const int THR1 = 200;
+    const int THR2 = 1600;
+    Mat roi;
 
     for(Vec3f c : circles) {
 
@@ -80,21 +138,19 @@ vector<Vec3f> circlesFilter(Mat img, vector<Vec3f> circles, vector<Vec3b> tableC
         Scalar avg = mean(img, mask1);
         Vec3b mean1 = Vec3b(round(avg[0]), round(avg[1]), round(avg[2]));
 
-        float min_dist = squaredEuclideanDist(mean1, tableColors[0]);
-        for(int i=0; i<tableColors.size(); i++){
-            float dist = squaredEuclideanDist(mean1, tableColors[i]);
-            min_dist = (dist<min_dist ? dist : min_dist);
+        float min_dist = squaredEuclideanDist(mean1, tableColors[(int)c[1]%levels]);
+        if(draw) {
+            cout<<min_dist<<endl;
+            roi = Mat::zeros(img.size(), CV_8U);
+            img.copyTo(roi, mask1);
+            imshow("window", roi);
+            waitKey(0);
         }
-        // cout<<min_dist<<endl;
-        // img.copyTo(roi, mask4);
-        // imshow("window", roi);
-        // waitKey(0);
         if(min_dist < THR1) continue;
 
         Mat mask2 = Mat::zeros(img.size(), CV_8U);
         Mat mask3 = Mat::zeros(img.size(), CV_8U);
         Mat mask4 = Mat::zeros(img.size(), CV_8U);
-        Mat roi = Mat::zeros(img.size(), CV_8U);
         circle(mask2, Point(c[0], c[1]), 1.2*c[2], Scalar(255), -1);
         bitwise_not(mask2, mask2);
         circle(mask3, Point(c[0], c[1]), 2.5*c[2], Scalar(255), -1);
@@ -103,20 +159,59 @@ vector<Vec3f> circlesFilter(Mat img, vector<Vec3f> circles, vector<Vec3b> tableC
         avg = mean(img, mask4);
         Vec3b mean2 = Vec3b(round(avg[0]), round(avg[1]), round(avg[2]));
 
-        min_dist = squaredEuclideanDist(mean2, tableColors[0]);
-        for(int i=0; i<tableColors.size(); i++){
-            float dist = squaredEuclideanDist(mean2, tableColors[i]);
-            min_dist = (dist<min_dist ? dist : min_dist);
+        min_dist = squaredEuclideanDist(mean2, tableColors[(int)c[1]%levels]);
+        if(draw) {
+            cout<<min_dist<<endl;
+            roi = Mat::zeros(img.size(), CV_8U);
+            img.copyTo(roi, mask4);
+            imshow("window", roi);
+            waitKey(0);
         }
-        // cout<<min_dist<<endl;
-        // roi = Mat::zeros(img.size(), CV_8U);
-        // img.copyTo(roi, mask3);
-        // imshow("window", roi);
-        // waitKey(0);
         if(min_dist < THR2) balls.push_back(c);
     }
 
     return balls;
+}
+
+vector<Vec3f> circlesFilter2(Mat img, vector<Vec3f> circles, bool draw) {
+    vector<Vec3f> out;
+    Mat roi;
+    for(Vec3f c : circles) {
+        Mat mask = Mat::zeros(img.size(), CV_8U);
+        Point2d p1 = Point(c[0]-c[2]*1.5, c[1]-c[2]*1.5);
+        Point2d p2 = Point(c[0]+c[2]*1.5, c[1]+c[2]*1.5);
+        rectangle(mask, p2, p1, Scalar(255), -1);
+        roi = Mat::zeros(img.size(), CV_8U);
+        img.copyTo(roi, mask);
+        if(draw) {
+            imshow("window", roi);
+            waitKey(0);
+        }
+
+        vector<Vec3f> circle = circlesFinder(roi, HOUGH_GRADIENT, 1, img.rows/32, 90, 15, 5, 15, draw);
+        if(!circle.empty()) out.push_back(circle[0]);
+    }
+    return out;
+}
+
+// Returns a vector of circles made of all elements from "first" and all elements (circles) from
+// "second" which center does not lie inside no circle from "first"
+vector<Vec3f> smartCircleMerge(vector<Vec3f> first, vector<Vec3f> second) {
+    vector<Vec3f> out;
+    for(Vec3f c : first) out.push_back(c);
+
+    for(Vec3f c2 : second) {
+        bool duplicate = false;
+        for(Vec3f c1 : first) {
+            float dist = (c1[0]-c2[0])*(c1[0]-c2[0]) + (c1[1]-c2[1])*(c1[1]-c2[1]);
+            if(dist <= c1[2]*c1[2]) {
+                duplicate = true;
+                break;
+            }
+        }
+        if(!duplicate) out.push_back(c2);
+    }
+    return out;
 }
 
 float squaredEuclideanDist(Vec3b pixel, Vec3b center) {
@@ -194,32 +289,51 @@ vector<Rect> getBBoxes(Mat img, Mat tableMask) {
     // imshow("window", gray_HSV);
     // waitKey(0);
 
-    vector<Vec3f> circles_BGR = circlesFinder(gray_BGR, HOUGH_GRADIENT, 1, gray_BGR.rows/32, 90, 11, 5, 15, false);
-    vector<Vec3f> circles_HSV = circlesFinder(gray_HSV, HOUGH_GRADIENT, 1, gray_HSV.rows/32, 90, 11, 5, 15, false);
+    // Mat local_hist_BGR, local_hist_HSV;
+    // Ptr<CLAHE> clahe = createCLAHE(20, Size(2,2));
+    // clahe->apply(gray_BGR, local_hist_BGR);
+    // clahe->apply(gray_HSV, local_hist_HSV);
+    // imshow("window", local_hist_BGR);
+    // waitKey(0);
+    // imshow("window", local_hist_HSV);
+    // waitKey(0);
+
+    // GaussianBlur(gray_BGR, gray_BGR, Size(3,3), 0);
+    // GaussianBlur(gray_HSV, gray_HSV, Size(3,3), 0);
+
+    vector<Vec3f> circles_BGR = circlesFinder(gray_BGR, HOUGH_GRADIENT, 1, gray_BGR.rows/32, 90, 12, 5, 15, false);
+    vector<Vec3f> circles_HSV = circlesFinder(gray_HSV, HOUGH_GRADIENT, 1, gray_HSV.rows/32, 90, 12, 5, 15, false);
     // vector<Rect> bboxes_BGR = bboxConverter(circles_BGR);
     // drawBBoxes(img, bboxes_BGR);
     // vector<Rect> bboxes_HSV = bboxConverter(circles_HSV);
     // drawBBoxes(img, bboxes_HSV);
 
-    vector<Vec3f> circles( circles_BGR.size() + circles_HSV.size() );
-    copy(circles_BGR.begin(), circles_BGR.end(), circles.begin());
-    copy(circles_HSV.begin(), circles_HSV.end(), circles.begin() + circles_BGR.size());
-    // vector<Rect> bboxes_tmp = bboxConverter(circles);
-    // drawBBoxes(img, bboxes_tmp);
+    // vector<Vec3f> circles( circles_BGR.size() + circles_HSV.size() );
+    // copy(circles_BGR.begin(), circles_BGR.end(), circles.begin());
+    // copy(circles_HSV.begin(), circles_HSV.end(), circles.begin() + circles_BGR.size());
+    vector<Vec3f> circles = smartCircleMerge(circles_BGR, circles_HSV);
+    vector<Rect> bboxes_tmp = bboxConverter(circles);
+    drawBBoxes(img, bboxes_tmp);
 
-    vector<Vec3b> tableColors_BGR = getTableColorVariations(crop_BGR, false);
-    vector<Vec3b> tableColors_HSV = getTableColorVariations(crop_HSV, true);
+    const int levels = 3;
+    vector<Vec3b> tableColors_BGR = getTableColors(crop_BGR, levels);
+    vector<Vec3b> tableColors_HSV = getTableColors(crop_HSV, levels);
+
+    // vector<Vec3b> tableColors_BGR = getTableColorVariations(crop_BGR, false);
+    // vector<Vec3b> tableColors_HSV = getTableColorVariations(crop_HSV, true);
     // for(Vec3b c : tableColors_BGR) cout<<c<<" ";
     // cout<<endl<<endl;
     // vector<Vec3b> tableColors_HSV = getTableColorVariations(crop_HSV, true);
     // for(Vec3b c : tableColors_HSV) cout<<c<<" ";
 
-    vector<Vec3f> filtered_circles1 = circlesFilter(img_BGR, circles, tableColors_BGR);
-    vector<Vec3f> filtered_circles2 = circlesFilter(img_HSV, circles, tableColors_HSV);
+    // vector<Vec3f> filtered_circles = circlesFilter2(gray_HSV, circles, false);
 
-    vector<Vec3f> filtered_circles( filtered_circles1.size() + filtered_circles2.size() );
-    copy(filtered_circles1.begin(), filtered_circles1.end(), filtered_circles1.begin());
-    copy(filtered_circles2.begin(), filtered_circles2.end(), filtered_circles.begin() + filtered_circles1.size());
+    vector<Vec3f> filtered_circles = circlesFilter(img_BGR, circles, tableColors_BGR, levels, false);
+    // vector<Vec3f> filtered_circles = circlesFilter(img_HSV, circles, tableColors_HSV, levels, false);
+
+    // vector<Vec3f> filtered_circles( filtered_circles1.size() + filtered_circles2.size() );
+    // copy(filtered_circles1.begin(), filtered_circles1.end(), filtered_circles1.begin());
+    // copy(filtered_circles2.begin(), filtered_circles2.end(), filtered_circles.begin() + filtered_circles1.size());
 
     vector<Rect> bboxes = bboxConverter(filtered_circles);
     return bboxes;
