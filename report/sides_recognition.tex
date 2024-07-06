@@ -1,7 +1,7 @@
 the points are ordered from the upper-left-most point clockwise, but this doesn't give
 any information on how the sides are ordered. It is unfortunately impossible (or out of my
 mathematical capabilities) to find any meaningful geometrical relation between the sides
-given the perspective deformations in some cases. The only feature we can go off is the 
+given the perspective deformations in some cases. The only feature we can go off of is the 
 holes in the middle of the longer sides. The first operation was to obtain the rotated
 rectangles containing the sides of the pool table, with a small width as to avoid 
 keeping in the images unneeded information.\par 
@@ -30,3 +30,11 @@ Ultimately the way to recognize the sides was the following:
 This works because of the nature of the edges on the sides: on shorter sides there
 are only parallel lines, instead on longer there are strong lines orthogonal given by the holes.
 Only the middle two quarters are considers as to avoid counting the corner holes as edges.
+\begin{figure}
+\includegraphics[width=0.6\textwidth]{./imgs/sobel_long_side.png}
+\caption{processed rectangle of a long side}
+\end{figure}
+\begin{figure}
+\includegraphics[width=0.6\textwidth]{./imgs/sobel_short_side.png}
+\caption{processed rectangle of a long side}
+\end{figure}

@@ -8,17 +8,17 @@ It is going to be apparent the reason for these when the full algorithm for
 the segmentation of the table is explained.
 The first thing that was to be found was a rough segmentation of the table,
 as finding the lines with only the Canny-transform of the full image would 
-be problematic as the strongest lines in the image are not only the table
-fabric but also the table itself and various other things in the image.
+be problematic, as the strongest lines in the image are not only the table
+fabric, but also the table itself and various other things in the image.
 The initial approach was to use Otsu's thresholding, as the table is a uniform
 color, therefore it is sensible to assume it would be thresholded the same
-way throughout. This proved unfruitful as the segmentation was too rough.
+way throughout. This proved unfruitful, as the segmentation was too rough.
 The second approach was to use kmeans clustering, in particular exploiting the
 adaptability of the algorithm in order to use spatial features too to improve
-the segmentation. Out of the k-clusters obtained the most centered one was picked.
-THe segmentation obtained was fairly precise but contained multiple disconnected
+the segmentation, as we assume the table is a continuous entity. Out of the k clusters obtained the most centered one was picked.
+The segmentation obtained was fairly precise but contained multiple disconnected
 components, however we can consider the table the biggest and pick it, in particular
-before doing this operation erosion is applied in order to remove weakly connected objects.
+before doing this operation open is applied in order to remove weakly connected objects.
 the k (empirically) chosen was 3, as 2 lead to undersegmentation of the image and 4 to oversegmentation.
 The resulting segmentation is precise in most cases, but given the nature of kmeans on some
 images it fails, as it clusters some unrelated parts of the table with the fabric, due,
@@ -32,6 +32,15 @@ results.\par
 after having obtained this result dilation is applied in order to remove some noise from the mask,
 for example balls or other objects. Afterwards the hough transform is used to find the lines, 
 with a threshold in order to remove similar lines.
-The vertices of the table are found using the equations from \url{https://en.wikipedia.org/wiki/Line\%E2\%80\%93line_intersection}{wikipedia}.
+The vertices of the table are found using the equations from \href{https://en.wikipedia.org/wiki/Line\%E2\%80\%93line\_intersection}{wikipedia}.
 It is to note that the last frame is used for such frame as most of the time it doesn't contain the player in the table, being at the end of
 a turn.
+
+\begin{figure}
+\includegraphics[width=0.6\textwidth]{./imgs/kmeans_cluster.png}
+\caption{initial kmeans clustering result}
+\end{figure}
+\begin{figure}
+\includegraphics[width=0.6\textwidth]{./imgs/color_cluster.png}
+\caption{final color clustering result}
+\end{figure}
