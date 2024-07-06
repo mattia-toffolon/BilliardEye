@@ -59,11 +59,24 @@ std::map<float,float> precisionRecallCurve(
 );
 
 /**
+ * @brief Given a discrete curve, find the greates value with key >= of `key`
+ * 
+ * @param curve discrete curve (as output by `precisionRecallCurve`)
+ * @param key minimum key value to consider
+ * @return float highest value found
+ */
+float highestValueToTheRight(
+    std::map<float,float> curve,
+    float key
+);
+
+/**
  * @brief Calclate average precision of discrete precision-recall curve 
  * using the Pascal VOC method
  * 
  * @param prCurve the discrete P-R curve as outputted by `precisionRecallCurve`
  * @param steps how many discrete steps to divide the graph into while integrating
+ * @return float the final average precision
  */
 float averagePrecision(
     std::map<float,float> prCurve,
