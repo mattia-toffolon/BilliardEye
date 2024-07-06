@@ -1,4 +1,5 @@
 #include "tracking/TrackBalls.hpp"
+#include "opencv2/core/types.hpp"
 using namespace cv;
 
 TrackBalls::TrackBalls(Mat frame, std::vector<Ball> bb){
@@ -12,21 +13,20 @@ TrackBalls::TrackBalls(Mat frame, std::vector<Ball> bb){
     }
 }
 
-std::vector<Ball> TrackBalls::update(Mat frame, std::vector<int> &removed){
+std::vector<Ball> TrackBalls::update(Mat frame){
     for(int i = 0; i <multi.size(); i++){
+        if(bbs[i].bbox.x < 0){
+            continue;
+        }
         auto tr = multi[i];
-        Rect bb = Rect(bbs[i].bbox);
+        Rect bb = bbs[i].bbox;
         bool tracked = tr->update(frame, bb);
         if(tracked){
             bbs[i].bbox = bb;
         }
         else{
-            removed.push_back(i);
+            bbs[i].bbox = Rect(-1,-1, 0, 0);
         }
-    }
-    for(int i = removed.size()-1; i >=0; i--){
-        multi.erase(multi.begin()+removed[i],multi.begin()+removed[i]+1);
-        bbs.erase(bbs.begin()+removed[i],bbs.begin()+removed[i]+1);
     }
     return bbs;
 }

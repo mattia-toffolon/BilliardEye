@@ -29,16 +29,15 @@ TableRenderer::TableRenderer(VideoReader v, TrackBalls t, std::vector<Ball> ball
 
 cv::Mat TableRenderer::nextFrame(){
     Mat fram = this->vid.nextFrame();
-    std::vector<int> removed;
-    const std::vector<Ball> newballs = tracker.update(fram,removed);
+    const std::vector<Ball> newballs = tracker.update(fram);
     std::vector<Rect> bounding;
-    for( auto b : newballs){
+    for(auto b : newballs){
         bounding.push_back(b.bbox);
     }
-    //drawBBoxes(fram, bounding);
-    int real = 0;
+    drawBBoxes(fram, bounding);
     for(int i = 0; i < bbs.size(); i++){
-        if(std::find(removed.begin(), removed.end(), i) != removed.end()){
+        if(newballs[i].bbox.x < 0){
+            bbs[i].bbox = Rect(-1,-1,0,0);
             continue;
         }
         Point2f oldcenter = Point2f(bbs[i].bbox.x+bbs[i].bbox.width/2,bbs[i].bbox.y+bbs[i].bbox.height/2);
@@ -48,15 +47,13 @@ cv::Mat TableRenderer::nextFrame(){
         perspectiveTransform(old, old, transform);
         perspectiveTransform(niu, niu, transform);
         line(curimg, old[0], niu[0], Scalar(0,0,0));
-        bbs[i].bbox = newballs[real].bbox;
-        real++;
-    }
-    for(int i = removed.size()-1; i >=0; i--){
-        bbs.erase(bbs.begin()+removed[i],bbs.begin()+removed[i]+1);
-        bbs.erase(bbs.begin()+removed[i],bbs.begin()+removed[i]+1);
+        bbs[i].bbox = newballs[i].bbox;
     }
     Mat screen = curimg.clone();
     for(Ball b : bbs){
+        if(b.bbox.x < 0){
+            continue;
+        }
         Point2f c = Point2f(b.bbox.x+b.bbox.width/2,b.bbox.y+b.bbox.height/2);
         std::vector<Point2f> vec{c};
         perspectiveTransform(vec, vec, transform);

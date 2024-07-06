@@ -13,6 +13,6 @@ class TrackBalls{
     /**
      * @param removed index of balls that are no longer tracked
      */
-    std::vector<Ball> update(cv::Mat frame, std::vector<int> &removed);
+    std::vector<Ball> update(cv::Mat frame);
 };
 #endif
