@@ -76,10 +76,23 @@ map<float,float> precisionRecallCurve(
     return ans;
 }
 
+float highestValueToTheRight(
+    map<float,float> curve,
+    float key
+)
+{
+    float max = 0;
+    // TODO iterate over upper_bound to find the max
+}
+
 float averagePrecision(
     map<float,float> prCurve,
     int steps
 )
 {
-    // TODO
+    float sum = 0;
+    for (float i=0; i<=steps; i++)
+    {
+
+    }
 }
