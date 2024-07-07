@@ -128,7 +128,8 @@ Mat equalizedMasked(Mat img, InputArray mask)
     return output;
 }
 
-vector<Ball> classifyBalls(Mat image, vector<Rect> windows)
+// Previous version, less robust
+/*vector<Ball> _classifyBalls(Mat image, vector<Rect> windows)
 {
     vector<Ball> ans;
 
@@ -207,6 +208,51 @@ vector<Ball> classifyBalls(Mat image, vector<Rect> windows)
     for (int i=0;i<solid.size();i++)
     {
         ans.push_back({windows[solid[i]],BallType::SOLID});
+    }
+
+    return ans;
+}*/
+
+// New version, ensures one cueball and one 8-ball are returned
+vector<Ball> classifyBalls(Mat image, vector<Rect> windows)
+{
+    vector<Ball> ans;
+
+    int brightestRec = 0;
+    int darkestRec = 1;
+    float maxBright = 0;
+    float minBright = 255;
+
+    for (int i=0; i<windows.size(); i++)
+    {
+        Mat grayCrop;
+        cvtColor(image(windows[i]),grayCrop,COLOR_BGR2GRAY);
+
+        float brightness = mean(grayCrop)[0];
+
+        if (brightness > maxBright)
+        {
+            maxBright = brightness;
+            brightestRec = i;
+        }
+        else if (brightness < minBright)
+        {
+            minBright = brightness;
+            darkestRec = i;
+        }
+    }
+
+    for (int i=0; i<windows.size(); i++)
+    {
+        BallType type;
+        if (i == brightestRec)
+            type = BallType::CUE;
+        else if (i == darkestRec)
+            type = BallType::EIGHT;
+        else
+            type = getBallType(image(windows[i]));
+        
+        ans.push_back({windows[i],type});
     }
 
     return ans;
