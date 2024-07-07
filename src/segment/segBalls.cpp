@@ -313,30 +313,30 @@ vector<Rect> getBBoxes(Mat img, Mat tableMask) {
     // copy(circles_HSV.begin(), circles_HSV.end(), circles.begin() + circles_BGR.size());
     vector<Vec3f> circles = smartCircleMerge(circles_BGR, circles_HSV);
     vector<Rect> bboxes_tmp = bboxConverter(circles);
-    drawBBoxes(img, bboxes_tmp);
+    // drawBBoxes(img, bboxes_tmp);
 
-    const int levels = 3;
-    vector<Vec3b> tableColors_BGR = getTableColors(crop_BGR, levels);
-    vector<Vec3b> tableColors_HSV = getTableColors(crop_HSV, levels);
+    // const int levels = 3;
+    // vector<Vec3b> tableColors_BGR = getTableColors(crop_BGR, levels);
+    // vector<Vec3b> tableColors_HSV = getTableColors(crop_HSV, levels);
 
-    // vector<Vec3b> tableColors_BGR = getTableColorVariations(crop_BGR, false);
-    // vector<Vec3b> tableColors_HSV = getTableColorVariations(crop_HSV, true);
-    // for(Vec3b c : tableColors_BGR) cout<<c<<" ";
-    // cout<<endl<<endl;
-    // vector<Vec3b> tableColors_HSV = getTableColorVariations(crop_HSV, true);
-    // for(Vec3b c : tableColors_HSV) cout<<c<<" ";
+    // // vector<Vec3b> tableColors_BGR = getTableColorVariations(crop_BGR, false);
+    // // vector<Vec3b> tableColors_HSV = getTableColorVariations(crop_HSV, true);
+    // // for(Vec3b c : tableColors_BGR) cout<<c<<" ";
+    // // cout<<endl<<endl;
+    // // vector<Vec3b> tableColors_HSV = getTableColorVariations(crop_HSV, true);
+    // // for(Vec3b c : tableColors_HSV) cout<<c<<" ";
 
-    // vector<Vec3f> filtered_circles = circlesFilter2(gray_HSV, circles, false);
+    // // vector<Vec3f> filtered_circles = circlesFilter2(gray_HSV, circles, false);
 
-    vector<Vec3f> filtered_circles = circlesFilter(img_BGR, circles, tableColors_BGR, levels, false);
-    // vector<Vec3f> filtered_circles = circlesFilter(img_HSV, circles, tableColors_HSV, levels, false);
+    // vector<Vec3f> filtered_circles = circlesFilter(img_BGR, circles, tableColors_BGR, levels, false);
+    // // vector<Vec3f> filtered_circles = circlesFilter(img_HSV, circles, tableColors_HSV, levels, false);
 
-    // vector<Vec3f> filtered_circles( filtered_circles1.size() + filtered_circles2.size() );
-    // copy(filtered_circles1.begin(), filtered_circles1.end(), filtered_circles1.begin());
-    // copy(filtered_circles2.begin(), filtered_circles2.end(), filtered_circles.begin() + filtered_circles1.size());
+    // // vector<Vec3f> filtered_circles( filtered_circles1.size() + filtered_circles2.size() );
+    // // copy(filtered_circles1.begin(), filtered_circles1.end(), filtered_circles1.begin());
+    // // copy(filtered_circles2.begin(), filtered_circles2.end(), filtered_circles.begin() + filtered_circles1.size());
 
-    vector<Rect> bboxes = bboxConverter(filtered_circles);
-    return bboxes;
+    // vector<Rect> bboxes = bboxConverter(filtered_circles);
+    return bboxes_tmp;
 }
 
 
