@@ -82,7 +82,14 @@ float highestValueToTheRight(
 )
 {
     float max = 0;
-    // TODO iterate over upper_bound to find the max
+    if (curve.count(key))
+    {
+        max = std::max(max,curve[key]);
+    }
+    // iterate over higher values than key to find the max
+    for (auto iter=curve.upper_bound(key); iter!=curve.end();iter++)
+        max = std::max(max,(*iter).second);
+    return max;
 }
 
 float averagePrecision(
@@ -93,6 +100,8 @@ float averagePrecision(
     float sum = 0;
     for (float i=0; i<=steps; i++)
     {
-
+        float rec = i/steps;
+        sum += highestValueToTheRight(prCurve,rec);
     }
+    return sum/(steps+1);
 }

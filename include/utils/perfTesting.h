@@ -80,7 +80,7 @@ float highestValueToTheRight(
  */
 float averagePrecision(
     std::map<float,float> prCurve,
-    int steps=11
+    int steps=10
 );
 
 #endif /* PERFTESTING_H */
