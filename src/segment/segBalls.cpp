@@ -8,6 +8,9 @@
 #include "segment/segBalls.h"
 #include "utils/getTableColor.hpp"
 #include "utils/drawBBoxes.hpp"
+#include "utils/PurgeFP.hpp"
+#include "utils/transformPoints.hpp"
+#include "recognition/side_recognition.hpp"
 
 using namespace cv;
 using namespace std;
@@ -253,7 +256,7 @@ Mat subtractTable(Mat img) {
     return out;
 }
 
-vector<Rect> getBBoxes(Mat img, Mat tableMask) {
+vector<Rect> getBBoxes(Mat img, Mat last, Mat tableMask, vector<Point2f> points) {
 
     Mat img_BGR = img.clone();
     Mat img_HSV;
@@ -312,8 +315,8 @@ vector<Rect> getBBoxes(Mat img, Mat tableMask) {
     // copy(circles_BGR.begin(), circles_BGR.end(), circles.begin());
     // copy(circles_HSV.begin(), circles_HSV.end(), circles.begin() + circles_BGR.size());
     vector<Vec3f> circles = smartCircleMerge(circles_BGR, circles_HSV);
-    vector<Rect> bboxes_tmp = bboxConverter(circles);
-    // drawBBoxes(img, bboxes_tmp);
+    vector<Rect> bboxes = bboxConverter(circles);
+    drawBBoxes(img, bboxes);
 
     // const int levels = 3;
     // vector<Vec3b> tableColors_BGR = getTableColors(crop_BGR, levels);
@@ -336,7 +339,16 @@ vector<Rect> getBBoxes(Mat img, Mat tableMask) {
     // // copy(filtered_circles2.begin(), filtered_circles2.end(), filtered_circles.begin() + filtered_circles1.size());
 
     // vector<Rect> bboxes = bboxConverter(filtered_circles);
-    return bboxes_tmp;
+
+    Mat gray;
+    cvtColor(img, gray, COLOR_BGR2GRAY);
+    Canny(gray, gray, 100, 300);
+    bool rotate = isShortFirst(getRotatedborders(points, gray));
+    Mat trans = transPoints(points, last.cols, last.rows, !rotate);
+
+    vector<Rect> filtered_bboxes = purgeFP(img, trans, bboxes);
+
+    return filtered_bboxes;
 }
 
 
