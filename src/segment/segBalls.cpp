@@ -15,23 +15,6 @@
 using namespace cv;
 using namespace std;
 
-// UNUSABLE
-// Mat meanShiftClustering(Mat& inputImage, int spatialRadius, int colorRadius, int maxLevel)
-// {
-//     Mat labImage;
-//     cvtColor(inputImage, labImage, COLOR_BGR2Lab);
-
-//     TermCriteria criteria(TermCriteria::MAX_ITER + TermCriteria::EPS, maxLevel, 1.0);
-//     Size windowSize(4 * spatialRadius + 1, 4 * spatialRadius + 1);
-
-//     Mat outputImage;
-//     pyrMeanShiftFiltering(labImage, outputImage, spatialRadius, colorRadius, maxLevel, criteria);
-
-//     cvtColor(outputImage, outputImage, COLOR_Lab2BGR);
-
-//     return outputImage;
-// }
-
 vector<Vec3f> circlesFinder(Mat img, int method, double dp, double minDist, double param1, double param2, int minRadius, int maxRadius, bool draw) {
     std::vector<cv::Vec3f> out;
     HoughCircles(img, out, method, dp, minDist, param1, param2, minRadius, maxRadius);
@@ -69,63 +52,6 @@ vector<Rect> bboxConverter(vector<Vec3f> circles) {
     
     return bboxes;
 }
-
-// vector<Vec3f> circlesFilter(Mat img, vector<Vec3f> circles, vector<Vec3b> tableColors, bool draw) {
-
-//     vector<cv::Vec3f> balls;
-//     const int THR1 = 200;
-//     const int THR2 = 1600;
-//     Mat roi;
-
-//     for(Vec3f c : circles) {
-
-//         Mat mask1 = Mat::zeros(img.size(), CV_8U);
-//         circle(mask1, Point(c[0], c[1]), c[2], Scalar(255), -1);
-//         Scalar avg = mean(img, mask1);
-//         Vec3b mean1 = Vec3b(round(avg[0]), round(avg[1]), round(avg[2]));
-
-//         float min_dist = squaredEuclideanDist(mean1, tableColors[0]);
-//         for(int i=0; i<tableColors.size(); i++){
-//             float dist = squaredEuclideanDist(mean1, tableColors[i]);
-//             min_dist = (dist<min_dist ? dist : min_dist);
-//         }
-//         if(draw) {
-//             cout<<min_dist<<endl;
-//             roi = Mat::zeros(img.size(), CV_8U);
-//             img.copyTo(roi, mask1);
-//             imshow("window", roi);
-//             waitKey(0);
-//         }
-//         if(min_dist < THR1) continue;
-
-//         Mat mask2 = Mat::zeros(img.size(), CV_8U);
-//         Mat mask3 = Mat::zeros(img.size(), CV_8U);
-//         Mat mask4 = Mat::zeros(img.size(), CV_8U);
-//         circle(mask2, Point(c[0], c[1]), 1.2*c[2], Scalar(255), -1);
-//         bitwise_not(mask2, mask2);
-//         circle(mask3, Point(c[0], c[1]), 2.5*c[2], Scalar(255), -1);
-//         bitwise_and(mask2, mask3, mask4);
-
-//         avg = mean(img, mask4);
-//         Vec3b mean2 = Vec3b(round(avg[0]), round(avg[1]), round(avg[2]));
-
-//         min_dist = squaredEuclideanDist(mean2, tableColors[0]);
-//         for(int i=0; i<tableColors.size(); i++){
-//             float dist = squaredEuclideanDist(mean2, tableColors[i]);
-//             min_dist = (dist<min_dist ? dist : min_dist);
-//         }
-//         if(draw) {
-//             cout<<min_dist<<endl;
-//             roi = Mat::zeros(img.size(), CV_8U);
-//             img.copyTo(roi, mask4);
-//             imshow("window", roi);
-//             waitKey(0);
-//         }
-//         if(min_dist < THR2) balls.push_back(c);
-//     }
-
-//     return balls;
-// }
 
 vector<Vec3f> circlesFilter(Mat img, vector<Vec3f> circles, vector<Vec3b> tableColors, int levels, bool draw) {
 
@@ -176,13 +102,14 @@ vector<Vec3f> circlesFilter(Mat img, vector<Vec3f> circles, vector<Vec3b> tableC
     return balls;
 }
 
-vector<Vec3f> circlesFilter2(Mat img, vector<Vec3f> circles, bool draw) {
+vector<Vec3f> refineCircles(Mat img, vector<Rect> bboxes, bool draw) {
     vector<Vec3f> out;
+    const int delta = 8;
     Mat roi;
-    for(Vec3f c : circles) {
+    for(Rect r : bboxes) {
         Mat mask = Mat::zeros(img.size(), CV_8U);
-        Point2d p1 = Point(c[0]-c[2]*1.5, c[1]-c[2]*1.5);
-        Point2d p2 = Point(c[0]+c[2]*1.5, c[1]+c[2]*1.5);
+        Point2d p1 = Point(r.x-delta, r.y-delta);
+        Point2d p2 = Point(r.x+r.width+delta, r.y+r.height+delta);
         rectangle(mask, p2, p1, Scalar(255), -1);
         roi = Mat::zeros(img.size(), CV_8U);
         img.copyTo(roi, mask);
@@ -222,20 +149,6 @@ float squaredEuclideanDist(Vec3b pixel, Vec3b center) {
     for(int i=0; i<3; i++)
         sum += (pixel[i]-center[i]) * (pixel[i]-center[i]);
     return sum;
-}
-
-
-Vec3b getClusterCentroid(Vec3b pixel, vector<Vec3b> centers) {
-    Vec3b ret = centers[0];
-    float minDist = squaredEuclideanDist(pixel, centers[0]);
-    for(int i=1; i<centers.size(); i++) {
-        float dist = squaredEuclideanDist(pixel, centers[i]);
-        if(dist < minDist) {
-            minDist = dist;
-            ret = centers[i];
-        }
-    }
-    return ret;
 }
 
 Mat subtractTable(Mat img) {
@@ -292,15 +205,6 @@ vector<Rect> getBBoxes(Mat img, Mat last, Mat tableMask, vector<Point2f> points)
     // imshow("window", gray_HSV);
     // waitKey(0);
 
-    // Mat local_hist_BGR, local_hist_HSV;
-    // Ptr<CLAHE> clahe = createCLAHE(20, Size(2,2));
-    // clahe->apply(gray_BGR, local_hist_BGR);
-    // clahe->apply(gray_HSV, local_hist_HSV);
-    // imshow("window", local_hist_BGR);
-    // waitKey(0);
-    // imshow("window", local_hist_HSV);
-    // waitKey(0);
-
     // GaussianBlur(gray_BGR, gray_BGR, Size(3,3), 0);
     // GaussianBlur(gray_HSV, gray_HSV, Size(3,3), 0);
 
@@ -318,133 +222,21 @@ vector<Rect> getBBoxes(Mat img, Mat last, Mat tableMask, vector<Point2f> points)
     vector<Rect> bboxes = bboxConverter(circles);
     drawBBoxes(img, bboxes);
 
-    // const int levels = 3;
-    // vector<Vec3b> tableColors_BGR = getTableColors(crop_BGR, levels);
-    // vector<Vec3b> tableColors_HSV = getTableColors(crop_HSV, levels);
-
-    // // vector<Vec3b> tableColors_BGR = getTableColorVariations(crop_BGR, false);
-    // // vector<Vec3b> tableColors_HSV = getTableColorVariations(crop_HSV, true);
-    // // for(Vec3b c : tableColors_BGR) cout<<c<<" ";
-    // // cout<<endl<<endl;
-    // // vector<Vec3b> tableColors_HSV = getTableColorVariations(crop_HSV, true);
-    // // for(Vec3b c : tableColors_HSV) cout<<c<<" ";
-
-    // // vector<Vec3f> filtered_circles = circlesFilter2(gray_HSV, circles, false);
-
     // vector<Vec3f> filtered_circles = circlesFilter(img_BGR, circles, tableColors_BGR, levels, false);
-    // // vector<Vec3f> filtered_circles = circlesFilter(img_HSV, circles, tableColors_HSV, levels, false);
+    // vector<Vec3f> filtered_circles = circlesFilter(img_HSV, circles, tableColors_HSV, levels, false);
 
-    // // vector<Vec3f> filtered_circles( filtered_circles1.size() + filtered_circles2.size() );
-    // // copy(filtered_circles1.begin(), filtered_circles1.end(), filtered_circles1.begin());
-    // // copy(filtered_circles2.begin(), filtered_circles2.end(), filtered_circles.begin() + filtered_circles1.size());
-
-    // vector<Rect> bboxes = bboxConverter(filtered_circles);
-
-    Mat gray;
+    Mat gray, gray_canny;
     cvtColor(img, gray, COLOR_BGR2GRAY);
-    Canny(gray, gray, 100, 300);
-    bool rotate = isShortFirst(getRotatedborders(points, gray));
+    Canny(gray, gray_canny, 100, 300);
+    bool rotate = isShortFirst(getRotatedborders(points, gray_canny));
     Mat trans = transPoints(points, last.cols, last.rows, !rotate);
 
     vector<Rect> filtered_bboxes = purgeFP(img, trans, bboxes);
 
+    // drawBBoxes(img, filtered_bboxes);
+
+    // vector<Vec3f> ref_circles = refineCircles(gray_HSV, filtered_bboxes, true);
+    // vector<Rect> new_bboxes = bboxConverter(ref_circles);
+
     return filtered_bboxes;
 }
-
-
-// To be perfected...
-// Mat quantizeColors(Mat img, int delta) {
-
-    // Ptr<BackgroundSubtractor> pBackSub = createBackgroundSubtractorMOG2();
-    // Mat mask;
-    // pBackSub->apply(img, mask);
-    // imshow("window", mask);
-    // waitKey(0);
-
-    // Mat img_hsv;
-    // cvtColor(img, img_hsv, COLOR_BGR2HSV);
-    // imshow("window", img_hsv);
-    // waitKey(0);
-
-    // Vec3b tableColor = getTableColor(img);
-
-    // // int delta = 50;
-    // Scalar lowTableColor( tableColor[0]-delta, tableColor[1]-delta, tableColor[2]-(1.9*delta));   
-    // Scalar highTableColor(tableColor[0]+delta, tableColor[1]+delta, tableColor[2]+(1.9*delta));
-    // // Scalar lowTableColor(30, 180, 80);
-    // // Scalar highTableColor(130, 255, 255);
-    // Mat mask;
-    // inRange(img_hsv, lowTableColor, highTableColor, mask);
-    // imshow("window", mask);
-    // waitKey(0);
-
-    // bitwise_not(mask, mask); // focus on the balls
-    // imshow("window", mask);
-    // waitKey(0);
-
-    // Mat crop;
-    // bitwise_and(img, img, crop, mask);
-    // imshow("window", crop);
-    // waitKey(0);
-
-
-    // return crop;
-
-
-    // vector<Vec3b> true_colors;
-    // true_colors.push_back(Vec3b(255, 255, 255)); // White
-    // true_colors.push_back(Vec3b(255, 207, 0));   // Yellow
-    // true_colors.push_back(Vec3b(0, 0, 255));     // Blue
-    // true_colors.push_back(Vec3b(238, 28, 36));   // Red
-    // true_colors.push_back(Vec3b(163, 73, 164));  // Purple
-    // true_colors.push_back(Vec3b(255, 127, 39));  // Orange
-    // true_colors.push_back(Vec3b(0, 128, 0));     // Green
-    // true_colors.push_back(Vec3b(128, 0, 0));     // Burgundy/Maroon
-    // true_colors.push_back(Vec3b(0, 0, 0));       // Black
-
-    // vector<Vec3b> colors = true_colors;
-    // int levels = 40+1;
-    // for(Vec3b c : true_colors) {
-    //     int diff1 = c[0];
-    //     int diff2 = c[1];
-    //     int diff3 = c[2];
-    //     for(int i=levels-1; i>levels-10; i--) {
-    //         colors.push_back(Vec3b((diff1/levels)*i,
-    //                                (diff2/levels)*i,
-    //                                (diff3/levels)*i));
-    //     }
-    // }
-
-    // Vec3b tableColor = getTableColor(img);
-
-    // vector<Vec3b> colors;
-    // int levels = 50;
-    // for(int i=0; i<=255; i+=255/levels) {
-    //     colors.push_back(Vec3b(i, i, i));
-    // }
-    // colors.push_back(Vec3b(255, 255, 255));
-
-    // colors.push_back(tableColor);
-
-
-//     Mat out = Mat(img);
-
-//     for(int i=0; i<out.rows; i++) {
-//         for(int j=0; j<out.cols; j++) {
-//             Vec3b pixel = out.at<Vec3b>(i, j);
-//             if(pixel == Vec3b(0, 0, 0)) continue;
-//             out.at<Vec3b>(i, j) = Vec3b(abs(pixel[0]-tableColor[0]), abs(pixel[1]-tableColor[1]), abs(pixel[2]-tableColor[2]));
-//             // if(pixel == Vec3b(0, 0, 0)) continue;
-//             // if(squaredEuclideanDist(pixel, tableColor) < 5000) out.at<Vec3b>(i, j) = tableColor;
-//             // else out.at<Vec3b>(i, j) = Vec3b(0,0,0);
-//             // Vec3b centroid = getClusterCentroid(pixel, colors);
-//             // if(squaredEuclideanDist(centroid, pixel) < squaredEuclideanDist(tableColor, pixel)) {
-//             //     if(squaredEuclideanDist(centroid, pixel) > 0.7 * squaredEuclideanDist(tableColor, pixel))out.at<Vec3b>(i, j) = Vec3b(0,0,0);
-//             //     else out.at<Vec3b>(i, j) = centroid;
-//             // }
-//             // else out.at<Vec3b>(i, j) = tableColor;
-//         }
-//     }
-
-//     return out;
-// }
