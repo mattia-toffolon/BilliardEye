@@ -27,71 +27,71 @@
 using namespace cv;
 using namespace std;
 
-const std::string WINDOW_NAME = "window_main";
+const string WINDOW_NAME = "window_main";
 
 int main(int argc, char** argv) {
+
     if(argc < 2){
-        std::cout << "not enough an arguments provided";
+        cout << "Not enough arguments provided";
         exit(1);
     }
-    cout<<argv[1]<<std::endl;
-    VideoReader vid(argv[1]);
-    Mat img = vid.lastFrame();
+
+    string clip_name = argv[1];
+    // cout<<clip_name<<endl;
+
+    const string video_path = "../data/" + clip_name + "/" + clip_name + ".mp4";
+    const string img_path = "../data/" + clip_name + "/frames/frame_first.png";
+
+    Mat img_first = imread(img_path);
+
+    VideoReader vid(video_path);
+    Mat img_last = vid.lastFrame();
     Mat mask;
-    auto points = find_table(img, mask);
-    Mat gray;
-    cvtColor(img, gray, COLOR_BGR2GRAY);
-    Canny(gray, gray, 100,300);
-    bool rotate = isShortFirst(getRotatedborders(points, gray));
-    imshow(WINDOW_NAME, mask);
-    waitKey(0);
-    Mat trans = transPoints(points, img.cols, img.rows,!rotate);
-    Mat show;
-    warpPerspective(img, show, trans, img.size());
-    imshow(WINDOW_NAME,show);
-    waitKey(0);
+    vector<Point2f> points = find_table(img_last, mask);
 
-    img = vid.nextFrame();
-    Mat segmentedTable = Mat::zeros(img.size(), img.type());
-    img.copyTo(segmentedTable, mask);
-    Mat sub = subtractTable(segmentedTable);
-    cvtColor(sub, gray, COLOR_BGR2GRAY);
+    Mat transf = getTransformation(img_last, points);
 
-    std::vector<Vec3f> circles = circlesFinder(gray, HOUGH_GRADIENT, 1, gray.rows/32, 90, 12, 5, 15, false);
-    std::vector<Rect> bboxes = bboxConverter(circles);
-    std::vector<Rect2d> bboxes2;
-    std::vector<Ball> balls = classifyBalls(img, bboxes);
-    drawBBoxes(img, bboxes);
+    // Mat show;
+    // warpPerspective(img_last, show, transf, img_last.size());
+    // imshow(WINDOW_NAME,show);
+    // waitKey(0);
 
-    TrackBalls tracker(img, balls);
-    int width = img.cols;
-    int height = img.rows;
-    vid = VideoReader(argv[1]);
-    TableRenderer rend(vid, tracker, balls, trans, width, height);
-    auto vid2 = VideoReader(argv[1]);
-    while(1){
+    vector<Rect> bboxes = getBBoxes(img_first, mask, transf);
+    drawBBoxes(img_first, bboxes);
+
+    vector<Ball> balls = classifyBalls(img_last, bboxes);
+
+    img_first = vid.nextFrame();
+    TrackBalls tracker(img_first, balls);
+    int width = img_first.cols;
+    int height = img_first.rows;
+    vid = VideoReader(video_path);
+    TableRenderer rend(vid, tracker, balls, transf, width, height);
+    while(1) {
         Mat fr = rend.nextFrame();
-        if(fr.rows == 0){
-            break;
-        }
+        if(fr.rows == 0) break;
         imshow(WINDOW_NAME, fr);
         waitKey(0);
     }
-    std::string filename = "/balls.txt";
-    writeBallsFile(argv[2] + filename, rend.getBalls());
-    std::string imgname = "/mask.png";
-    cv::imwrite(argv[2] + imgname[2], mask);
-    cv::Mat layer = cv::Mat::zeros(img.size(), CV_8UC3);
-    std::vector<std::vector<Point>> poli;
-    std::vector<Point> poli1;
-    for(int i = 0; i < 4; i ++){
-        poli1.push_back(points[i]);
+
+    string filename_balls = "/balls.txt";
+    writeBallsFile(argv[2] + filename_balls, rend.getBalls());
+
+    string filename_mask = "/mask.png";
+    imwrite(argv[2] + filename_mask[2], mask);
+
+    Mat layer = Mat::zeros(img_last.size(), CV_8UC3);
+    vector<vector<Point>> poly_table;
+    vector<Point> tmp;
+    for(int i = 0; i < 4; i ++) {
+        tmp.push_back(points[i]);
     }
     Mat out;
-    poli.push_back(poli1);
-    cv::fillPoly(layer, poli, Scalar(0,0,255));
-    cv::addWeighted(img, 0.5, layer, 0.5, 0, out);
-    imshow(WINDOW_NAME,out);
+    poly_table.push_back(tmp);
+    fillPoly(layer, poly_table, Scalar(0, 0, 255));
+    addWeighted(img_last, 0.5, layer, 0.5, 0, out);
+    imshow(WINDOW_NAME, out);
     waitKey(0);
+
     return 0;
 }
