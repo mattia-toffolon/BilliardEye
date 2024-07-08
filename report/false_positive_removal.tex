@@ -1,0 +1,17 @@
+An issue we encountered was the removal of false positives in the
+final output. these came in three flavours:
+\begin{enumerate}
+    \item a flat region of the field, for example on the borders
+    \item the holes 
+    \item the player
+\end{enumerate}
+
+the first two kinds are easily detectable as we know the position of the holes 
+and a flat region is easily detectable. However the player is not a easily detectable
+shape and must be considered by itself.
+The first consideration we can make is that the player and the holes reach out of the
+fabric region. Given the precision of the table detection we can exploit this to find
+such regions. One idea is to use Canny to find the edges of each object (tweaking 
+the parameters so that the internal edges of the pool table) we can eliminate 
+the connected edges that go outside this region. After this we can consider 
+
