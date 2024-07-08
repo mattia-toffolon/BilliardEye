@@ -10,22 +10,22 @@ using namespace std;
 vector<Rect> purgeFP(Mat img,  Mat transform, vector<Rect> bboxes){
     Mat canny_trns, canny, img_hsv;
     cvtColor(img, img_hsv,  COLOR_BGR2HSV);
-    Canny(img_hsv, canny, 250, 300);
+    Canny(img_hsv, canny, 270, 300);
 
     // imshow("window", canny);
     // waitKey(0);
 
     warpPerspective(canny, canny_trns, transform, canny_trns.size());
 
-    // imshow("window", can);
+    // imshow("window", canny_trns);
     // waitKey(0);
 
-    vector<vector<Point>> contours;
-    findContours(canny, contours, RETR_TREE, CHAIN_APPROX_TC89_KCOS);
-    Mat contours_img(canny.size(), CV_8UC3);
-    drawContours(contours_img, contours, -1, Scalar(0,255,0), 3);
+    // vector<vector<Point>> contours;
+    // findContours(canny, contours, RETR_TREE, CHAIN_APPROX_TC89_KCOS);
+    // Mat contours_img(canny.size(), CV_8UC3);
+    // drawContours(contours_img, contours, -1, Scalar(0,255,0), 3);
 
-    // imshow("window", conto);
+    // imshow("window", contours_img);
     // waitKey(0);
 
     set<int> eliminate;
@@ -36,7 +36,7 @@ vector<Rect> purgeFP(Mat img,  Mat transform, vector<Rect> bboxes){
         areas.push_back(stats.at<int>(i,CC_STAT_AREA));
     }
     sort(areas.begin(), areas.end());
-    
+
     // int median = areas[areas.size()/2];
     for(int i = 1; i < label_count; i++){
         //if(stats.at<int>(i,CC_STAT_AREA) > 3*median){
@@ -63,12 +63,16 @@ vector<Rect> purgeFP(Mat img,  Mat transform, vector<Rect> bboxes){
             }
         }
     }
+    // imshow("window", masked);
+    // waitKey(0);
 
     Mat final;
     warpPerspective(masked, final, transform.inv(), masked.size());
-    drawBBoxes(final, bboxes);
+    // imshow("window", final);
+    // waitKey(0);
+    // drawBBoxes(final, bboxes);
 
-    // 0 FP, 4 FN
+    // 0 FP, 3 FN
     const float THR = 0.26;
 
     vector<Rect> filtered_bboxes;
