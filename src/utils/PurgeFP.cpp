@@ -11,23 +11,38 @@ vector<Rect> purgeFP(Mat img,  Mat transform, vector<Rect> bboxes){
     Mat canny_trns, canny, img_hsv;
     cvtColor(img, img_hsv,  COLOR_BGR2HSV);
     Canny(img_hsv, canny, 270, 300);
-
     // imshow("window", canny);
     // waitKey(0);
 
     warpPerspective(canny, canny_trns, transform, canny_trns.size());
-
     // imshow("window", canny_trns);
     // waitKey(0);
 
-    // vector<vector<Point>> contours;
-    // findContours(canny, contours, RETR_TREE, CHAIN_APPROX_TC89_KCOS);
-    // Mat contours_img(canny.size(), CV_8UC3);
-    // drawContours(contours_img, contours, -1, Scalar(0,255,0), 3);
+    vector<Rect> filtered_bboxes = purgeByCanny(canny_trns, transform, bboxes);
 
-    // imshow("window", contours_img);
+    Mat structuringElem1 = getStructuringElement(MORPH_ELLIPSE, Size(3,3));
+    morphologyEx(canny_trns, canny_trns, MORPH_OPEN, structuringElem1, Point(-1,-1), 2);
+    // imshow("window", canny_trns);
     // waitKey(0);
 
+    vector<Rect> filtered_bboxes_opened = purgeByCanny(canny_trns, transform, bboxes);
+
+    // set<Rect> bboxes_set;
+    // bboxes_set.insert(filtered_bboxes.begin(), filtered_bboxes.end());
+    // bboxes_set.insert(filtered_bboxes_opened.begin(), filtered_bboxes_opened.end());
+    // vector<Rect> ret(bboxes_set.begin(), bboxes_set.end());
+
+    vector<Rect> ret(filtered_bboxes);
+    for(const Rect& b2 : filtered_bboxes_opened) {
+        if(find(filtered_bboxes.begin(), filtered_bboxes.end(), b2) == filtered_bboxes.end()) {
+            ret.push_back(b2);
+        }
+    }
+
+    return ret;
+}
+
+vector<Rect> purgeByCanny(Mat canny_trns,  Mat transform, vector<Rect> bboxes) {
     set<int> eliminate;
     Mat elaborated, labels, stats, centroids;
     int label_count = connectedComponentsWithStats(canny_trns, labels, stats, centroids);
@@ -47,8 +62,7 @@ vector<Rect> purgeFP(Mat img,  Mat transform, vector<Rect> bboxes){
         }
         else if(stats.at<int>(i,CC_STAT_LEFT) == 0 || stats.at<int>(i,CC_STAT_LEFT) + stats.at<int>(i,CC_STAT_WIDTH) == canny_trns.cols){
             eliminate.insert(i);
-        }
-        
+        } 
     }
 
     Mat masked(canny_trns.size(), CV_8UC1);
