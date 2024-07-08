@@ -19,6 +19,6 @@ float squaredEuclideanDist(cv::Vec3b pixel, cv::Vec3b center);
 cv::Mat subtractTable(cv::Mat img);
 
 // DATEMI IL PRIMO FRAME PRESO DA "FRAMES"
-std::vector<cv::Rect> getBBoxes(cv::Mat img, cv::Mat last, cv::Mat tableMask, std::vector<cv::Point2f> points);
+std::vector<cv::Rect> getBBoxes(cv::Mat img, cv::Mat mask, cv::Mat transf);
 
 #endif

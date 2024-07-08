@@ -1,7 +1,11 @@
 #include "recognition/side_recognition.hpp"
+#include "recognition/transformPoints.hpp"
+
 using namespace cv;
-std::vector<Mat> getRotatedborders(const std::vector<Point2f> points, const Mat img, int thick){
-    std::vector<Mat> ret;
+using namespace std;
+
+vector<Mat> getRotatedborders(const vector<Point2f> points, const Mat img, int thick){
+    vector<Mat> ret;
     for(int i = 0; i < 4; i++){
         Point p1, p2;
         if(i<3){
@@ -11,7 +15,7 @@ std::vector<Mat> getRotatedborders(const std::vector<Point2f> points, const Mat 
             p1 = points[i];
             p2 = points[0];
         }
-        std::vector<Point> pts;
+        vector<Point> pts;
         pts.push_back(p1);
         pts.push_back(p2);
         RotatedRect rect = minAreaRect(pts);
@@ -43,7 +47,8 @@ std::vector<Mat> getRotatedborders(const std::vector<Point2f> points, const Mat 
     return ret;
 
 }
-bool isShortFirst(std::vector<cv::Mat> sides){
+
+bool isShortFirst(vector<cv::Mat> sides){
     //0: first and third side
     //1: second and fourth
     double acc[]{0,0};
@@ -60,4 +65,14 @@ bool isShortFirst(std::vector<cv::Mat> sides){
         acc[i%2]+=tmpacc[0];
     }
     return acc[0]<acc[1];
+}
+
+Mat getTransformation(Mat img, vector<Point2f> points) {
+    Mat gray, gray_canny;
+    cvtColor(img, gray, COLOR_BGR2GRAY);
+    Canny(gray, gray_canny, 100, 300);
+    bool rotate = isShortFirst(getRotatedborders(points, gray_canny));
+    Mat trans = transPoints(points, img.cols, img.rows, !rotate);
+
+    return trans;
 }

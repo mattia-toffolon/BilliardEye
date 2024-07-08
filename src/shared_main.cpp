@@ -2,17 +2,18 @@
 #include <cstdlib>
 #include <iostream>
 
-
 #include <opencv2/core.hpp>
 #include <opencv2/core/base.hpp>
 #include <opencv2/core/types.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/features2d.hpp>
+
 #include <set>
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <opencv2/features2d.hpp>
+
 #include "recognition/ballIdentifier.h"
 #include "recognition/side_recognition.hpp"
 #include "rendering/render_table.hpp"
@@ -21,15 +22,19 @@
 #include "tracking/TrackBalls.hpp"
 #include "utils/VideoReader.hpp"
 #include "utils/drawBBoxes.hpp"
-#include "utils/transformPoints.hpp"
+#include "recognition/transformPoints.hpp"
+
 using namespace cv;
+using namespace std;
+
 const std::string WINDOW_NAME = "window_main";
+
 int main(int argc, char** argv) {
     if(argc < 2){
         std::cout << "not enough an arguments provided";
         exit(1);
     }
-    std::cout<<argv[1]<<std::endl;
+    cout<<argv[1]<<std::endl;
     VideoReader vid(argv[1]);
     Mat img = vid.lastFrame();
     Mat mask;
@@ -57,6 +62,7 @@ int main(int argc, char** argv) {
     std::vector<Rect2d> bboxes2;
     std::vector<Ball> balls = classifyBalls(img, bboxes);
     drawBBoxes(img, bboxes);
+
     TrackBalls tracker(img, balls);
     int width = img.cols;
     int height = img.rows;

@@ -69,8 +69,8 @@ add_library(rendering
 target_include_directories(rendering PRIVATE ${OpenCV_INCLUDE_DIRS})
 
 add_library(table_transform
-    ./include/utils/transformPoints.hpp
-    ./src/utils/transformPoints.cpp
+    ./include/recognition/transformPoints.hpp
+    ./src/recognition/transformPoints.cpp
 )
 target_include_directories(table_transform PRIVATE ${OpenCV_INCLUDE_DIRS})
 
