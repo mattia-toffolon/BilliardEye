@@ -23,6 +23,6 @@ cv::Vec3b getClusterCentroid(cv::Vec3b pixel, std::vector<cv::Vec3b> centers);
 
 cv::Mat subtractTable(cv::Mat img);
 
-std::vector<cv::Rect> getBBoxes(cv::Mat img, cv::Mat tableMask);
+std::vector<cv::Rect> getBBoxes(cv::Mat img, cv::Mat last, cv::Mat tableMask, std::vector<cv::Point2f> points);
 
 #endif
