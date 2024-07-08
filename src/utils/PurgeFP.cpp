@@ -20,7 +20,7 @@ vector<Rect> purgeFP(Mat img,  Mat transform, vector<Rect> bboxes){
 
     vector<Rect> filtered_bboxes = purgeByCanny(canny_trns, transform, bboxes);
 
-    Mat structuringElem1 = getStructuringElement(MORPH_ELLIPSE, Size(3,3));
+    Mat structuringElem1 = getStructuringElement(MORPH_ELLIPSE, Size(3,2));
     morphologyEx(canny_trns, canny_trns, MORPH_OPEN, structuringElem1, Point(-1,-1), 2);
     // imshow("window", canny_trns);
     // waitKey(0);
