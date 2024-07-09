@@ -243,6 +243,12 @@ vector<Rect> getBBoxes(Mat img, Mat mask, Mat transf) {
 
     vector<Rect> filtered_bboxes = purgeFP(img, transf, bboxes);
 
+    // const int delta = 5;
+    // vector<Rect> ret;
+    // for(Rect bbox : filtered_bboxes) {
+    //     ret.push_back(Rect(bbox.x-delta, bbox.y-delta, bbox.width+2*delta, bbox.height+2*delta));
+    // }
+
     // drawBBoxes(img, filtered_bboxes);
 
     // vector<Vec3f> ref_circles = refineCircles(gray_HSV, filtered_bboxes, true);

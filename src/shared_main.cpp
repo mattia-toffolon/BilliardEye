@@ -74,24 +74,24 @@ int main(int argc, char** argv) {
         waitKey(0);
     }
 
-    string filename_balls = "/balls.txt";
-    writeBallsFile(argv[2] + filename_balls, rend.getBalls());
+    // string filename_balls = "/balls.txt";
+    // writeBallsFile(argv[2] + filename_balls, rend.getBalls());
 
-    string filename_mask = "/mask.png";
-    imwrite(argv[2] + filename_mask[2], mask);
+    // string filename_mask = "/mask.png";
+    // imwrite(argv[2] + filename_mask[2], mask);
 
-    Mat layer = Mat::zeros(img_last.size(), CV_8UC3);
-    vector<vector<Point>> poly_table;
-    vector<Point> tmp;
-    for(int i = 0; i < 4; i ++) {
-        tmp.push_back(points[i]);
-    }
-    Mat out;
-    poly_table.push_back(tmp);
-    fillPoly(layer, poly_table, Scalar(0, 0, 255));
-    addWeighted(img_last, 0.5, layer, 0.5, 0, out);
-    imshow(WINDOW_NAME, out);
-    waitKey(0);
+    // Mat layer = Mat::zeros(img_last.size(), CV_8UC3);
+    // vector<vector<Point>> poly_table;
+    // vector<Point> tmp;
+    // for(int i = 0; i < 4; i ++) {
+    //     tmp.push_back(points[i]);
+    // }
+    // Mat out;
+    // poly_table.push_back(tmp);
+    // fillPoly(layer, poly_table, Scalar(0, 0, 255));
+    // addWeighted(img_last, 0.5, layer, 0.5, 0, out);
+    // imshow(WINDOW_NAME, out);
+    // waitKey(0);
 
     return 0;
 }

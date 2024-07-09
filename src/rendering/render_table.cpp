@@ -67,7 +67,7 @@ cv::Mat TableRenderer::nextFrame(){
         std::vector<Point2f> vec{c};
         perspectiveTransform(vec, vec, transform);
         circle(screen, vec[0], 10, getColor(b.type), FILLED);
-        circle(screen, vec[0], 11, Scalar(255,255,255), 2, LINE_AA);
+        circle(screen, vec[0], 11, Scalar(0,0,0), 2, LINE_AA);
     }
     return screen;
 }

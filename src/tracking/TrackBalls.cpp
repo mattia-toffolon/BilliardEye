@@ -10,12 +10,15 @@ using namespace cv;
 using namespace std;
 
 TrackBalls::TrackBalls(Mat frame, vector<Ball> bb) {
-    legacy::TrackerCSRT::Params params;
-    for(auto r : bb) {
-        Ball curb{r.bbox, r.type};
-        balls.push_back(curb);
+    // legacy::TrackerCSRT::Params params;
+    const int delta = 5;
+
+    for(auto ball : bb) {
+        Rect aug_bbox = Rect(ball.bbox.x-delta, ball.bbox.y-delta, ball.bbox.width+2*delta, ball.bbox.height+2*delta);
+        Ball aug_ball{aug_bbox, ball.type};
+        balls.push_back(aug_ball);
         auto cur = TrackerCSRT::create();
-        cur->init(frame, r.bbox);
+        cur->init(frame, aug_bbox);
         multi_tracker.push_back(cur);
     }
 }
@@ -24,9 +27,6 @@ vector<Ball> TrackBalls::update(Mat frame, vector<int>& renderer_remove_idxs){
     vector<int> lost_indexes, found_indexes;
 
     for(int i = 0; i < multi_tracker.size(); i++) {
-        // if(balls[i].bbox.x < 0){
-        //     continue;
-        // }
         auto tr = multi_tracker[i];
         Rect bb = balls[i].bbox;
         bool tracked = tr->update(frame, bb);
@@ -35,7 +35,6 @@ vector<Ball> TrackBalls::update(Mat frame, vector<int>& renderer_remove_idxs){
             found_indexes.push_back(i);
         }
         else {
-            // balls[i].bbox = Rect(-1,-1, 0, 0);
             lost_indexes.push_back(i);
         }
     }
