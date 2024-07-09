@@ -127,8 +127,8 @@ vector<Vec3f> refineCircles(Mat img, vector<Rect> bboxes, bool draw) {
 // Returns a vector of circles made of all elements from "first" and all elements (circles) from
 // "second" which center does not lie inside no circle from "first"
 vector<Vec3f> smartCircleMerge(vector<Vec3f> first, vector<Vec3f> second) {
-    vector<Vec3f> out;
-    for(Vec3f c : first) out.push_back(c);
+    vector<Vec3f> tmp;
+    for(Vec3f c : first) tmp.push_back(c);
 
     for(Vec3f c2 : second) {
         bool duplicate = false;
@@ -139,8 +139,24 @@ vector<Vec3f> smartCircleMerge(vector<Vec3f> first, vector<Vec3f> second) {
                 break;
             }
         }
-        if(!duplicate) out.push_back(c2);
+        if(!duplicate) tmp.push_back(c2);
     }
+
+    vector<Vec3f> out;
+    for(int i=0; i<tmp.size(); i++) {
+        bool duplicate = false;
+        Vec3f c1 = tmp[i];
+        for(int j=i+1; j<tmp.size(); j++) {
+            Vec3f c2 = tmp[j];
+            float dist = (c1[0]-c2[0])*(c1[0]-c2[0]) + (c1[1]-c2[1])*(c1[1]-c2[1]);
+            if(dist <= c1[2]*c1[2]) {
+                duplicate = true;
+                break;
+            }
+        }
+        if(!duplicate) out.push_back(c1);
+    }
+
     return out;
 }
 

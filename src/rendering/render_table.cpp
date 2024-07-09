@@ -29,6 +29,7 @@ TableRenderer::TableRenderer(VideoReader v, TrackBalls t, std::vector<Ball> ball
 
 cv::Mat TableRenderer::nextFrame(){
     Mat fram = this->vid.nextFrame();
+    if(fram.rows == 0) return fram;
     const std::vector<Ball> newballs = tracker.update(fram);
     std::vector<Rect> bounding;
     for(auto b : newballs){
