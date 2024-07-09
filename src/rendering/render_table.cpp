@@ -46,7 +46,7 @@ cv::Mat TableRenderer::nextFrame(){
             continue;
         }    
         Point2f oldcenter = Point2f(bbs[i].bbox.x+bbs[i].bbox.width/2,bbs[i].bbox.y+bbs[i].bbox.height/2);
-        Point2f newCenter = Point2f(newballs[i].bbox.x+newballs[i].bbox.width/2,newballs[i].bbox.y+newballs[i].bbox.height/2);
+        Point2f newCenter = Point2f(newballs[real].bbox.x+newballs[real].bbox.width/2,newballs[real].bbox.y+newballs[real].bbox.height/2);
         std::vector<Point2f> old{oldcenter};
         std::vector<Point2f> niu{newCenter};
         perspectiveTransform(old, old, transform);
@@ -56,7 +56,6 @@ cv::Mat TableRenderer::nextFrame(){
         real++;
     }
     for(int i = removed.size()-1; i >=0; i--){
-        bbs.erase(bbs.begin()+removed[i],bbs.begin()+removed[i]+1);
         bbs.erase(bbs.begin()+removed[i],bbs.begin()+removed[i]+1);
     }
     Mat screen = curimg.clone();
