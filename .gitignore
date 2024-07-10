@@ -1,6 +1,7 @@
 .vscode/
 build/
 data/
+!data/table.png
 
 # main should be used individually
 src/main.cpp
