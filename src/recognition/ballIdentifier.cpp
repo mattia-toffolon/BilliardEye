@@ -43,7 +43,7 @@ Mat getBallEllipse(Mat ballCrop)
     return mask;
 }
 
-BallType getBallType(Mat ballCrop)
+BallType getBallType(Mat ballCrop, bool getCue)
 {
     // MAIN IDEA:
     // - convert relevant section of image to greyscale
@@ -60,7 +60,7 @@ BallType getBallType(Mat ballCrop)
     //greyCrop.copyTo(isolatedBall,getBallEllipse(greyCrop));
     float whiteness = ballWhiteness(greyCrop);
 
-    if (whiteness > cueballThreshold)
+    if (whiteness > cueballThreshold && getCue)
         return BallType::CUE;
     else if (whiteness > stripedThreshold)
         return BallType::STRIPED;

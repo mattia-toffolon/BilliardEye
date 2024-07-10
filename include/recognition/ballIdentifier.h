@@ -25,7 +25,7 @@ const float stripedThreshold = 0.06;
  * @param ballCrop cropped image containing only the ball
  * @return BallType 
  */
-BallType getBallType(cv::Mat ballCrop);
+BallType getBallType(cv::Mat ballCrop, bool getCue=false);
 
 /**
  * @brief Estimated percentage of ball in view which is white
