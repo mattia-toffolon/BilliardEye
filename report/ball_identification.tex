@@ -16,7 +16,55 @@ the remaining task will only be one of distinguishing the
 8-ball from the other solid color balls.
 
 The main challenges of this sub-task are:
-- ensuring robustness to 
-  illumination changes
-- coping with specific ball color (some of them might 
-  be of a brightness approaching white)
+\begin{enumerate}
+  \item ensuring robustness to illumination changes
+  \item coping with specific ball color 
+  (some of them might be of a brightness approaching white)
+\end{enumerate}
+
+My first approach was to attempt Otsu thresholding segmentation
+on a grayscale version of the ball image, 
+via the built-in \verb|THRESH_OTSU| option in the \verb|threshold| function.
+Unfortunately this produced a very inconsistent separation between white and 
+colored pixels which only sometimes corresponded to a real white region 
+on the image.
+
+My second attempt involved color-space clustering via \verb|kmeans|. 
+The underlying intuition is as such: a well-cropped window of a ball should 
+contain roughly three important areas of uniform color: the table cloth and 
+the colored and white parts on the surface of the ball. This means that 
+we could theoretically employ a clustering algorithm on the color space 
+of the pixels to separate these areas and count how many respective pixels 
+appear per each type in the image.  
+Unfortunately, this type of segmentatation performed even worse than the 
+previous one due to illumination effects that cast pixels of one class 
+into another.
+
+A possible way to counteract this would be to factor in radial distance 
+from the estimated ball center to the feature space of the clustering, 
+which would at least help differentiate the pixels belonging to the 
+ball from the ones belonging to the cloth. However, I didn't attempt 
+this because I found a method that proved to be significantly more 
+performand than the previous two:
+
+The third approach consists in a simple thresholding and white pixel 
+counting, with the difference that the image is first set to zero 
+outside of the inscripted ellipse (the approximate location of the ball)
+to avoid false positives in the surrounding area and the grayscale 
+intensity of the remaining pixels is stretched to occupy the full 
+0-255 range. A relative threshold (chosen on the basis of the example 
+data) is then applied and the ball type is decided based on the 
+percentage of white pixels remaining.
+
+Unfortunately, this method produces some incorrect classifications 
+and cannot distinguish between a solid color ball and an 8-ball. 
+While the first problem would require a more sophisticate approach 
+(possibly a machine learning one if sufficient performance is 
+required), the second is solvable by building a higher level 
+classification method: the function \verb|classifyBalls| takes 
+in the whole image, plus a vector of windows that correspond to 
+the predicted balls locations. 
+The function isolates the brightest and darkest windows, which 
+get labeled respectively as the cueball and the 8-ball. 
+The remaining windows are then handled singularly using the previously 
+defined approach.
