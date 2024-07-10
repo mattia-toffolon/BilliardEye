@@ -1,6 +1,6 @@
 .vscode/
 build/
-data/
+data/*
 !data/table.png
 
 # main should be used individually
