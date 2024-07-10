@@ -24,8 +24,8 @@ TrackBalls::TrackBalls(Mat frame, vector<Ball> bb) {
     }
 }
 
-vector<Ball> TrackBalls::update(Mat frame, vector<int>& renderer_remove_idxs){
-    const float iou_thr = 0.8;
+vector<Ball> TrackBalls::update(Mat frame, vector<int>& renderer_remove_idxs) {
+    const float IOU_THR = 0.8;
     vector<int> lost_indexes, found_indexes;
 
     for(int i = 0; i < multi_tracker.size(); i++) {
@@ -33,7 +33,7 @@ vector<Ball> TrackBalls::update(Mat frame, vector<int>& renderer_remove_idxs){
         Rect bb = balls[i].bbox;
         bool tracked = tr->update(frame, bb);
         if(tracked) {
-            if(intersectionOverUnion(balls[i].bbox, bb) < iou_thr) balls[i].bbox = bb;
+            if(intersectionOverUnion(balls[i].bbox, bb) < IOU_THR) balls[i].bbox = bb;
             found_indexes.push_back(i);
         }
         else {

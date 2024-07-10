@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
         Mat fr = rend.nextFrame();
         if(fr.rows == 0) break;
         imshow(WINDOW_NAME, fr);
-        waitKey(0);
+        // waitKey(0);
     }
 
     // string filename_balls = "/balls.txt";
