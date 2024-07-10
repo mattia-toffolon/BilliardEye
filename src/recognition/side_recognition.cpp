@@ -67,12 +67,15 @@ bool isShortFirst(vector<cv::Mat> sides){
     return acc[0]<acc[1];
 }
 
-Mat getTransformation(Mat img, vector<Point2f> points) {
-    Mat gray, gray_canny;
+Mat getTransformation(Mat img, vector<Point2f> points, int width, int height) {
+    Mat gray, gray_canny, transf;
     cvtColor(img, gray, COLOR_BGR2GRAY);
     Canny(gray, gray_canny, 100, 300);
     bool rotate = isShortFirst(getRotatedborders(points, gray_canny));
-    Mat trans = transPoints(points, img.cols, img.rows, !rotate);
+    if(width==0 || height==0)
+        transf = transPoints(points, img.cols, img.rows, !rotate);
+    else
+        transf = transPoints(points, width, height, !rotate);
 
-    return trans;
+    return transf;
 }

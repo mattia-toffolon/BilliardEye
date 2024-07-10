@@ -17,6 +17,6 @@ std::vector<cv::Mat> getRotatedborders(const std::vector<cv::Point2f> points, co
 //
 bool isShortFirst(std::vector<cv::Mat> sides);
 
-cv::Mat getTransformation(cv::Mat img, std::vector<cv::Point2f> points);
+cv::Mat getTransformation(cv::Mat img, std::vector<cv::Point2f> points, int width=0, int height=0);
 
 #endif

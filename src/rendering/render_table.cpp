@@ -58,18 +58,39 @@ cv::Mat TableRenderer::nextFrame(){
     for(int i = removed.size()-1; i >=0; i--){
         bbs.erase(bbs.begin()+removed[i],bbs.begin()+removed[i]+1);
     }
+
     Mat screen = curimg.clone();
-    for(Ball b : bbs){
-        if(b.bbox.x < 0){
-            continue;
-        }
+    const int BALL_RAD_RATIO = 70; 
+    for(Ball b : bbs) {
         Point2f c = Point2f(b.bbox.x+b.bbox.width/2,b.bbox.y+b.bbox.height/2);
         std::vector<Point2f> vec{c};
         perspectiveTransform(vec, vec, transform);
-        circle(screen, vec[0], 10, getColor(b.type), FILLED);
-        circle(screen, vec[0], 11, Scalar(0,0,0), 2, LINE_AA);
+        int rad = curimg.cols / BALL_RAD_RATIO;
+        circle(screen, vec[0], rad, getColor(b.type), FILLED);
+        circle(screen, vec[0], rad+1, Scalar(0,0,0), 1, LINE_AA);
     }
-    return screen;
+
+    const std::string TABLE_PATH = "../data/table.png";
+    Mat table = imread(TABLE_PATH, IMREAD_UNCHANGED);
+
+    const float TABLE_RATIO = 1.3;
+    resize(table, table, Size(screen.cols*TABLE_RATIO, screen.rows*TABLE_RATIO));
+
+    Mat black = Mat::zeros(table.size(), CV_8UC3);
+    Mat white = Mat(table.size(), CV_8UC3, Scalar(255, 255, 255));
+
+    std::vector<Mat> table_channels(4);
+    split(table, table_channels);
+    Mat mask = table_channels[3];
+
+    int delta_x = (table.cols - screen.cols) / 2;
+    int delta_y = (table.rows - screen.rows) / 2;   
+    Rect roi = Rect(delta_x, delta_y, screen.cols, screen.rows);
+    screen.copyTo(white(roi));
+
+    black.copyTo(white, mask);
+
+    return white;
 }
 
 std::vector<Ball> TableRenderer::getBalls(){

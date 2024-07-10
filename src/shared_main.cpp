@@ -63,8 +63,9 @@ int main(int argc, char** argv) {
 
     img_first = vid.nextFrame();
     TrackBalls tracker(img_first, balls);
-    int width = img_first.cols;
-    int height = img_first.rows;
+    int width = 600;
+    int height = 300;
+    transf = getTransformation(img_last, points, width, height);
     vid = VideoReader(video_path);
     TableRenderer rend(vid, tracker, balls, transf, width, height);
     while(1) {
