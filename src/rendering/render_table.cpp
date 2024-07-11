@@ -67,7 +67,6 @@ cv::Mat TableRenderer::nextFrame(){
         perspectiveTransform(niu, niu, transform);
         line(curimg, old[0], niu[0], Scalar(0,0,0));
         if(old[0] != niu[0] && is_holed(niu[0])){
-            std::cout << "YIPPEEEE\n";
             removed.push_back(i);
         }
         else{
@@ -76,10 +75,13 @@ cv::Mat TableRenderer::nextFrame(){
         bbs[i].bbox = newballs[real].bbox;
         real++;
     }
-    this->tracker.removeBalls(keep, fram);
     std::sort(removed.begin(), removed.end());
     for(int i = removed.size()-1; i >=0; i--){
         bbs.erase(bbs.begin()+removed[i],bbs.begin()+removed[i]+1);
+    }
+    if(keep.size() != bbs.size() - removed.size()){
+        this->tracker.removeBalls(keep, fram);
+        std::cout << "yeya\n";
     }
 
     Mat screen = curimg.clone();
@@ -118,4 +120,38 @@ cv::Mat TableRenderer::nextFrame(){
 
 std::vector<Ball> TableRenderer::getBalls(){
     return this->bbs;
+}
+void draw_transparent(Mat img, Ball b){
+    if(b.type == BallType::EIGHT){
+        Mat roi = img(b.bbox);
+        roi *= 0.5;
+    }
+    else if(b.type == BallType::CUE){
+        Mat roi = img(b.bbox);
+        roi *= 1.5;
+    }
+    else{
+        cv::Mat layer = cv::Mat::zeros(img.size(), CV_8UC3);
+        std::vector<std::vector<Point>> poli;
+        std::vector<Point> poli1;
+        poli1.push_back(Point(b.bbox.x, b.bbox.y));
+        poli1.push_back(Point(b.bbox.x+b.bbox.width, b.bbox.y));
+        poli1.push_back(Point(b.bbox.x+b.bbox.width, b.bbox.y+b.bbox.height));
+        poli1.push_back(Point(b.bbox.x, b.bbox.y+b.bbox.height));
+        Mat out;
+        poli.push_back(poli1);
+        cv::fillPoly(layer, poli, getColor(b.type));
+        cv::addWeighted(img, 1, layer, 0.999, 0, img);
+    }
+}
+cv::Mat nice_render(cv::Mat img, std::vector<cv::Point2f> table_verts, std::vector<Ball> balls){
+    Mat render = img.clone();
+    Scalar line_color(255, 0, 255);
+    for(int i = 0; i < table_verts.size(); i++){
+        line(render, table_verts[i], table_verts[(i+1)%table_verts.size()], line_color, 5);
+    }
+    for(auto b : balls){
+        draw_transparent(render, b);
+    }
+    return render;
 }

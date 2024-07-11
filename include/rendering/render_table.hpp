@@ -33,4 +33,5 @@ class TableRenderer{
     private:
     bool is_holed(cv::Point ball);
 };
+cv::Mat nice_render(cv::Mat);
 #endif
