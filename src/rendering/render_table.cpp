@@ -19,21 +19,35 @@ Scalar getColor(BallType b){
     }
 }
 
-TableRenderer::TableRenderer(VideoReader v, TrackBalls t, std::vector<Ball> balls, cv::Mat transform, int width, int cols) : tracker(t), vid(v), transform(transform.clone()){
-    this->curimg = Mat::zeros(Size(width, cols), CV_8UC3);
+TableRenderer::TableRenderer(VideoReader v, TrackBalls t, std::vector<Ball> balls, cv::Mat transform, int width, int height) : tracker(t), vid(v), transform(transform.clone()){
+    this->curimg = Mat::zeros(Size(width, height), CV_8UC3);
     curimg.setTo(Scalar(255, 255,255));
     for(auto r : balls){
         Ball curb{r.bbox, r.type};
         bbs.push_back(curb);
     }
+    holes.push_back(Point(0, 0));
+    holes.push_back(Point(width/2, 0));
+    holes.push_back(Point(width, 0));
+    holes.push_back(Point(width, height));
+    holes.push_back(Point(width/2, height));
+    holes.push_back(Point(0, height));
 }
 
+bool TableRenderer::is_holed(Point ball){
+    for(auto p : holes){
+        if(norm(p-ball) < hole_radius){
+            return true;
+        }
+    }
+    return false;
+}
 cv::Mat TableRenderer::nextFrame(){
     Mat fram = this->vid.nextFrame();
     if(fram.rows == 0){
         return fram;
     }
-    std::vector<int> removed;
+    std::vector<int> removed,keep;
     const std::vector<Ball> newballs = tracker.update(fram, removed);
     std::vector<Rect> bounding;
     for(auto b : newballs){
@@ -52,9 +66,18 @@ cv::Mat TableRenderer::nextFrame(){
         perspectiveTransform(old, old, transform);
         perspectiveTransform(niu, niu, transform);
         line(curimg, old[0], niu[0], Scalar(0,0,0));
+        if(old[0] != niu[0] && is_holed(niu[0])){
+            std::cout << "YIPPEEEE\n";
+            removed.push_back(i);
+        }
+        else{
+            keep.push_back(real);
+        }
         bbs[i].bbox = newballs[real].bbox;
         real++;
     }
+    this->tracker.removeBalls(keep, fram);
+    std::sort(removed.begin(), removed.end());
     for(int i = removed.size()-1; i >=0; i--){
         bbs.erase(bbs.begin()+removed[i],bbs.begin()+removed[i]+1);
     }
@@ -67,7 +90,7 @@ cv::Mat TableRenderer::nextFrame(){
         perspectiveTransform(vec, vec, transform);
         int rad = curimg.cols / BALL_RAD_RATIO;
         circle(screen, vec[0], rad, getColor(b.type), FILLED);
-        circle(screen, vec[0], rad+1, Scalar(0,0,0), 1, LINE_AA);
+        circle(screen, vec[0], rad, Scalar(0,0,0), 1, LINE_AA);
     }
 
     const std::string TABLE_PATH = "../data/table.png";

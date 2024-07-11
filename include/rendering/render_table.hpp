@@ -8,6 +8,8 @@ class TableRenderer{
     TrackBalls tracker;
     cv::Mat curimg;
     std::vector<Ball> bbs;
+    std::vector<cv::Point> holes;
+    float hole_radius = 20;
     cv::Mat transform;
     public:
     /**
@@ -28,5 +30,7 @@ class TableRenderer{
      * return the vector of the current balls objets
      */
     std::vector<Ball> getBalls();
+    private:
+    bool is_holed(cv::Point ball);
 };
 #endif
