@@ -33,5 +33,5 @@ class TableRenderer{
     private:
     bool is_holed(cv::Point ball);
 };
-cv::Mat nice_render(cv::Mat);
+cv::Mat nice_render(cv::Mat img, std::vector<cv::Point2f> table_verts, std::vector<Ball> balls);
 #endif
