@@ -59,18 +59,27 @@ vector<Ball> TrackBalls::update(Mat frame, vector<int>& renderer_remove_idxs) {
     return balls;
 }
 
-void TrackBalls::removeBalls(vector<int> indexKeepList, Mat frame) {
-    vector<Ball> new_balls;
-    vector<Ptr<TrackerCSRT>> new_multi_tracker;
-    for(int i : indexKeepList) {
-        new_balls.push_back(balls[i]);
-        auto tracker = TrackerCSRT::create();
-        tracker->init(frame, balls[i].bbox);
-        new_multi_tracker.push_back(tracker);
-    }
+// void TrackBalls::removeBalls(vector<int> indexKeepList, Mat frame) {
+//     vector<Ball> new_balls;
+//     vector<Ptr<TrackerCSRT>> new_multi_tracker;
+//     for(int i : indexKeepList) {
+//         new_balls.push_back(balls[i]);
+//         auto tracker = TrackerCSRT::create();
+//         tracker->init(frame, balls[i].bbox);
+//         new_multi_tracker.push_back(tracker);
+//     }
 
-    balls = new_balls;
-    multi_tracker = new_multi_tracker;
+//     balls = new_balls;
+//     multi_tracker = new_multi_tracker;
+
+//     return;
+// }
+
+void TrackBalls::removeBalls(vector<int> indexEraseList, Mat frame) {
+    for(int i=indexEraseList.size()-1; i>=0; i--) {
+        balls.erase(balls.begin() + indexEraseList[i]);
+        multi_tracker.erase(multi_tracker.begin() + indexEraseList[i]);
+    }
 
     return;
 }
@@ -99,7 +108,7 @@ void TrackBalls::adjustBalls(vector<int> found_indexes, vector<int> lost_indexes
     
     if(balls.size() > found_bboxes.size()) {
         // cout<<"NOT ENOUGH BALLS"<<endl;
-        removeBalls(found_indexes, frame);
+        removeBalls(lost_indexes, frame);
         renderer_remove_idxs = lost_indexes;
         return;
     }

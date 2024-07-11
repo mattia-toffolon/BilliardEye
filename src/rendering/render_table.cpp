@@ -47,7 +47,7 @@ cv::Mat TableRenderer::nextFrame(){
     if(fram.rows == 0){
         return fram;
     }
-    std::vector<int> removed,keep;
+    std::vector<int> removed, remove_track;
     const std::vector<Ball> newballs = tracker.update(fram, removed);
     std::vector<Rect> bounding;
     for(auto b : newballs){
@@ -68,9 +68,7 @@ cv::Mat TableRenderer::nextFrame(){
         line(curimg, old[0], niu[0], Scalar(0,0,0));
         if(old[0] != niu[0] && is_holed(niu[0])){
             removed.push_back(i);
-        }
-        else{
-            keep.push_back(real);
+            remove_track.push_back(i);
         }
         bbs[i].bbox = newballs[real].bbox;
         real++;
@@ -79,9 +77,8 @@ cv::Mat TableRenderer::nextFrame(){
     for(int i = removed.size()-1; i >=0; i--){
         bbs.erase(bbs.begin()+removed[i],bbs.begin()+removed[i]+1);
     }
-    if(keep.size() != bbs.size() - removed.size()){
-        this->tracker.removeBalls(keep, fram);
-        std::cout << "yeya\n";
+    if(remove_track.size() > 0){
+        this->tracker.removeBalls(remove_track, fram);
     }
 
     Mat screen = curimg.clone();

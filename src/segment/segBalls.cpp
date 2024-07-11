@@ -19,7 +19,10 @@ vector<Vec3f> circlesFinder(Mat img, int method, double dp, double minDist, doub
     std::vector<cv::Vec3f> out;
     HoughCircles(img, out, method, dp, minDist, param1, param2, minRadius, maxRadius);
 
-    if(out.empty()) cout<<"No circles found"<<endl;
+    if(out.empty()) {
+        // cout<<"No circles found"<<endl;
+        return out;
+    }
 
     if(draw) {
 
@@ -120,18 +123,26 @@ vector<Vec3f> refineCircles(Mat img, vector<Rect> bboxes, bool draw) {
     // for(Rect r : bboxes) mean_width += r.width;
     // mean_width /= bboxes.size();
 
-    const int rad = mean_width*0.5;
-    const int delta_rad1 = delta_width / 2;
-    const int delta_rad2 = delta_rad1 / 2;
-    const int delta_w1 = mean_width*1.2;
-    const int delta_w2 = mean_width*0.25;
+    // const int rad = mean_width*0.5;
+    // int delta_rad1 = delta_width / 2;
+    // // delta_rad1 = (delta_rad1 > 2 ? delta_rad1-1 : delta_rad1);
+    // const int delta_rad2 = delta_rad1 / 2;
+    // const int delta_w1 = mean_width*1.5;
+    // const int delta_w2 = mean_width*0.25;
+
+    const float MULT1 = 1.5;
+    const float MULT2 = 0.3;
 
     vector<Vec3f> out;
     Mat roi1, roi2;
     for(Rect r : bboxes) {
+
+        int delta = abs(r.width - mean_width) / 2;
+        // cout<<delta<<endl;
+
         Mat mask = Mat::zeros(img.size(), CV_8UC3);
-        Point2d p1 = Point(r.x-delta_w1, r.y-delta_w1);
-        Point2d p2 = Point(r.x+r.width+delta_w1, r.y+r.height+delta_w1);
+        Point2d p1 = Point(r.x-r.width*MULT1, r.y-r.width*MULT1);
+        Point2d p2 = Point(r.x+r.width+r.width*MULT1, r.y+r.height+r.width*MULT1);
         rectangle(mask, p2, p1, Scalar(255, 255, 255), -1);
         roi1 = Mat::zeros(img.size(), CV_8UC3);
         img.copyTo(roi1, mask);
@@ -143,8 +154,8 @@ vector<Vec3f> refineCircles(Mat img, vector<Rect> bboxes, bool draw) {
 
         roi1 = subtractTable(roi1);
         mask = Mat::zeros(img.size(), CV_8UC3);
-        p1 = Point(r.x-delta_w2, r.y-delta_w2);
-        p2 = Point(r.x+r.width+delta_w2, r.y+r.height+delta_w2);
+        p1 = Point(r.x-r.width*MULT2, r.y-r.width*MULT2);
+        p2 = Point(r.x+r.width+r.width*MULT2, r.y+r.height+r.width*MULT2);
         rectangle(mask, p2, p1, Scalar(255, 255, 255), -1);
         roi2 = Mat::zeros(img.size(), CV_8UC3);
         roi1.copyTo(roi2, mask);
@@ -154,10 +165,15 @@ vector<Vec3f> refineCircles(Mat img, vector<Rect> bboxes, bool draw) {
             waitKey(0);
         }
 
-        cvtColor(roi2, roi2, COLOR_BGR2GRAY);
+        // cvtColor(roi2, roi2, COLOR_BGR2GRAY);
+        Mat HSV_levels[3];
+        split(roi2, HSV_levels);
+        roi2 = HSV_levels[2];
 
-        vector<Vec3f> circle = circlesFinder(roi2, HOUGH_GRADIENT, 1, img.rows/32, 90, 9, rad-delta_rad2, rad+delta_rad1, draw);
+        vector<Vec3f> circle = circlesFinder(roi2, HOUGH_GRADIENT, 1, img.rows/32, 60, 10, r.width/2-1, r.width/2+4, draw);
         if(!circle.empty()) out.push_back(circle[0]);
+
+        // cout<<endl<<endl;
     }
     return out;
 }
@@ -271,17 +287,24 @@ vector<Rect> getBBoxes(Mat img, Mat mask, Mat transf) {
     // copy(circles_HSV.begin(), circles_HSV.end(), circles.begin() + circles_BGR.size());
     vector<Vec3f> circles = smartCircleMerge(circles_BGR, circles_HSV);
     vector<Rect> bboxes = bboxConverter(circles);
+    // cout<<"TOTAL"<<endl;
     drawBBoxes(img, bboxes);
 
     // vector<Vec3f> filtered_circles = circlesFilter(img_BGR, circles, tableColors_BGR, levels, false);
     // vector<Vec3f> filtered_circles = circlesFilter(img_HSV, circles, tableColors_HSV, levels, false);
 
-    vector<Rect> filtered_bboxes = purgeFP(img, transf, bboxes);
+    // vector<Vec3f> ref_circles = refineCircles(crop_HSV, bboxes, true);
+    // vector<Rect> new_bboxes = bboxConverter(ref_circles);
+    // cout<<"REFINED"<<endl;
+    // drawBBoxes(img, new_bboxes);
 
+    vector<Rect> filtered_bboxes = purgeFP(img, transf, bboxes);
     // drawBBoxes(img, filtered_bboxes);
 
-    // vector<Vec3f> ref_circles = refineCircles(crop_BGR, filtered_bboxes, false);
+    // vector<Vec3f> ref_circles = refineCircles(crop_HSV, filtered_bboxes, true);
     // vector<Rect> new_bboxes = bboxConverter(ref_circles);
+    // // cout<<"REFINED"<<endl;
+    // drawBBoxes(img, new_bboxes);
 
     return filtered_bboxes;
 }
