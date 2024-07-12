@@ -1,0 +1,27 @@
+The project specifications require two distinct performance 
+measures to judge the quality of the segmentation produced 
+by the program:
+
+\begin{enumerate}
+    \item Mean average precision (mAP) for ball localization
+    \item Mean intersection over union (mIoU) for the class segmentation
+\end{enumerate}
+
+The second one is relatively straightforward, it involves 
+averaging the intersection over union of each class, where 
+the IoU is defined as the ratio between the intersection 
+of the prediction and the ground truth and their union.
+This is easy to do for both types of predictions produced in 
+our program, the ones represented as binary masks and the 
+ones represented as \verb|Rect|s (corresponding to a predicted 
+ball location).
+
+The first one is more complex, as it requires to build an 
+approximated precision-recall curve of the results produced 
+by the classifier. This is achieved by storing a rolling 
+estimate for both value calculated on an increasing subset 
+of the predictions, where a true positive is defined as 
+a prediction with an IoU of at least 0.5.
+This prediction is stored as a \verb|std::map| of discrete 
+points and the AP is estimated using the PASCAL VOC method 
+outlined in the article linked in the project specifications.

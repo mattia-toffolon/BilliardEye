@@ -214,7 +214,7 @@ Mat equalizedMasked(Mat img, InputArray mask)
 }*/
 
 // New version, ensures one cueball and one 8-ball are returned
-vector<Ball> classifyBalls(Mat image, vector<Rect> windows)
+/*vector<Ball> classifyBalls(Mat image, vector<Rect> windows)
 {
     vector<Ball> ans;
 
@@ -255,5 +255,111 @@ vector<Ball> classifyBalls(Mat image, vector<Rect> windows)
         ans.push_back({windows[i],type});
     }
 
+    return ans;
+}*/
+
+int brightest(Mat image, vector<Rect> windows, vector<int> indexes)
+{
+    int ans = 0;
+    float maxBright = 0;
+    for (int i : indexes)
+    {
+        Mat grayScale;
+        cvtColor(image(windows[i]),grayScale,COLOR_BGR2GRAY);
+        float brightness = mean(grayScale)[0];
+        if (brightness > maxBright)
+        {
+            ans = i;
+            maxBright = brightness;
+        }
+    }
+    return ans;
+}
+int brightest(Mat image, vector<Rect> windows)
+{
+    vector<int> indexes;
+    for (int i=0;i<windows.size();i++)
+        indexes.push_back(i);
+    return brightest(image,windows,indexes);
+}
+
+int darkest(Mat image, vector<Rect> windows, vector<int> indexes)
+{
+    int ans = 0;
+    float minBright = 255;
+    for (int i : indexes)
+    {
+        Mat grayScale;
+        cvtColor(image(windows[i]),grayScale,COLOR_BGR2GRAY);
+        float brightness = mean(grayScale)[0];
+        if (brightness < minBright)
+        {
+            ans = i;
+            minBright = brightness;
+        }
+    }
+    return ans;
+}
+int darkest(Mat image, vector<Rect> windows)
+{
+    vector<int> indexes;
+    for (int i=0;i<windows.size();i++)
+        indexes.push_back(i);
+    return darkest(image,windows,indexes);
+}
+
+vector<Ball> _classifyBalls(Mat image, vector<Rect> windows)
+{
+    vector<int> cueballs;
+    vector<int> striped;
+    vector<int> solid;
+
+    for (int i=0;i<windows.size();i++)
+    {
+        Mat window = image(windows[i]);
+        switch (getBallType(window,true))
+        {
+        case BallType::CUE:
+            cueballs.push_back(i);
+            break;
+        case BallType::STRIPED:
+            striped.push_back(i);
+            break;
+        case BallType::SOLID:
+            solid.push_back(i);
+            break;
+        }
+    }
+
+    int cueball;
+    if (cueballs.size() > 0)
+    {
+        // Get brightest cueball
+        cueball = brightest(image,windows,cueballs);
+    }
+    else
+    {
+        // Get brightest ball in general
+        cueball = brightest(image,windows);
+    }
+
+    int eightball;
+    if (solid.size() > 0)
+    {
+        // Get darkest solid ball
+        eightball = darkest(image,windows,solid);
+    }
+    else
+    {
+        // Get darkest ball in general
+        eightball = darkest(image,windows);
+    }
+
+    vector<Ball> ans;
+    for (int i = 0; i<windows.size(); i++)
+        if (i != cueball && i != eightball)
+            ans.push_back({windows[i],getBallType(image(windows[i]))});
+    ans.push_back({windows[cueball],BallType::CUE});
+    ans.push_back({windows[eightball],BallType::EIGHT});
     return ans;
 }
