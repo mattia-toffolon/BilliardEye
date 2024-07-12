@@ -1,0 +1,25 @@
+The renderer for the minimap was developed in order for it to use the videoPlayer and 
+tracker directly. In order to represent the balls correctly the perspective transformation
+matrix, that maps the balls to a predermined rectangle with top left side $(0,0)$. We decided
+the dimension of such rectangle to be fixed to $500 \times 1000$ pixels, as the usual ratio
+for a billiard table is $1:2$. For the dimension of the balls we used $\frac{1}{70}$ the minimap
+columns. This was decided empirically on the videos provided, however such radius does not work
+with the same precision on all videos, as there are multiple standards for the billiard table 
+dimensions.\par 
+For the rendering one buffer is kept for the trajectories, at each frame the line between the
+previous and current position is drawn as a black line. this buffer is then copied and the
+balls are added. To this the png representing the borders is superimposed (the resizing is hard-coded
+as the dimensions are always the same), this needs the executable to be always in the same relative
+path as the image is contained in the data folder.\par 
+Another role of the render is to determine whether a ball went into a hole or not. We decided to
+give this role to the this class, even though architecturally it wouldn't be correct, as it is the 
+only one that has both knowledge of the trackers and of the actual positions of the balls on the table.
+The method used is to determine the closeness of the center of the bounding box of the ball to one 
+of the centers. This verification is done only to balls that have moved in the current frame. The
+threshold used is 20 pixels, determined empirically. This method is however not perfect, as the 
+tracker may behave unexpectedly when a ball enters a hole, as the object it is tracking is disappearing.
+This also is problematic when the hole is occluded by the table border itself, as the tracking may fail
+to be precise. Another problem is when a ball is particularly close to a hole but not inside, as it
+might be falsely put into a hole. If the renderer detects a ball entering a hole it communicates
+this to the tracker which drops the ball.
+

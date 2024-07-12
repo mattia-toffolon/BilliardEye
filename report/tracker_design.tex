@@ -1,0 +1,16 @@
+For the tracking we preferred to use the $Tracker$ classes provided by openCV
+instead of running detection every frame. This was done in order to provide more
+stability, as detection may introduce more false-positives/false-negatives, performance
+and easier tracking of each ball. Initially we tried using the Mutlitracker class
+provided by openCV, however it did not allow for enough control as we needed, for 
+example if a ball was lost during tracking there was no direct way of knowing which
+one it was. We therefore decided to work with a simple vector of Trackers, as we could
+control which to reinitialize and we could also work easily with our Ball struct.
+Since there are various types of Trackers testing was needed. First the ones using
+Deep Learning were removed from the candidates, as per project instructions, and then
+a qualitative test was run. The tracker type with significantly better performance
+was the CSRT type, albeit with a longer running time. The tracker may sometimes
+lose the tracked object, needing the tracker to be removed, this is also communicated
+to the calling function, as it will be explained in the renderer section.In case 
+a ball is lost a function was written in order to try to retrieve it, as explained later.
+
