@@ -308,7 +308,7 @@ int darkest(Mat image, vector<Rect> windows)
     return darkest(image,windows,indexes);
 }
 
-vector<Ball> _classifyBalls(Mat image, vector<Rect> windows)
+vector<Ball> classifyBalls(Mat image, vector<Rect> windows)
 {
     vector<int> cueballs;
     vector<int> striped;
