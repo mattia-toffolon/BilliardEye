@@ -20,7 +20,7 @@ vector<Vec3f> circlesFinder(Mat img, int method, double dp, double minDist, doub
     HoughCircles(img, out, method, dp, minDist, param1, param2, minRadius, maxRadius);
 
     if(out.empty()) {
-        cout<<"No circles found"<<endl;
+        cout<<"No circles found";
         return out;
     }
 
@@ -56,79 +56,6 @@ vector<Rect> bboxConverter(vector<Vec3f> circles) {
     return bboxes;
 }
 
-// vector<Vec3f> refineCircles(Mat img, vector<Rect> bboxes, bool draw) {
-//     assert(bboxes.size() > 0);
-
-//     int min_width = bboxes[0].width;
-//     int max_width = bboxes[0].width;
-//     int mean_width = bboxes[0].width;
-//     for(int i=1; i<bboxes.size(); i++) {
-//         min_width = (bboxes[i].width < min_width ? bboxes[i].width : min_width);
-//         max_width = (bboxes[i].width > max_width ? bboxes[i].width : max_width);
-//         mean_width += bboxes[i].width;
-//     }
-//     int delta_width = max_width - min_width;
-//     mean_width /= bboxes.size();
-
-//     // int mean_width = 0;
-//     // for(Rect r : bboxes) mean_width += r.width;
-//     // mean_width /= bboxes.size();
-
-//     // const int rad = mean_width*0.5;
-//     // int delta_rad1 = delta_width / 2;
-//     // // delta_rad1 = (delta_rad1 > 2 ? delta_rad1-1 : delta_rad1);
-//     // const int delta_rad2 = delta_rad1 / 2;
-//     // const int delta_w1 = mean_width*1.5;
-//     // const int delta_w2 = mean_width*0.25;
-
-//     const float MULT1 = 1.5;
-//     const float MULT2 = 0.3;
-
-//     vector<Vec3f> out;
-//     Mat roi1, roi2;
-//     for(Rect r : bboxes) {
-
-//         int delta = abs(r.width - mean_width) / 2;
-//         // cout<<delta<<endl;
-
-//         Mat mask = Mat::zeros(img.size(), CV_8UC3);
-//         Point2d p1 = Point(r.x-r.width*MULT1, r.y-r.width*MULT1);
-//         Point2d p2 = Point(r.x+r.width+r.width*MULT1, r.y+r.height+r.width*MULT1);
-//         rectangle(mask, p2, p1, Scalar(255, 255, 255), -1);
-//         roi1 = Mat::zeros(img.size(), CV_8UC3);
-//         img.copyTo(roi1, mask);
-
-//         if(draw) {
-//             imshow("window", roi1);
-//             waitKey(0);
-//         }
-
-//         roi1 = subtractTable(roi1);
-//         mask = Mat::zeros(img.size(), CV_8UC3);
-//         p1 = Point(r.x-r.width*MULT2, r.y-r.width*MULT2);
-//         p2 = Point(r.x+r.width+r.width*MULT2, r.y+r.height+r.width*MULT2);
-//         rectangle(mask, p2, p1, Scalar(255, 255, 255), -1);
-//         roi2 = Mat::zeros(img.size(), CV_8UC3);
-//         roi1.copyTo(roi2, mask);
-
-//         if(draw) {
-//             imshow("window", roi2);
-//             waitKey(0);
-//         }
-
-//         // cvtColor(roi2, roi2, COLOR_BGR2GRAY);
-//         Mat HSV_levels[3];
-//         split(roi2, HSV_levels);
-//         roi2 = HSV_levels[2];
-
-//         vector<Vec3f> circle = circlesFinder(roi2, HOUGH_GRADIENT, 1, img.rows/32, 60, 10, r.width/2-1, r.width/2+4, draw);
-//         if(!circle.empty()) out.push_back(circle[0]);
-
-//         // cout<<endl<<endl;
-//     }
-//     return out;
-// }
-
 vector<Vec3f> refineCircles(Mat img, vector<Rect> bboxes, bool draw) {
     assert(bboxes.size() > 0);
 
@@ -136,20 +63,13 @@ vector<Vec3f> refineCircles(Mat img, vector<Rect> bboxes, bool draw) {
     for(Rect r : bboxes) mean_width += r.width;
     mean_width /= bboxes.size();
     
-    const float MULT = 1.9;
+    const float MULT = 2;
+    const int THR = 4;
 
     vector<Vec3f> out;
     Mat roi, mask, bgdModel, fgdModel;
     for(Rect r : bboxes) {
-        cout<<r<<"  -  ";
-        Mat mask = Mat::zeros(img.size(), CV_8UC3);
-        Point2d p1 = Point(r.x-mean_width*MULT/2, r.y-mean_width*MULT/2);
-        Point2d p2 = Point(r.x+mean_width*(1+MULT/2), r.y+mean_width*(1+MULT/2));
-        rectangle(mask, p2, p1, Scalar(255, 255, 255), -1);
-        roi = Mat::zeros(img.size(), CV_8UC3);
-        img.copyTo(roi, mask);
-
-        Mat mask2;
+        Mat mask;
         Rect new_r(r.x-(mean_width*MULT-r.width)/2, r.y-(mean_width*MULT-r.width)/2, mean_width*MULT, mean_width*MULT);
 
         // if(draw) {
@@ -159,8 +79,8 @@ vector<Vec3f> refineCircles(Mat img, vector<Rect> bboxes, bool draw) {
         //     // waitKey(0);
         // }
 
-        grabCut(img, mask2, new_r, bgdModel, fgdModel, 3, GC_INIT_WITH_RECT);
-        Mat final = mask2==3;
+        grabCut(img, mask, new_r, bgdModel, fgdModel, 3, GC_INIT_WITH_RECT);
+        Mat final = mask==3;
 
         if(draw) {
             imshow("window", img(new_r));
@@ -170,26 +90,25 @@ vector<Vec3f> refineCircles(Mat img, vector<Rect> bboxes, bool draw) {
         }
 
         // if(draw) {
-        //     // imshow("window", (mask2==0));
+        //     // imshow("window", (mask==0));
         //     // waitKey(0);
-        //     // imshow("window", (mask2==1));
+        //     // imshow("window", (mask==1));
         //     // waitKey(0);
-        //     // imshow("window", (mask2==2));
+        //     // imshow("window", (mask==2));
         //     // waitKey(0);
-        //     imshow("window", (mask2==3));
+        //     imshow("window", (mask==3));
         //     waitKey(0);
         // }        
 
-        vector<Vec3f> circle = circlesFinder(final, HOUGH_GRADIENT, 1, img.rows/32, 60, 12, mean_width/3, mean_width*0.69, draw);
-        if(!circle.empty()) {
+        vector<Vec3f> circle = circlesFinder(final, HOUGH_GRADIENT, 1, img.rows/32, 60, 10, mean_width/3, mean_width*0.71, draw);
+        if(!circle.empty() && abs(circle[0][2]-r.width/2) > THR) {
             out.push_back(circle[0]);
-            cout<<"NEW!"<<endl;
+            // cout<<"NEW!"<<endl;
         }
         else {
             out.push_back(Vec3f(r.x+r.width/2, r.y+r.height/2, r.width/2));
-            // cout<<"OLD..."<<endl;
+            // cout<<endl;
         }
-        // cout<<endl<<endl;
     }
     return out;
 }
@@ -317,12 +236,12 @@ vector<Rect> getBBoxes(Mat img, Mat mask, Mat transf) {
     vector<Rect> filtered_bboxes = purgeFP(img, transf, bboxes);
     // drawBBoxes(img, filtered_bboxes);
 
-    // vector<Vec3f> ref_circles = refineCircles(crop_HSV, filtered_bboxes, true);
-    // vector<Rect> new_bboxes = bboxConverter(ref_circles);
+    vector<Vec3f> ref_circles = refineCircles(crop_HSV, filtered_bboxes, false);
+    vector<Rect> new_bboxes = bboxConverter(ref_circles);
     // // cout<<"REFINED"<<endl;
     // drawBBoxes(img, new_bboxes);
 
-    // drawBBoxesCanvas(img, bboxes, new_bboxes);
+    // drawBBoxesCanvas(img, filtered_bboxes, new_bboxes);
 
-    return filtered_bboxes;
+    return new_bboxes;
 }

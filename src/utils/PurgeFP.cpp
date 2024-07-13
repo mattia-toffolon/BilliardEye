@@ -95,7 +95,7 @@ vector<Rect> purgeByCanny(Mat canny_trns,  Mat transform, vector<Rect> bboxes, v
     const float UPD = 0.3;
 
     vector<Rect> exp_bboxes = expandBBoxes(bboxes, MULT);
-    drawBBoxes(final, exp_bboxes);
+    // drawBBoxes(final, exp_bboxes);
 
     bool previously_comp = !prev_vals.empty();
 
@@ -108,9 +108,9 @@ vector<Rect> purgeByCanny(Mat canny_trns,  Mat transform, vector<Rect> bboxes, v
             if(previously_comp && abs(fill-prev_vals[i] < UPD)) continue;
             filtered_bboxes.push_back(bboxes[i]);
         }
-        else{
-            cout<<bboxes[i]<<"  -  "<<sum(cur)[0]/(cur.rows*cur.cols*255.0)<<endl;
-        }
+        // else{
+        //     cout<<bboxes[i]<<"  -  "<<sum(cur)[0]/(cur.rows*cur.cols*255.0)<<endl;
+        // }
     }
     return filtered_bboxes;
 }
