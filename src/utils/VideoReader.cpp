@@ -1,4 +1,5 @@
 #include "utils/VideoReader.hpp"
+#include "opencv2/videoio.hpp"
 
 #include <opencv2/tracking.hpp>
 #include <opencv2/tracking/tracking_legacy.hpp>
@@ -30,4 +31,7 @@ Mat VideoReader::lastFrame(){
     vid.read(frame);
     vid.set(CAP_PROP_POS_FRAMES, curframe);
     return frame;
+}
+int VideoReader::fps(){
+    return this->vid.get(cv::CAP_PROP_FPS);
 }

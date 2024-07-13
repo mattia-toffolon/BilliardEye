@@ -11,6 +11,7 @@ class VideoReader{
     ~VideoReader();
     cv::Mat nextFrame();
     cv::Mat lastFrame();
+    int fps();
 };
  
 #endif

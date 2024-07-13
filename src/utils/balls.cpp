@@ -22,7 +22,7 @@ void writeBallsFile(std::string filename, std::vector<Ball> balls){
     std::fstream file(filename);
     for(int i = 0; i < balls.size(); i++){
         auto b = balls[i];
-        file << b.bbox.x << b.bbox.y << b.bbox.width << b.bbox.height;
+        file << b.bbox.x << " " << b.bbox.y << " " << b.bbox.width << " "<< b.bbox.height << " " << b.type;
         if(i != balls.size() - 1){
             file << std::endl;
         }
