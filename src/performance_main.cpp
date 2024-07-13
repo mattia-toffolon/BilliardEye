@@ -1,11 +1,12 @@
-#include "utils/perfTesting.h"
 #include <iostream>
+#include <string>
+#include <numeric>
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <utils/balls.hpp>
-#include <string>
-#include <numeric>
+#include "utils/drawBBoxes.hpp"
+#include "utils/perfTesting.h"
 
 using namespace cv;
 using namespace std;
@@ -25,6 +26,9 @@ int main(int argc, char** argv) {
         std::cout << "not enough an arguments provided";
         exit(1);
     }
+    Rect r1(0,0, 10, 10);
+    Rect r2(6,6, 6, 6);
+    std::cout << (r1 & r2) << std::endl;
     int samples = std::stoi(argv[2]);
     std::string directory = "/sample";
     std::string ground_mask = "/ground_mask";
@@ -39,8 +43,8 @@ int main(int argc, char** argv) {
     std::vector<Mat> ground_truth_masks, predicted_masks;
     std::vector<std::vector<Ball>> ground_truth_balls_first, predicted_balls_first,ground_truth_balls_last, predicted_balls_last;
     for(int i = 0; i < samples; i++){
-        ground_truth_masks.push_back(imread(argv[1] + directory + std::to_string(i) + ground_mask + png));
-        predicted_masks.push_back(imread(argv[1] + directory + std::to_string(i) + predicted_mask + png));
+        ground_truth_masks.push_back(imread(argv[1] + directory + std::to_string(i) + ground_mask + png, IMREAD_GRAYSCALE));
+        predicted_masks.push_back(imread(argv[1] + directory + std::to_string(i) + predicted_mask + png, IMREAD_GRAYSCALE));
         ground_truth_balls_first.push_back(readBallsFile(argv[1] + directory + std::to_string(i) + ground_balls_first + txt));
         predicted_balls_first.push_back(readBallsFile(argv[1] + directory + std::to_string(i) + predicted_ball_first + txt));
         ground_truth_balls_last.push_back(readBallsFile(argv[1] + directory + std::to_string(i) + ground_balls_last + txt));
@@ -75,6 +79,8 @@ int main(int argc, char** argv) {
             curlpr.push_back(curlp[i].bbox);
         }
 
+        drawBBoxes(imread(argv[1] + directory + std::to_string(i) + "/frame_first.png"), curftr);
+        drawBBoxes(imread(argv[1] + directory + std::to_string(i) + "/frame_first.png"), curfpr);
         std::map<float, float> resf = precisionRecallCurve(curfpr, curftr, threshold);
         std::map<float, float> resl = precisionRecallCurve(curlpr, curltr, threshold);
         double curprecf =  averagePrecision(resf);
@@ -107,5 +113,7 @@ int main(int argc, char** argv) {
         ioufstripe.push_back(std::accumulate(stripefiou.begin(),stripefiou.end(), 0));
         ioulstripe.push_back(std::accumulate(stripeliou.begin(),stripeliou.end(), 0));
     }
-    
+    std::cout << "precision first " << precisionsf[0] << std::endl;
+    std::cout << "precision last " << precisionsl[0] << std::endl;
+    std::cout << "precision mask " << precisionMask[0] << std::endl;
 }

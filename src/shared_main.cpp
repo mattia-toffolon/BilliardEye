@@ -48,6 +48,8 @@ int main(int argc, char** argv) {
     Mat img_last = vid.lastFrame();
     Mat mask;
     vector<Point2f> points = find_table(img_last, mask);
+    std::string output = argv[3];
+    //imwrite( output + "/predicted_mask.png", mask);
 
     Mat transf = getTransformation(img_last, points);
 
@@ -59,7 +61,8 @@ int main(int argc, char** argv) {
     vector<Rect> bboxes = getBBoxes(img_first, mask, transf);
     drawBBoxes(img_first, bboxes);
 
-    vector<Ball> balls = classifyBalls(img_last, bboxes);
+    vector<Ball> balls = classifyBalls(img_first, bboxes);
+    //writeBallsFile(output + "/predicted_balls_first.txt", balls);
 
     img_first = vid.nextFrame();
     TrackBalls tracker(img_first, balls);
@@ -68,12 +71,23 @@ int main(int argc, char** argv) {
     transf = getTransformation(img_last, points, width, height);
     vid = VideoReader(video_path);
     TableRenderer rend(vid, tracker, balls, transf, width, height);
+    VideoWriter outvideo(output + "/render.mp4",VideoWriter::fourcc('m','p','4','v'),20, img_last.size());
+    std::cout << img_last.size() << std::endl;
+    vid = VideoReader(video_path);
+    Rect spot(10, img_last.rows*2/3 - 10, img_last.rows*2/3,  img_last.rows/3);
     while(1) {
         Mat fr = rend.nextFrame();
         if(fr.rows == 0) break;
+        resize(fr, fr, spot.size());
+        Mat curfr = vid.nextFrame();
+        fr.copyTo(curfr(spot));
+        imshow("current", curfr);
+        waitKey(0);
+        outvideo.write(curfr);
         imshow(WINDOW_NAME, fr);
         // waitKey(0);
     }
+    outvideo.release();
 
     // string filename_balls = "/balls.txt";
     // writeBallsFile(argv[2] + filename_balls, rend.getBalls());
