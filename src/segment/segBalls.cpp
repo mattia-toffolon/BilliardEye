@@ -20,7 +20,7 @@ vector<Vec3f> circlesFinder(Mat img, int method, double dp, double minDist, doub
     HoughCircles(img, out, method, dp, minDist, param1, param2, minRadius, maxRadius);
 
     if(out.empty()) {
-        // cout<<"No circles found"<<endl;
+        cout<<"No circles found"<<endl;
         return out;
     }
 
@@ -56,123 +56,139 @@ vector<Rect> bboxConverter(vector<Vec3f> circles) {
     return bboxes;
 }
 
-// vector<Vec3f> circlesFilter(Mat img, vector<Vec3f> circles, vector<Vec3b> tableColors, int levels, bool draw) {
+// vector<Vec3f> refineCircles(Mat img, vector<Rect> bboxes, bool draw) {
+//     assert(bboxes.size() > 0);
 
-//     vector<cv::Vec3f> balls;
-//     const int THR1 = 200;
-//     const int THR2 = 1600;
-//     Mat roi;
-
-//     for(Vec3f c : circles) {
-
-//         Mat mask1 = Mat::zeros(img.size(), CV_8U);
-//         circle(mask1, Point(c[0], c[1]), c[2], Scalar(255), -1);
-//         Scalar avg = mean(img, mask1);
-//         Vec3b mean1 = Vec3b(round(avg[0]), round(avg[1]), round(avg[2]));
-
-//         float min_dist = squaredEuclideanDist(mean1, tableColors[(int)c[1]%levels]);
-//         if(draw) {
-//             cout<<min_dist<<endl;
-//             roi = Mat::zeros(img.size(), CV_8U);
-//             img.copyTo(roi, mask1);
-//             imshow("window", roi);
-//             waitKey(0);
-//         }
-//         if(min_dist < THR1) continue;
-
-//         Mat mask2 = Mat::zeros(img.size(), CV_8U);
-//         Mat mask3 = Mat::zeros(img.size(), CV_8U);
-//         Mat mask4 = Mat::zeros(img.size(), CV_8U);
-//         circle(mask2, Point(c[0], c[1]), 1.2*c[2], Scalar(255), -1);
-//         bitwise_not(mask2, mask2);
-//         circle(mask3, Point(c[0], c[1]), 2.5*c[2], Scalar(255), -1);
-//         bitwise_and(mask2, mask3, mask4);
-
-//         avg = mean(img, mask4);
-//         Vec3b mean2 = Vec3b(round(avg[0]), round(avg[1]), round(avg[2]));
-
-//         min_dist = squaredEuclideanDist(mean2, tableColors[(int)c[1]%levels]);
-//         if(draw) {
-//             cout<<min_dist<<endl;
-//             roi = Mat::zeros(img.size(), CV_8U);
-//             img.copyTo(roi, mask4);
-//             imshow("window", roi);
-//             waitKey(0);
-//         }
-//         if(min_dist < THR2) balls.push_back(c);
+//     int min_width = bboxes[0].width;
+//     int max_width = bboxes[0].width;
+//     int mean_width = bboxes[0].width;
+//     for(int i=1; i<bboxes.size(); i++) {
+//         min_width = (bboxes[i].width < min_width ? bboxes[i].width : min_width);
+//         max_width = (bboxes[i].width > max_width ? bboxes[i].width : max_width);
+//         mean_width += bboxes[i].width;
 //     }
+//     int delta_width = max_width - min_width;
+//     mean_width /= bboxes.size();
 
-//     return balls;
+//     // int mean_width = 0;
+//     // for(Rect r : bboxes) mean_width += r.width;
+//     // mean_width /= bboxes.size();
+
+//     // const int rad = mean_width*0.5;
+//     // int delta_rad1 = delta_width / 2;
+//     // // delta_rad1 = (delta_rad1 > 2 ? delta_rad1-1 : delta_rad1);
+//     // const int delta_rad2 = delta_rad1 / 2;
+//     // const int delta_w1 = mean_width*1.5;
+//     // const int delta_w2 = mean_width*0.25;
+
+//     const float MULT1 = 1.5;
+//     const float MULT2 = 0.3;
+
+//     vector<Vec3f> out;
+//     Mat roi1, roi2;
+//     for(Rect r : bboxes) {
+
+//         int delta = abs(r.width - mean_width) / 2;
+//         // cout<<delta<<endl;
+
+//         Mat mask = Mat::zeros(img.size(), CV_8UC3);
+//         Point2d p1 = Point(r.x-r.width*MULT1, r.y-r.width*MULT1);
+//         Point2d p2 = Point(r.x+r.width+r.width*MULT1, r.y+r.height+r.width*MULT1);
+//         rectangle(mask, p2, p1, Scalar(255, 255, 255), -1);
+//         roi1 = Mat::zeros(img.size(), CV_8UC3);
+//         img.copyTo(roi1, mask);
+
+//         if(draw) {
+//             imshow("window", roi1);
+//             waitKey(0);
+//         }
+
+//         roi1 = subtractTable(roi1);
+//         mask = Mat::zeros(img.size(), CV_8UC3);
+//         p1 = Point(r.x-r.width*MULT2, r.y-r.width*MULT2);
+//         p2 = Point(r.x+r.width+r.width*MULT2, r.y+r.height+r.width*MULT2);
+//         rectangle(mask, p2, p1, Scalar(255, 255, 255), -1);
+//         roi2 = Mat::zeros(img.size(), CV_8UC3);
+//         roi1.copyTo(roi2, mask);
+
+//         if(draw) {
+//             imshow("window", roi2);
+//             waitKey(0);
+//         }
+
+//         // cvtColor(roi2, roi2, COLOR_BGR2GRAY);
+//         Mat HSV_levels[3];
+//         split(roi2, HSV_levels);
+//         roi2 = HSV_levels[2];
+
+//         vector<Vec3f> circle = circlesFinder(roi2, HOUGH_GRADIENT, 1, img.rows/32, 60, 10, r.width/2-1, r.width/2+4, draw);
+//         if(!circle.empty()) out.push_back(circle[0]);
+
+//         // cout<<endl<<endl;
+//     }
+//     return out;
 // }
 
 vector<Vec3f> refineCircles(Mat img, vector<Rect> bboxes, bool draw) {
     assert(bboxes.size() > 0);
 
-    int min_width = bboxes[0].width;
-    int max_width = bboxes[0].width;
-    int mean_width = bboxes[0].width;
-    for(int i=1; i<bboxes.size(); i++) {
-        min_width = (bboxes[i].width < min_width ? bboxes[i].width : min_width);
-        max_width = (bboxes[i].width > max_width ? bboxes[i].width : max_width);
-        mean_width += bboxes[i].width;
-    }
-    int delta_width = max_width - min_width;
+    int mean_width = 0;
+    for(Rect r : bboxes) mean_width += r.width;
     mean_width /= bboxes.size();
-
-    // int mean_width = 0;
-    // for(Rect r : bboxes) mean_width += r.width;
-    // mean_width /= bboxes.size();
-
-    // const int rad = mean_width*0.5;
-    // int delta_rad1 = delta_width / 2;
-    // // delta_rad1 = (delta_rad1 > 2 ? delta_rad1-1 : delta_rad1);
-    // const int delta_rad2 = delta_rad1 / 2;
-    // const int delta_w1 = mean_width*1.5;
-    // const int delta_w2 = mean_width*0.25;
-
-    const float MULT1 = 1.5;
-    const float MULT2 = 0.3;
+    
+    const float MULT = 1.9;
 
     vector<Vec3f> out;
-    Mat roi1, roi2;
+    Mat roi, mask, bgdModel, fgdModel;
     for(Rect r : bboxes) {
-
-        int delta = abs(r.width - mean_width) / 2;
-        // cout<<delta<<endl;
-
+        cout<<r<<"  -  ";
         Mat mask = Mat::zeros(img.size(), CV_8UC3);
-        Point2d p1 = Point(r.x-r.width*MULT1, r.y-r.width*MULT1);
-        Point2d p2 = Point(r.x+r.width+r.width*MULT1, r.y+r.height+r.width*MULT1);
+        Point2d p1 = Point(r.x-mean_width*MULT/2, r.y-mean_width*MULT/2);
+        Point2d p2 = Point(r.x+mean_width*(1+MULT/2), r.y+mean_width*(1+MULT/2));
         rectangle(mask, p2, p1, Scalar(255, 255, 255), -1);
-        roi1 = Mat::zeros(img.size(), CV_8UC3);
-        img.copyTo(roi1, mask);
+        roi = Mat::zeros(img.size(), CV_8UC3);
+        img.copyTo(roi, mask);
+
+        Mat mask2;
+        Rect new_r(r.x-(mean_width*MULT-r.width)/2, r.y-(mean_width*MULT-r.width)/2, mean_width*MULT, mean_width*MULT);
+
+        // if(draw) {
+        //     imshow("window", roi);
+        //     waitKey(0);
+        //     // imshow("window", img(new_r));
+        //     // waitKey(0);
+        // }
+
+        grabCut(img, mask2, new_r, bgdModel, fgdModel, 3, GC_INIT_WITH_RECT);
+        Mat final = mask2==3;
 
         if(draw) {
-            imshow("window", roi1);
+            imshow("window", img(new_r));
+            waitKey(0);
+            imshow("window", final);
             waitKey(0);
         }
 
-        roi1 = subtractTable(roi1);
-        mask = Mat::zeros(img.size(), CV_8UC3);
-        p1 = Point(r.x-r.width*MULT2, r.y-r.width*MULT2);
-        p2 = Point(r.x+r.width+r.width*MULT2, r.y+r.height+r.width*MULT2);
-        rectangle(mask, p2, p1, Scalar(255, 255, 255), -1);
-        roi2 = Mat::zeros(img.size(), CV_8UC3);
-        roi1.copyTo(roi2, mask);
+        // if(draw) {
+        //     // imshow("window", (mask2==0));
+        //     // waitKey(0);
+        //     // imshow("window", (mask2==1));
+        //     // waitKey(0);
+        //     // imshow("window", (mask2==2));
+        //     // waitKey(0);
+        //     imshow("window", (mask2==3));
+        //     waitKey(0);
+        // }        
 
-        if(draw) {
-            imshow("window", roi2);
-            waitKey(0);
+        vector<Vec3f> circle = circlesFinder(final, HOUGH_GRADIENT, 1, img.rows/32, 60, 12, mean_width/3, mean_width*0.69, draw);
+        if(!circle.empty()) {
+            out.push_back(circle[0]);
+            cout<<"NEW!"<<endl;
         }
-
-        // cvtColor(roi2, roi2, COLOR_BGR2GRAY);
-        Mat HSV_levels[3];
-        split(roi2, HSV_levels);
-        roi2 = HSV_levels[2];
-
-        vector<Vec3f> circle = circlesFinder(roi2, HOUGH_GRADIENT, 1, img.rows/32, 60, 10, r.width/2-1, r.width/2+4, draw);
-        if(!circle.empty()) out.push_back(circle[0]);
-
+        else {
+            out.push_back(Vec3f(r.x+r.width/2, r.y+r.height/2, r.width/2));
+            // cout<<"OLD..."<<endl;
+        }
         // cout<<endl<<endl;
     }
     return out;
@@ -293,7 +309,7 @@ vector<Rect> getBBoxes(Mat img, Mat mask, Mat transf) {
     // vector<Vec3f> filtered_circles = circlesFilter(img_BGR, circles, tableColors_BGR, levels, false);
     // vector<Vec3f> filtered_circles = circlesFilter(img_HSV, circles, tableColors_HSV, levels, false);
 
-    // vector<Vec3f> ref_circles = refineCircles(crop_HSV, bboxes, true);
+    // vector<Vec3f> ref_circles = refineCircles(crop_BGR, bboxes, false);
     // vector<Rect> new_bboxes = bboxConverter(ref_circles);
     // cout<<"REFINED"<<endl;
     // drawBBoxes(img, new_bboxes);
@@ -305,6 +321,8 @@ vector<Rect> getBBoxes(Mat img, Mat mask, Mat transf) {
     // vector<Rect> new_bboxes = bboxConverter(ref_circles);
     // // cout<<"REFINED"<<endl;
     // drawBBoxes(img, new_bboxes);
+
+    // drawBBoxesCanvas(img, bboxes, new_bboxes);
 
     return filtered_bboxes;
 }

@@ -5,7 +5,7 @@
 
 std::vector<cv::Rect> purgeFP(cv::Mat img, cv::Mat persp_trans, std::vector<cv::Rect> bboxes);
 
-std::vector<cv::Rect> purgeByCanny(cv::Mat img, cv::Mat persp_trans, std::vector<cv::Rect> bboxes);
+std::vector<cv::Rect> purgeByCanny(cv::Mat img, cv::Mat persp_trans, std::vector<cv::Rect> bboxes, std::vector<float>& prev_vals);
 
 
 #endif

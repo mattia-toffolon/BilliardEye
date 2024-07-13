@@ -3,6 +3,7 @@
 #include "utils/drawBBoxes.hpp"
 #include <vector>
 #include <set>
+#include <iostream>
 
 using namespace cv;
 using namespace std;
@@ -18,14 +19,16 @@ vector<Rect> purgeFP(Mat img,  Mat transform, vector<Rect> bboxes){
     // imshow("window", canny_trns);
     // waitKey(0);
 
-    vector<Rect> filtered_bboxes = purgeByCanny(canny_trns, transform, bboxes);
+    vector<float> fillings;
+
+    vector<Rect> filtered_bboxes = purgeByCanny(canny_trns, transform, bboxes, fillings);
 
     Mat structuringElem1 = getStructuringElement(MORPH_ELLIPSE, Size(3,2));
     morphologyEx(canny_trns, canny_trns, MORPH_OPEN, structuringElem1, Point(-1,-1), 2);
     // imshow("window", canny_trns);
     // waitKey(0);
 
-    vector<Rect> filtered_bboxes_opened = purgeByCanny(canny_trns, transform, bboxes);
+    vector<Rect> filtered_bboxes_opened = purgeByCanny(canny_trns, transform, bboxes, fillings);
 
     // set<Rect> bboxes_set;
     // bboxes_set.insert(filtered_bboxes.begin(), filtered_bboxes.end());
@@ -42,7 +45,7 @@ vector<Rect> purgeFP(Mat img,  Mat transform, vector<Rect> bboxes){
     return ret;
 }
 
-vector<Rect> purgeByCanny(Mat canny_trns,  Mat transform, vector<Rect> bboxes) {
+vector<Rect> purgeByCanny(Mat canny_trns,  Mat transform, vector<Rect> bboxes, vector<float>& prev_vals) {
     set<int> eliminate;
     Mat elaborated, labels, stats, centroids;
     int label_count = connectedComponentsWithStats(canny_trns, labels, stats, centroids);
@@ -87,13 +90,26 @@ vector<Rect> purgeByCanny(Mat canny_trns,  Mat transform, vector<Rect> bboxes) {
     // drawBBoxes(final, bboxes);
 
     // 0 FP, 3 FN
-    const float THR = 0.26;
+    const float THR = 0.24;
+    const float MULT = 1.1;
+    const float UPD = 0.3;
+
+    vector<Rect> exp_bboxes = expandBBoxes(bboxes, MULT);
+    drawBBoxes(final, exp_bboxes);
+
+    bool previously_comp = !prev_vals.empty();
 
     vector<Rect> filtered_bboxes;
-    for(auto b : bboxes){
-        Mat cur = final(b);
-        if(sum(cur)[0]/(cur.rows*cur.cols*255.0) > THR){
-            filtered_bboxes.push_back(b);
+    for(int i=0; i<bboxes.size(); i++) {
+        Mat cur = final(exp_bboxes[i]);
+        float fill = sum(cur)[0]/(cur.rows*cur.cols*255.0);
+        if(!previously_comp) prev_vals.push_back(fill);
+        if(fill > THR){
+            if(previously_comp && abs(fill-prev_vals[i] < UPD)) continue;
+            filtered_bboxes.push_back(bboxes[i]);
+        }
+        else{
+            cout<<bboxes[i]<<"  -  "<<sum(cur)[0]/(cur.rows*cur.cols*255.0)<<endl;
         }
     }
     return filtered_bboxes;
