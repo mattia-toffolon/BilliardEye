@@ -101,7 +101,7 @@ vector<Rect> purgeByCanny(Mat canny_trns,  Mat transform, vector<Rect> bboxes, v
     Rect safe_area(canny_trns.cols*(1-SCALE_X)/2, canny_trns.rows*(1-SCALE_Y)/2, canny_trns.cols*SCALE_X, canny_trns.rows*SCALE_Y);
 
     vector<Rect> exp_bboxes2 = expandBBoxes(bboxes, 1.5);
-    drawBBoxes(final, exp_bboxes2);
+    // drawBBoxes(final, exp_bboxes2);
     vector<bool> overlapping(exp_bboxes2.size(), false);
     for(int i=0; i<exp_bboxes2.size(); i++) {
         for(int j=i+1; j<exp_bboxes2.size(); j++) {
@@ -114,7 +114,7 @@ vector<Rect> purgeByCanny(Mat canny_trns,  Mat transform, vector<Rect> bboxes, v
 
     vector<Rect> tmp;
     tmp.push_back(safe_area);
-    drawBBoxes(canny_trns, tmp);
+    // drawBBoxes(canny_trns, tmp);
 
     vector<Rect> filtered_bboxes;
     for(int i=0; i<bboxes.size(); i++) {
