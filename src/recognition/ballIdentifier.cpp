@@ -363,3 +363,10 @@ vector<Ball> classifyBalls(Mat image, vector<Rect> windows)
     ans.push_back({windows[eightball],BallType::EIGHT});
     return ans;
 }
+
+Mat magnifyImg(Mat img, float magnification)
+{
+    Mat ans;
+    resize(img,ans,Size(0,0),magnification,magnification);
+    return ans;
+}
