@@ -28,16 +28,16 @@ void solidTypes(const vector<Ball> &all, vector<Rect> &eight, vector<Rect> &cue,
 Mat drawCircles(vector<Rect> balls, Size s, Scalar color = Scalar(255)){
     Mat ret = Mat::zeros(s, CV_8UC1);
     for(auto r : balls){
-        //drawing;
-        //use function to transform rect into circle
+        Vec3f circ = toCircle(r);
+        circle(ret, Point(circ[0],circ[1]), circ[2], color, FILLED);
     }
     return ret;
 }
 Mat drawCircles(vector<Ball> balls, Size s, Scalar color, Mat initial){
     Mat ret = initial.clone();
     for(auto r : balls){
-        //drawing;
-        //use function to transform rect into circle
+        Vec3f circ = toCircle(r.bbox);
+        circle(ret, Point(circ[0],circ[1]), circ[2], color, FILLED);
     }
     return ret;
 }
@@ -82,7 +82,6 @@ int main(int argc, char** argv) {
         ground_truth_balls_last.push_back(readBallsFile(argv[1] + directory + std::to_string(i) + ground_balls_last + txt));
         predicted_balls_last.push_back(readBallsFile(argv[1] + directory + std::to_string(i) + predicted_ball_last + txt));
     }
-    //insert performance computations here
     double threshold = 0.5;
     std::vector<float> precisionsf, precisionsl, precisionMaskFirst,precisionMaskLast;
     std::vector<float> ioufcue,ioufeight,ioufsolid,ioufstripe
@@ -90,6 +89,7 @@ int main(int argc, char** argv) {
     std::vector<float> ioufcueseg,ioufeightseg,ioufsolidseg,ioufstripeseg
                         ,ioulcueseg,iouleightseg,ioulsolidseg,ioulstripeseg;
     for(int i = 0; i < samples; i ++){
+        std::cout << i << std::endl;
         std::vector<Ball> curft, curfp, curlt, curlp;
         std::vector<Rect> curftr, curfpr, curltr, curlpr;
         std::vector<Rect>
@@ -108,13 +108,19 @@ int main(int argc, char** argv) {
 
         for(int i = 0; i < curft.size(); i ++){
             curftr.push_back(curft[i].bbox);
+        }
+        for(int i = 0; i < curfp.size(); i ++){
             curfpr.push_back(curfp[i].bbox);
+        }
+        for(int i = 0; i < curlt.size(); i ++){
             curltr.push_back(curlt[i].bbox);
+        }
+        for(int i = 0; i < curlp.size(); i ++){
             curlpr.push_back(curlp[i].bbox);
         }
 
-        drawBBoxes(imread(argv[1] + directory + std::to_string(i) + "/frame_first.png"), curftr);
-        drawBBoxes(imread(argv[1] + directory + std::to_string(i) + "/frame_first.png"), curfpr);
+        //drawBBoxes(imread(argv[1] + directory + std::to_string(i) + "/frame_last.png"), curltr);
+        //drawBBoxes(imread(argv[1] + directory + std::to_string(i) + "/frame_last.png"), curlpr);
         std::map<float, float> resf = precisionRecallCurve(curfpr, curftr, threshold);
         std::map<float, float> resl = precisionRecallCurve(curlpr, curltr, threshold);
         double curprecf =  averagePrecision(resf);
@@ -131,8 +137,8 @@ int main(int argc, char** argv) {
         cuefiou = manyToManyIoU(cueft, cuefp);
         cueliou = manyToManyIoU(cuelt, cuelp);
         Mat cueftseg, cueltseg, cuefpseg, cuelpseg;
-        cueftseg = (ground_mask_first[i] == static_cast<char>(BallType::CUE));
-        cueltseg = (ground_mask_last[i] == static_cast<char>(BallType::CUE));
+        cueftseg = (ground_truth_masks_first[i] == static_cast<char>(BallType::CUE));
+        cueltseg = (ground_truth_masks_last[i] == static_cast<char>(BallType::CUE));
         cuefpseg = drawCircles(cuefp, (predicted_masks[i]).size());
         cuelpseg = drawCircles(cuelp, (predicted_masks[i]).size());
         ioufcueseg.push_back(intersectionOverUnion(cueftseg, cuefpseg));
@@ -144,8 +150,8 @@ int main(int argc, char** argv) {
         eightfiou = manyToManyIoU(eightft, eightfp);
         eightliou = manyToManyIoU(eightlt, eightlp);
         Mat eightftseg, eightltseg, eightfpseg, eightlpseg;
-        eightftseg = (ground_mask_first[i] == static_cast<char>(BallType::EIGHT));
-        eightltseg = (ground_mask_last[i] == static_cast<char>(BallType::EIGHT));
+        eightftseg = (ground_truth_masks_first[i] == static_cast<char>(BallType::EIGHT));
+        eightltseg = (ground_truth_masks_last[i] == static_cast<char>(BallType::EIGHT));
         eightfpseg = drawCircles(eightfp, (predicted_masks[i]).size());
         eightlpseg = drawCircles(eightlp, (predicted_masks[i]).size());
         ioufeightseg.push_back(intersectionOverUnion(eightftseg, eightfpseg));
@@ -157,8 +163,8 @@ int main(int argc, char** argv) {
         solidfiou = manyToManyIoU(solidft, solidfp);
         solidliou = manyToManyIoU(solidlt, solidlp);
         Mat solidftseg, solidltseg, solidfpseg, solidlpseg;
-        solidftseg = (ground_mask_first[i] == static_cast<char>(BallType::SOLID));
-        solidltseg = (ground_mask_last[i] == static_cast<char>(BallType::SOLID));
+        solidftseg = (ground_truth_masks_first[i] == static_cast<char>(BallType::SOLID));
+        solidltseg = (ground_truth_masks_last[i] == static_cast<char>(BallType::SOLID));
         solidfpseg = drawCircles(solidfp, (predicted_masks[i]).size());
         solidlpseg = drawCircles(solidlp, (predicted_masks[i]).size());
         ioufsolidseg.push_back(intersectionOverUnion(solidftseg, solidfpseg));
@@ -170,8 +176,8 @@ int main(int argc, char** argv) {
         stripefiou = manyToManyIoU(stripeft, stripefp);
         stripeliou = manyToManyIoU(stripelt, stripelp);
         Mat stripedftseg, stripedltseg, stripedfpseg, stripedlpseg;
-        stripedftseg = (ground_mask_first[i] == static_cast<char>(BallType::STRIPED));
-        stripedltseg = (ground_mask_last[i] == static_cast<char>(BallType::STRIPED));
+        stripedftseg = (ground_truth_masks_first[i] == static_cast<char>(BallType::STRIPED));
+        stripedltseg = (ground_truth_masks_last[i] == static_cast<char>(BallType::STRIPED));
         stripedfpseg = drawCircles(stripefp, (predicted_masks[i]).size());
         stripedlpseg = drawCircles(stripelp, (predicted_masks[i]).size());
         ioufstripeseg.push_back(intersectionOverUnion(stripedftseg, stripedfpseg));
@@ -184,5 +190,6 @@ int main(int argc, char** argv) {
         std::cout << "precision last " << precisionsl[i] << std::endl;
         std::cout << "precision mask first" << precisionMaskFirst[i] << std::endl;
         std::cout << "precision mask last" << precisionMaskLast[i] << std::endl;
+        std::cout << std::endl;
     }
 }

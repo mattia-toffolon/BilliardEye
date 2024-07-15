@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
     Mat mask;
     vector<Point2f> points = find_table(img_last, mask);
     std::string output = argv[3];
-    //imwrite( output + "/predicted_mask.png", mask);
+    imwrite( output + "/predicted_mask.png", mask);
 
     Mat transf = getTransformation(img_last, points);
 
@@ -62,7 +62,8 @@ int main(int argc, char** argv) {
     drawBBoxes(img_first, bboxes);
 
     vector<Ball> balls = classifyBalls(img_first, bboxes);
-    //writeBallsFile(output + "/predicted_balls_first.txt", balls);
+    std::cout <<output + "/predicted_balls_first.txt" << std::endl;
+    writeBallsFile(output + "/predicted_balls_first.txt", balls);
 
     img_first = vid.nextFrame();
     TrackBalls tracker(img_first, balls);
@@ -96,8 +97,8 @@ int main(int argc, char** argv) {
     const string traj = "/predicted_trajectory.png";
     imwrite(argv[2] + traj, fr);
     // string filename_balls = "/balls.txt";
-    //auto ballin = rend.getBalls();
-    //writeBallsFile(output + "/predicted_balls_last.txt", ballin);
+    auto ballin = rend.getBalls();
+    writeBallsFile(output + "/predicted_balls_last.txt", ballin);
 
     // string filename_mask = "/mask.png";
     // imwrite(argv[2] + filename_mask[2], mask);

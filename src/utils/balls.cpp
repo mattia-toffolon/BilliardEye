@@ -19,7 +19,7 @@ std::vector<Ball> readBallsFile(std::string filename){
     return balls;
 }
 void writeBallsFile(std::string filename, std::vector<Ball> balls){
-    std::fstream file(filename);
+    std::ofstream file(filename);
     for(int i = 0; i < balls.size(); i++){
         auto b = balls[i];
         file << b.bbox.x << " " << b.bbox.y << " " << b.bbox.width << " "<< b.bbox.height << " " << b.type;

@@ -116,7 +116,7 @@ cv::Mat TableRenderer::nextFrame(){
 }
 
 std::vector<Ball> TableRenderer::getBalls(){
-    return this->bbs;
+    return this->tracker.getRealBalls();
 }
 void draw_transparent(Mat img, Ball b){
     if(b.type == BallType::EIGHT){

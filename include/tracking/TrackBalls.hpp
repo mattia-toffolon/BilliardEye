@@ -19,6 +19,7 @@ class TrackBalls{
     std::vector<Ball> update(cv::Mat frame, std::vector<int>& renderer_remove_idxs);
 
     void removeBalls(std::vector<int> indexKeepList, cv::Mat frame);
+    std::vector<Ball> getRealBalls();
     private:
 
 
@@ -28,7 +29,6 @@ class TrackBalls{
 
     void adjustBalls(std::vector<int> found_indexes, std::vector<int> lost_indexes, std::vector<cv::Rect> found_bboxes, cv::Mat frame, std::vector<int>& renderer_remove_idxs);
 
-    std::vector<Ball> getRealBalls();
 };
 
 #endif
