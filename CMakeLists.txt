@@ -88,19 +88,22 @@ target_include_directories(perfTesting PRIVATE ${OpenCV_INCLUDE_DIRS})
 
 add_executable(segBill ./src/shared_main.cpp)
 add_executable(perfBill ./src/performance_main.cpp)
-target_link_libraries(segBill segTable ${OpenCV_LIBS} )
-target_link_libraries(segBill segBalls ${OpenCV_LIBS} )
-target_link_libraries(segBill ballIdentifier ${OpenCV_LIBS})
-target_link_libraries(segBill videoReader ${OpenCV_LIBS})
-target_link_libraries(segBill drawBBoxes ${OpenCV_LIBS})
-target_link_libraries(segBill getTableColor ${OpenCV_LIBS})
-target_link_libraries(segBill side_recognition ${OpenCV_LIBS})
-target_link_libraries(segBill balls ${OpenCV_LIBS})
-target_link_libraries(segBill table_transform ${OpenCV_LIBS})
-target_link_libraries(segBill ball_tracking ${OpenCV_LIBS})
-target_link_libraries(segBill rendering drawBBoxes ${OpenCV_LIBS})
-target_link_libraries(segBill purgefp ${OpenCV_LIBS})
-target_link_libraries(segBill perfTesting ${OpenCV_LIBS})
+target_link_libraries(segBill
+    segTable 
+    segBalls
+    ballIdentifier
+    videoReader
+    drawBBoxes
+    getTableColor
+    side_recognition
+    balls
+    table_transform
+    ball_tracking 
+    rendering 
+    purgefp
+    perfTesting
+    ${OpenCV_LIBS}
+    )
 target_link_libraries(perfBill perfTesting ${OpenCV_LIBS})
 target_link_libraries(perfBill balls ${OpenCV_LIBS})
 target_link_libraries(perfBill drawBBoxes ${OpenCV_LIBS})

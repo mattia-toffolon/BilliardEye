@@ -8,6 +8,7 @@
 #include <vector>
 #include "opencv2/core.hpp"
 #include "opencv2/core/hal/interface.h"
+#include "opencv2/core/types.hpp"
 #include "utils/drawBBoxes.hpp"
 #include "utils/perfTesting.h"
 
@@ -24,8 +25,16 @@ void solidTypes(const vector<Ball> &all, vector<Rect> &eight, vector<Rect> &cue,
         }
     }
 }
-Mat drawCircles(vector<Rect> balls, Size s){
+Mat drawCircles(vector<Rect> balls, Size s, Scalar color = Scalar(255)){
     Mat ret = Mat::zeros(s, CV_8UC1);
+    for(auto r : balls){
+        //drawing;
+        //use function to transform rect into circle
+    }
+    return ret;
+}
+Mat drawCircles(vector<Ball> balls, Size s, Scalar color, Mat initial){
+    Mat ret = initial.clone();
     for(auto r : balls){
         //drawing;
         //use function to transform rect into circle
@@ -112,8 +121,11 @@ int main(int argc, char** argv) {
         double curprecl =  averagePrecision(resl);
         precisionsf.push_back(curprecf);
         precisionsl.push_back(curprecl);
-        precisionMaskFirst.push_back(intersectionOverUnion(ground_truth_masks_first[i], predicted_masks[i]));
-        precisionMaskLast.push_back(intersectionOverUnion(ground_truth_masks_last[i], predicted_masks[i]));
+        Mat predicted_mask_first, predicted_mask_last;
+        predicted_mask_first = drawCircles(curfp, predicted_masks[i].size(), Scalar(0),predicted_masks[i]);
+        predicted_mask_last = drawCircles(curlp, predicted_masks[i].size(), Scalar(0),predicted_masks[i]);
+        precisionMaskFirst.push_back(intersectionOverUnion(ground_truth_masks_first[i] ==5, predicted_mask_first));
+        precisionMaskLast.push_back(intersectionOverUnion(ground_truth_masks_last[i] == 5, predicted_mask_last));
         //cue balls
         vector<float> cuefiou, cueliou;
         cuefiou = manyToManyIoU(cueft, cuefp);

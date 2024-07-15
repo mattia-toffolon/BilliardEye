@@ -31,7 +31,7 @@ const string WINDOW_NAME = "window_main";
 
 int main(int argc, char** argv) {
 
-    if(argc < 2){
+    if(argc < 3){
         cout << "Not enough arguments provided";
         exit(1);
     }
@@ -39,8 +39,8 @@ int main(int argc, char** argv) {
     string clip_name = argv[1];
     // cout<<clip_name<<endl;
 
-    const string video_path = "../data/" + clip_name + "/" + clip_name + ".mp4";
-    const string img_path = "../data/" + clip_name + "/frames/frame_first.png";
+    const string video_path = argv[1];
+    const string img_path = argv[2];
 
     Mat img_first = imread(img_path);
 
@@ -72,25 +72,32 @@ int main(int argc, char** argv) {
     vid = VideoReader(video_path);
     TableRenderer rend(vid, tracker, balls, transf, width, height);
     VideoWriter outvideo(output + "/render.mp4",VideoWriter::fourcc('m','p','4','v'),20, img_last.size());
-    std::cout << img_last.size() << std::endl;
     vid = VideoReader(video_path);
     Rect spot(10, img_last.rows*2/3 - 10, img_last.rows*2/3,  img_last.rows/3);
+    Mat fr;
+    int i = 0;
     while(1) {
-        Mat fr = rend.nextFrame();
-        if(fr.rows == 0) break;
+        i++;
+        std::cout << i << std::endl;
+        Mat curfrend = rend.nextFrame();
+        if(curfrend.rows == 0) break;
+        fr = curfrend;
         resize(fr, fr, spot.size());
         Mat curfr = vid.nextFrame();
         fr.copyTo(curfr(spot));
         imshow("current", curfr);
-        waitKey(0);
+        //waitKey(0);
         outvideo.write(curfr);
         imshow(WINDOW_NAME, fr);
         // waitKey(0);
     }
     outvideo.release();
 
+    const string traj = "/predicted_trajectory.png";
+    imwrite(argv[2] + traj, fr);
     // string filename_balls = "/balls.txt";
-    // writeBallsFile(argv[2] + filename_balls, rend.getBalls());
+    //auto ballin = rend.getBalls();
+    //writeBallsFile(output + "/predicted_balls_last.txt", ballin);
 
     // string filename_mask = "/mask.png";
     // imwrite(argv[2] + filename_mask[2], mask);

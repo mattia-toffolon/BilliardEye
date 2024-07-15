@@ -53,7 +53,7 @@ cv::Mat TableRenderer::nextFrame(){
     for(auto b : newballs){
         bounding.push_back(b.bbox);
     }
-    drawBBoxes(fram, bounding);
+    //drawBBoxes(fram, bounding);
     int real = 0;
     for(int i = 0; i < bbs.size(); i++){
         if(std::find(removed.begin(), removed.end(), i) != removed.end()){
@@ -145,7 +145,7 @@ cv::Mat nice_render(cv::Mat img, std::vector<cv::Point2f> table_verts, std::vect
     Mat render = img.clone();
     Scalar line_color(255, 0, 255);
     for(int i = 0; i < table_verts.size(); i++){
-        line(render, table_verts[i], table_verts[(i+1)%table_verts.size()], line_color, 5);
+        line(render, table_verts[i], table_verts[(i+1)%table_verts.size()], line_color, 5,LINE_AA);
     }
     for(auto b : balls){
         draw_transparent(render, b);
