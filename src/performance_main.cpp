@@ -8,7 +8,7 @@
 #include <vector>
 #include "opencv2/core.hpp"
 #include "opencv2/core/hal/interface.h"
-#include "utils/drawBBoxes.hpp"
+#include "utils/bboxesUtils.hpp"
 #include "utils/perfTesting.h"
 
 using namespace cv;

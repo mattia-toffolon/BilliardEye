@@ -2,10 +2,18 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/core/types.hpp>
 #include <opencv2/imgproc.hpp>
-#include "utils/drawBBoxes.hpp"
+#include "utils/bboxesUtils.hpp"
 
 using namespace cv;
 using namespace std;
+
+Rect toRect(Vec3f circle) {    
+    return Rect(circle[0]-circle[2], circle[1]-circle[2], 2*circle[2], 2*circle[2]);
+}
+
+Vec3f toCircle(Rect box) {
+    return Vec3f(box.x + box.width/2, box.y + box.height/2, box.width/2);
+}
 
 void drawBBoxes(Mat img, vector<Rect> bboxes) {
     if(img.data==NULL) {

@@ -1,6 +1,6 @@
 #include <opencv2/highgui.hpp>
 #include "utils/PurgeFP.hpp"
-#include "utils/drawBBoxes.hpp"
+#include "utils/bboxesUtils.hpp"
 #include "utils/perfTesting.h"
 #include <vector>
 #include <set>
@@ -136,7 +136,7 @@ vector<Rect> purgeByCanny(Mat canny_trns,  Mat transform, vector<Rect> bboxes, v
         }
 
         if(fill > THR){
-            if(previously_comp && abs(fill-prev_vals[i] < UPD)) continue;
+            if(previously_comp && abs(fill-prev_vals[i]) < UPD) continue;
             filtered_bboxes.push_back(bboxes[i]);
         }
         // else{

@@ -1,7 +1,6 @@
 #include <cstdlib>
 #include <iostream>
 
-
 #include <opencv2/core.hpp>
 #include <opencv2/core/types.hpp>
 #include <opencv2/highgui.hpp>

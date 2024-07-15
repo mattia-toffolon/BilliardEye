@@ -7,7 +7,7 @@
 #include <opencv2/imgproc.hpp>
 #include "segment/segBalls.h"
 #include "utils/getTableColor.hpp"
-#include "utils/drawBBoxes.hpp"
+#include "utils/bboxesUtils.hpp"
 #include "utils/PurgeFP.hpp"
 #include "recognition/transformPoints.hpp"
 #include "recognition/side_recognition.hpp"
@@ -20,7 +20,7 @@ vector<Vec3f> circlesFinder(Mat img, int method, double dp, double minDist, doub
     HoughCircles(img, out, method, dp, minDist, param1, param2, minRadius, maxRadius);
 
     if(out.empty()) {
-        cout<<"No circles found";
+        // cout<<"No circles found";
         return out;
     }
 

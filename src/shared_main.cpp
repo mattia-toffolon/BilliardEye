@@ -21,7 +21,7 @@
 #include "segment/segTable.h"
 #include "tracking/TrackBalls.hpp"
 #include "utils/VideoReader.hpp"
-#include "utils/drawBBoxes.hpp"
+#include "utils/bboxesUtils.hpp"
 #include "recognition/transformPoints.hpp"
 
 using namespace cv;
