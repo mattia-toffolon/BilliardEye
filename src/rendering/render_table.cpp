@@ -1,6 +1,6 @@
 #include "rendering/render_table.hpp"
 #include "opencv2/imgproc.hpp"
-#include "utils/drawBBoxes.hpp"
+#include "utils/bboxesUtils.hpp"
 #include <algorithm>
 using namespace cv;
 

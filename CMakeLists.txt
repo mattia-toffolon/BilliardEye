@@ -38,11 +38,11 @@ add_library(balls
 )
 target_include_directories(balls PRIVATE ${OpenCV_INCLUDE_DIRS})
 
-add_library(drawBBoxes
-    ./include/utils/drawBBoxes.hpp
-    ./src/utils/drawBBoxes.cpp
+add_library(bboxesUtils
+    ./include/utils/bboxesUtils.hpp
+    ./src/utils/bboxesUtils.cpp
 )
-target_include_directories(drawBBoxes PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_include_directories(bboxesUtils PRIVATE ${OpenCV_INCLUDE_DIRS})
 
 add_library(side_recognition
     ./include/recognition/side_recognition.hpp
@@ -86,6 +86,7 @@ add_library(perfTesting
 )
 target_include_directories(perfTesting PRIVATE ${OpenCV_INCLUDE_DIRS})
 
+# add_executable(segBill ./src/main.cpp)
 add_executable(segBill ./src/shared_main.cpp)
 add_executable(perfBill ./src/performance_main.cpp)
 target_link_libraries(segBill
@@ -93,7 +94,7 @@ target_link_libraries(segBill
     segBalls
     ballIdentifier
     videoReader
-    drawBBoxes
+    bboxesUtils
     getTableColor
     side_recognition
     balls
@@ -104,6 +105,8 @@ target_link_libraries(segBill
     perfTesting
     ${OpenCV_LIBS}
     )
-target_link_libraries(perfBill perfTesting ${OpenCV_LIBS})
-target_link_libraries(perfBill balls ${OpenCV_LIBS})
-target_link_libraries(perfBill drawBBoxes ${OpenCV_LIBS})
+target_link_libraries(perfBill
+    perfTesting
+    balls
+    bboxesUtils
+    ${OpenCV_LIBS})

@@ -3,7 +3,7 @@
 #include "segment/segBalls.h"
 #include "segment/segTable.h"
 #include "recognition/side_recognition.hpp"
-#include "utils/drawBBoxes.hpp"
+#include "utils/bboxesUtils.hpp"
 #include "utils/perfTesting.h"
 #include <set>
 
@@ -12,8 +12,6 @@ using namespace std;
 
 TrackBalls::TrackBalls(Mat frame, vector<Ball> bb) {
     // legacy::TrackerCSRT::Params params;
-    const int delta = 5;
-
     for(auto ball : bb) {
         Rect aug_bbox = Rect(ball.bbox.x-delta, ball.bbox.y-delta, ball.bbox.width+2*delta, ball.bbox.height+2*delta);
         Ball aug_ball{aug_bbox, ball.type};
@@ -131,4 +129,14 @@ void TrackBalls::adjustBalls(vector<int> found_indexes, vector<int> lost_indexes
     for(int i : lost_indexes) multi_tracker[i]->init(frame, balls[i].bbox);
 
     return;
+}
+
+vector<Ball> TrackBalls::getRealBalls() {
+    vector<Ball> ret;
+    for(Ball ball : balls) {
+        Rect red_bbox = Rect(ball.bbox.x+delta, ball.bbox.y+delta, ball.bbox.width-2*delta, ball.bbox.height-2*delta);
+        ret.push_back(Ball{red_bbox, ball.type});
+    }
+
+    return ret;
 }
