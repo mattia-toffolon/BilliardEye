@@ -54,4 +54,13 @@ cv::Mat equalizedMasked(cv::Mat img, cv::InputArray mask=cv::noArray());
  */
 std::vector<Ball> classifyBalls(cv::Mat image, std::vector<cv::Rect> windows);
 
+/**
+ * @brief Utility function to get an upscaled image for visualization purposes
+ * 
+ * @param img image to magnify
+ * @param magnification scale to be applied
+ * @return cv::Mat scaled image
+ */
+cv::Mat magnifyImg(cv::Mat img, float magnification);
+
 #endif /* BALLTYPE_H */
