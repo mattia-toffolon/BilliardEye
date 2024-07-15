@@ -22,12 +22,32 @@ The main challenges of this sub-task are:
   (some of them might be of a brightness approaching white)
 \end{enumerate}
 
+A typical input image will look like this:
+\begin{figure}
+  \includegraphics[width=0.6\textwidth]{./imgs/cueball_grey.png}
+  \caption{greyscale image of a cueball}
+\end{figure}
+\begin{figure}
+  \includegraphics[width=0.6\textwidth]{./imgs/difficult_solid.png}
+  \caption{greyscale image of a solid ball}
+\end{figure}
+
 My first approach was to attempt Otsu thresholding segmentation
 on a grayscale version of the ball image, 
 via the built-in \verb|THRESH_OTSU| option in the \verb|threshold| function.
 Unfortunately this produced a very inconsistent separation between white and 
 colored pixels which only sometimes corresponded to a real white region 
-on the image.
+on the image, especially for images of solid colored balls.
+
+\begin{figure}
+  \includegraphics[width=0.6\textwidth]{./imgs/cueball_otsu.png}
+  \caption{otsu segmentation of a cueball}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=0.6\textwidth]{./imgs/bad_otsu.png}
+  \caption{failed otsu segmentation of a solid ball}
+\end{figure}
 
 My second attempt involved color-space clustering via \verb|kmeans|. 
 The underlying intuition is as such: a well-cropped window of a ball should 
@@ -55,6 +75,11 @@ intensity of the remaining pixels is stretched to occupy the full
 0-255 range. A relative threshold (chosen on the basis of the example 
 data) is then applied and the ball type is decided based on the 
 percentage of white pixels remaining.
+
+\begin{figure}
+  \includegraphics[width=0.6\textwidth]{./imgs/difficult_solid_identified.png}
+  \caption{correctly segmented white part of a solid ball}
+\end{figure}
 
 Unfortunately, this method produces some incorrect classifications 
 and cannot distinguish between a solid color ball and an 8-ball. 
