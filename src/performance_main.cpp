@@ -15,13 +15,14 @@
 using namespace cv;
 using namespace std;
 
-void solidTypes(const vector<Ball> &all, vector<Rect> &eight, vector<Rect> &cue, vector<Rect> &solid, vector<Rect> &striped){
+void fillTypes(const vector<Ball> &all, vector<Rect> &eight, vector<Rect> &cue, vector<Rect> &solid, vector<Rect> &striped){
+    std::cout << "AAAAAAAAA\n";
     for(auto b : all){
         switch (b.type) {
-            case BallType::CUE : cue.push_back(b.bbox); 
-            case BallType::EIGHT : eight.push_back(b.bbox); 
-            case BallType::SOLID : solid.push_back(b.bbox); 
-            case BallType::STRIPED : striped.push_back(b.bbox); 
+            case BallType::CUE : cue.push_back(b.bbox); break;
+            case BallType::EIGHT : std::cout << "yippeee\n";eight.push_back(b.bbox); break;
+            case BallType::SOLID : solid.push_back(b.bbox); break;
+            case BallType::STRIPED : striped.push_back(b.bbox); break;
         }
     }
 }
@@ -56,9 +57,6 @@ int main(int argc, char** argv) {
         std::cout << "not enough an arguments provided";
         exit(1);
     }
-    Rect r1(0,0, 10, 10);
-    Rect r2(6,6, 6, 6);
-    std::cout << (r1 & r2) << std::endl;
     int samples = std::stoi(argv[2]);
     std::string directory = "/sample";
     std::string ground_mask_first = "/ground_mask_first";
@@ -89,7 +87,6 @@ int main(int argc, char** argv) {
     std::vector<float> ioufcueseg,ioufeightseg,ioufsolidseg,ioufstripeseg
                         ,ioulcueseg,iouleightseg,ioulsolidseg,ioulstripeseg;
     for(int i = 0; i < samples; i ++){
-        std::cout << i << std::endl;
         std::vector<Ball> curft, curfp, curlt, curlp;
         std::vector<Rect> curftr, curfpr, curltr, curlpr;
         std::vector<Rect>
@@ -99,12 +96,15 @@ int main(int argc, char** argv) {
             solidft, solidfp, solidlt, solidlp;
         curft = ground_truth_balls_first[i];
         curfp = predicted_balls_first[i];
+        for(auto b : curfp){
+            std::cout << b.bbox << b.type << std::endl;
+        }
         curlt = ground_truth_balls_last[i];
         curlp = predicted_balls_last[i];
-        solidTypes(curft, eightft, cueft, solidft, stripeft);
-        solidTypes(curlt, eightlt, cuelt, solidlt, stripelt);
-        solidTypes(curfp, eightfp, cuefp, solidfp, stripefp);
-        solidTypes(curlp, eightlp, cuelp, solidlp, stripelp);
+        fillTypes(curft, eightft, cueft, solidft, stripeft);
+        fillTypes(curlt, eightlt, cuelt, solidlt, stripelt);
+        fillTypes(curfp, eightfp, cuefp, solidfp, stripefp);
+        fillTypes(curlp, eightlp, cuelp, solidlp, stripelp);
 
         for(int i = 0; i < curft.size(); i ++){
             curftr.push_back(curft[i].bbox);
@@ -143,21 +143,25 @@ int main(int argc, char** argv) {
         cuelpseg = drawCircles(cuelp, (predicted_masks[i]).size());
         ioufcueseg.push_back(intersectionOverUnion(cueftseg, cuefpseg));
         ioulcueseg.push_back(intersectionOverUnion(cueltseg, cuelpseg));
-        ioufcue.push_back(std::accumulate(cuefiou.begin(),cuefiou.end(), 0));
-        ioulcue.push_back(std::accumulate(cueliou.begin(),cueliou.end(), 0));
+        ioufcue.push_back(std::accumulate(cuefiou.begin(),cuefiou.end(), 0.0)/static_cast<float>(cuefiou.size()));
+        ioulcue.push_back(std::accumulate(cueliou.begin(),cueliou.end(), 0.0)/static_cast<float>(cueliou.size()));
         //eight balls
         vector<float> eightfiou, eightliou;
         eightfiou = manyToManyIoU(eightft, eightfp);
         eightliou = manyToManyIoU(eightlt, eightlp);
         Mat eightftseg, eightltseg, eightfpseg, eightlpseg;
         eightftseg = (ground_truth_masks_first[i] == static_cast<char>(BallType::EIGHT));
+        //imshow("eight true", eightftseg);
         eightltseg = (ground_truth_masks_last[i] == static_cast<char>(BallType::EIGHT));
         eightfpseg = drawCircles(eightfp, (predicted_masks[i]).size());
+        //imshow("eight predicted", eightfpseg);
+        //imshow("eight inter", (eightfpseg & eightftseg));
+        //waitKey(0);
         eightlpseg = drawCircles(eightlp, (predicted_masks[i]).size());
         ioufeightseg.push_back(intersectionOverUnion(eightftseg, eightfpseg));
         iouleightseg.push_back(intersectionOverUnion(eightltseg, eightlpseg));
-        ioufeight.push_back(std::accumulate(eightfiou.begin(),eightfiou.end(), 0));
-        iouleight.push_back(std::accumulate(eightliou.begin(),eightliou.end(), 0));
+        ioufeight.push_back(std::accumulate(eightfiou.begin(),eightfiou.end(), 0.0)/static_cast<float>(eightfiou.size()));
+        iouleight.push_back(std::accumulate(eightliou.begin(),eightliou.end(), 0.0)/static_cast<float>(eightliou.size()));
         //solid balls
         vector<float> solidfiou, solidliou;
         solidfiou = manyToManyIoU(solidft, solidfp);
@@ -169,8 +173,8 @@ int main(int argc, char** argv) {
         solidlpseg = drawCircles(solidlp, (predicted_masks[i]).size());
         ioufsolidseg.push_back(intersectionOverUnion(solidftseg, solidfpseg));
         ioulsolidseg.push_back(intersectionOverUnion(solidltseg, solidlpseg));
-        ioufsolid.push_back(std::accumulate(solidfiou.begin(),solidfiou.end(), 0));
-        ioulsolid.push_back(std::accumulate(solidliou.begin(),solidliou.end(), 0));
+        ioufsolid.push_back(std::accumulate(solidfiou.begin(),solidfiou.end(), 0.0)/static_cast<float>(solidfiou.size()));
+        ioulsolid.push_back(std::accumulate(solidliou.begin(),solidliou.end(), 0.0)/static_cast<float>(solidliou.size()));
         //striped
         vector<float> stripefiou, stripeliou;
         stripefiou = manyToManyIoU(stripeft, stripefp);
@@ -182,12 +186,29 @@ int main(int argc, char** argv) {
         stripedlpseg = drawCircles(stripelp, (predicted_masks[i]).size());
         ioufstripeseg.push_back(intersectionOverUnion(stripedftseg, stripedfpseg));
         ioulstripeseg.push_back(intersectionOverUnion(stripedltseg, stripedlpseg));
-        ioufstripe.push_back(std::accumulate(stripefiou.begin(),stripefiou.end(), 0));
-        ioulstripe.push_back(std::accumulate(stripeliou.begin(),stripeliou.end(), 0));
+        ioufstripe.push_back(std::accumulate(stripefiou.begin(),stripefiou.end(), 0.0)/static_cast<float>(stripefiou.size()));
+        ioulstripe.push_back(std::accumulate(stripeliou.begin(),stripeliou.end(), 0.0)/static_cast<float>(stripeliou.size()));
     }
     for(int i = 0; i < samples; i ++){
-        std::cout << "precision first " << precisionsf[i] << std::endl;
-        std::cout << "precision last " << precisionsl[i] << std::endl;
+        std::cout << "sample " << i << std::endl;
+        std::cout << "mean average precision first " << precisionsf[i] << std::endl;
+        std::cout << "mean average precision last " << precisionsl[i] << std::endl;
+        std::cout << "mean iou bbox first cue " << ioufcue[i] << std::endl;
+        std::cout << "mean iou bbox last cue " << ioulcue[i] << std::endl;
+        std::cout << "mean iou bbox first eight " << ioufeight[i] << std::endl;
+        std::cout << "mean iou bbox last eight " << iouleight[i] << std::endl;
+        std::cout << "mean iou bbox first solid " << ioufsolid[i] << std::endl;
+        std::cout << "mean iou bbox last solid " << ioulsolid[i] << std::endl;
+        std::cout << "mean iou bbox first stripe " << ioufstripe[i] << std::endl;
+        std::cout << "mean iou bbox last stripe " << ioulstripe[i] << std::endl;
+        std::cout << "mean iou segmentation first cue " << ioufcueseg[i] << std::endl;
+        std::cout << "mean iou segmentation last cue " << ioulcueseg[i] << std::endl;
+        std::cout << "mean iou segmentation first eight " << ioufeightseg[i] << std::endl;
+        std::cout << "mean iou segmentation last eight " << iouleightseg[i] << std::endl;
+        std::cout << "mean iou segmentation first solid " << ioufsolidseg[i] << std::endl;
+        std::cout << "mean iou segmentation last solid " << ioulsolidseg[i] << std::endl;
+        std::cout << "mean iou segmentation first stripe " << ioufstripeseg[i] << std::endl;
+        std::cout << "mean iou segmentation last stripe " << ioulstripeseg[i] << std::endl;
         std::cout << "precision mask first" << precisionMaskFirst[i] << std::endl;
         std::cout << "precision mask last" << precisionMaskLast[i] << std::endl;
         std::cout << std::endl;

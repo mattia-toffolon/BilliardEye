@@ -64,6 +64,7 @@ int main(int argc, char** argv) {
     vector<Ball> balls = classifyBalls(img_first, bboxes);
     std::cout <<output + "/predicted_balls_first.txt" << std::endl;
     writeBallsFile(output + "/predicted_balls_first.txt", balls);
+    imwrite(output + "/output_first.png", nice_render(img_first, points, balls));
 
     img_first = vid.nextFrame();
     TrackBalls tracker(img_first, balls);
@@ -83,22 +84,23 @@ int main(int argc, char** argv) {
         Mat curfrend = rend.nextFrame();
         if(curfrend.rows == 0) break;
         fr = curfrend;
-        resize(fr, fr, spot.size());
+        resize(curfrend, curfrend, spot.size());
         Mat curfr = vid.nextFrame();
-        fr.copyTo(curfr(spot));
+        curfrend.copyTo(curfr(spot));
         imshow("current", curfr);
         //waitKey(0);
         outvideo.write(curfr);
-        imshow(WINDOW_NAME, fr);
+        imshow(WINDOW_NAME, curfr);
         // waitKey(0);
     }
     outvideo.release();
 
     const string traj = "/predicted_trajectory.png";
-    imwrite(argv[2] + traj, fr);
+    imwrite(output + traj, fr);
     // string filename_balls = "/balls.txt";
     auto ballin = rend.getBalls();
     writeBallsFile(output + "/predicted_balls_last.txt", ballin);
+    imwrite(output + "/output_last.png", nice_render(img_last, points, ballin));
 
     // string filename_mask = "/mask.png";
     // imwrite(argv[2] + filename_mask[2], mask);

@@ -29,31 +29,6 @@ bool arelinessimilar(const struct linestr a, const struct linestr b, double thre
     return (dist1 < thresh && dist4 < thresh) || (dist2 < thresh && dist3 < thresh);
 }
 
-//see nonbinarykmeans for full explanation
-//TODO: remove?
-Mat simplekmeans(const Mat in, int k, char* colors){
-    std::vector<Mat> bgr;
-    Mat img(in);
-    split(img, bgr);
-
-    Mat p = Mat::zeros(img.cols*img.rows, 3, CV_32F);
-
-    for(int i=0; i<img.cols*img.rows; i++) {
-        p.at<float>(i,2) = bgr[0].data[i] / 255.0;
-        p.at<float>(i,3) = bgr[1].data[i] / 255.0;
-        p.at<float>(i,4) = bgr[2].data[i] / 255.0;
-    }
-
-    Mat clust = Mat::zeros(img.rows, img.cols, CV_8U);
-    Mat labs,ctrs;
-    kmeans(p, k, labs, TermCriteria( TermCriteria::EPS+TermCriteria::MAX_ITER, 10, 1.0), 3, KMEANS_PP_CENTERS, ctrs);
-
-    for(int i=0; i<img.cols*img.rows; i++) {
-        clust.at<char>(i/img.cols, i%img.cols) = static_cast<char>(colors[labs.at<int>(0,i)]);
-    }
-
-    return clust;
-}
 
 Mat nonbinarykmeans(const Mat in, int k, int blurSize){
     Mat img;
@@ -206,6 +181,7 @@ std::vector<struct linestr> line4line(Mat img, double thresh){
     }
     //imshow(WINDOW_NAME, show);
     //waitKey(0);
+    assert(good.size() == 4);
     return good;
 }
 
@@ -228,6 +204,7 @@ std::vector<Point2f> find_vertices(std::vector<struct linestr> lines, int max_co
             }
         }
     }
+    assert(good.size() == 4);
     return good;
 }
 

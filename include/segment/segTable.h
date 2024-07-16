@@ -52,10 +52,6 @@ std::vector<cv::Point2f> order_points(std::vector<cv::Point2f> point4);
  */
 cv::Vec3b meanMask(cv::Mat img, cv::Mat mask);
 
-/**
- * @brief applies k-means to in, using "colors" as final result to color the output image
- */
-cv::Mat simplekmeans(const cv::Mat in, int k, char* colors);
 
 /**
  * @brief returns a binary mask of in where only the pixels with hue within hue(color)+-thresh have value different from 0
