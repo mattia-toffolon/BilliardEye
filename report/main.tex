@@ -16,12 +16,14 @@
  left=20mm,
  top=20mm,
  }
- \usepackage{graphicx}
- \usepackage{titling}
+\usepackage{graphicx}
+\usepackage{titling}
+\usepackage{subcaption}
+\usepackage{caption}
 
  \title{Billiard table segmentation, balls location, segmentation and tracking
 }
-\author{Artico Giovanni Giacomin Marco Toffolon Mattia}
+\author{Artico Giovanni, Giacomin Marco, Toffolon Mattia}
 \date{July 2024}
  
 \usepackage{fancyhdr}
@@ -52,14 +54,18 @@
 
 \maketitle
 
-\section*{Table Segmentation (Artico Giovanni)}
-\input{table_segmentation.tex}
-\section*{side Recognition (Artico Giovanni)}
-\input{sides_recognition.tex}
-\section*{Tracker Architecture (Artico Giovanni?)}
-\input{tracker_design.tex}
-\section*{Minimap Rendering (Artico Giovanni)}
-\input{minimap_renderer.tex}
-\section*{results}
-\input{results.tex}
+% \section*{Table Segmentation (Artico Giovanni)}
+% \input{table_segmentation.tex}
+% \section*{side Recognition (Artico Giovanni)}
+% \input{sides_recognition.tex}
+% \section*{Tracker Architecture (Artico Giovanni?)}
+% \input{tracker_design.tex}
+% \section*{Minimap Rendering (Artico Giovanni)}
+% \input{minimap_renderer.tex}
+% \section*{results}
+% \input{results.tex}
+
+\section*{Ball Localization and Segmentation (Toffolon Mattia)}
+\input{ball_localization.tex}
+
 \end{document}
