@@ -29,43 +29,49 @@ using namespace std;
 
 const string WINDOW_NAME = "window_main";
 
+/*
+ * argument format:
+ * 1)path to video mp4 file
+ * 2)path to first frame png file
+ * 3)path to directory to write the program outputs
+ */
 int main(int argc, char** argv) {
 
-    if(argc < 3){
+    if(argc < 4){
         cout << "Not enough arguments provided";
         exit(1);
     }
 
     string clip_name = argv[1];
-    // cout<<clip_name<<endl;
 
     const string video_path = argv[1];
     const string img_path = argv[2];
 
-    Mat img_first = imread(img_path);
-
+    //table detection
     VideoReader vid(video_path);
     Mat img_last = vid.lastFrame();
     Mat mask;
+    //vertices of the table
     vector<Point2f> points = find_table(img_last, mask);
     std::string output = argv[3];
+    //since the prediction is done on the last frame we write only
+    //one predicted table segmentation
     imwrite( output + "/predicted_mask.png", mask);
 
+    //perspective transform for rendering
     Mat transf = getTransformation(img_last, points);
 
-    // Mat show;
-    // warpPerspective(img_last, show, transf, img_last.size());
-    // imshow(WINDOW_NAME,show);
-    // waitKey(0);
-
+    //ball detection
+    Mat img_first = imread(img_path);
     vector<Rect> bboxes = getBBoxes(img_first, mask, transf);
-    drawBBoxes(img_first, bboxes);
 
+    //ball classification
     vector<Ball> balls = classifyBalls(img_first, bboxes);
-    std::cout <<output + "/predicted_balls_first.txt" << std::endl;
+    //writing the prediction of the first frame
     writeBallsFile(output + "/predicted_balls_first.txt", balls);
     imwrite(output + "/output_first.png", nice_render(img_first, points, balls));
 
+    //creating the objects to render the video
     img_first = vid.nextFrame();
     TrackBalls tracker(img_first, balls);
     int width = 600;
@@ -75,6 +81,7 @@ int main(int argc, char** argv) {
     TableRenderer rend(vid, tracker, balls, transf, width, height);
     VideoWriter outvideo(output + "/render.mp4",VideoWriter::fourcc('m','p','4','v'),20, img_last.size());
     vid = VideoReader(video_path);
+    //region of the minimap
     Rect spot(10, img_last.rows*2/3 - 10, img_last.rows*2/3,  img_last.rows/3);
     Mat fr;
     int i = 0;
@@ -87,36 +94,16 @@ int main(int argc, char** argv) {
         resize(curfrend, curfrend, spot.size());
         Mat curfr = vid.nextFrame();
         curfrend.copyTo(curfr(spot));
-        imshow("current", curfr);
-        //waitKey(0);
         outvideo.write(curfr);
-        imshow(WINDOW_NAME, curfr);
-        // waitKey(0);
     }
     outvideo.release();
 
+    //writing the last frame of the render to have the trajectory
     const string traj = "/predicted_trajectory.png";
     imwrite(output + traj, fr);
-    // string filename_balls = "/balls.txt";
     auto ballin = rend.getBalls();
     writeBallsFile(output + "/predicted_balls_last.txt", ballin);
     imwrite(output + "/output_last.png", nice_render(img_last, points, ballin));
-
-    // string filename_mask = "/mask.png";
-    // imwrite(argv[2] + filename_mask[2], mask);
-
-    // Mat layer = Mat::zeros(img_last.size(), CV_8UC3);
-    // vector<vector<Point>> poly_table;
-    // vector<Point> tmp;
-    // for(int i = 0; i < 4; i ++) {
-    //     tmp.push_back(points[i]);
-    // }
-    // Mat out;
-    // poly_table.push_back(tmp);
-    // fillPoly(layer, poly_table, Scalar(0, 0, 255));
-    // addWeighted(img_last, 0.5, layer, 0.5, 0, out);
-    // imshow(WINDOW_NAME, out);
-    // waitKey(0);
 
     return 0;
 }
