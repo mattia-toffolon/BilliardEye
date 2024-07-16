@@ -80,7 +80,7 @@ cv::Mat TableRenderer::nextFrame(){
         bbs.erase(bbs.begin()+removed[i],bbs.begin()+removed[i]+1);
     }
     if(remove_track.size() > 0){
-        this->tracker.removeBalls(remove_track, fram);
+        this->tracker.removeBalls(remove_track);
     }
 
     Mat screen = curimg.clone();

@@ -1,0 +1,37 @@
+To perform the tracking of the balls along the video we decided not to run the ball detection algorithm on each frame since it could generate false positives and negatives.
+Instead, we preferred using the \textit{Tracker} classes provided by \textit{OpenCV} that are supposed to provide greater stability and performance with respect to manual detection.
+Initially, we adopted the \textit{MultiTracker} class but it didn't provide the level of control we needed. In fact, using such class it was not possibile to distinguish
+between tracked balls leading to problems such as not being able to know which ball is lost when the tracker fails. Therefore, we decided to use a vector of single trackers,
+each one following a specific ball along the video.
+
+Since the are multiple types of trackers provided by \textit{OpenCV}, a testing phase was needed to understand which one better suited our problem. Firstly, all trackers
+relying on Deep Learning were removed from the candidate list since their use is prohibited by the project guidelines. Some tests were run with the remaing ones, and the best tracker,
+albeit the one with the longest running time, proved to be \textit{TrackerCSRT}.
+
+Having chose the tracker type, the \textit{TrackBalls} class was created. This class has as attributes a vector of \textit{TrackerCSRT} objects, a vector of \textit{Ball} structs
+and an integer constant which use will be later explained. In the following paragraphs the methods of the class and therefore the actual use of the tracker will be presented.
+
+The class constructor takes as parameters a vector of \textit{Ball} structs, which, to recall, are composed by a ball type and a bounding box (Rect object), and the initial frame.
+These objects are used to initialize the class attributes. From practical experience we have seen that using tight bounding boxes can sometimes lead to a tracker failing
+to recognize the tracked ball between frames. Therefore, before the attributes initialization, the boxes width of the given \textit{Ball} structs are expanded by the constant
+previously mentioned. 
+
+To update the trackers and obtain the new state (bounding box position) of the balls, the \textit{update} method was implemented. The latter receives as parameters the next 
+video frame and a vector of integers passed by reference which is shared with the renderer. For each tracked ball, the relative tracker is updated using the given frame.
+If the tracker peforms such operation succesfully, then the bounding box of the ball is updated only if the intersection over union (IoU) between old and new box is under
+the threshold of $0.8$ and the relative box index is added to a specific vector. This condition was set to avoid updates of balls which are still, resulting into a better final video rendering in which only moving balls actually move
+and the drawn trajectories are more straight. Instead, if the tracker fails, the ball box isn't updated and the relative index is added into a different vector.
+
+If at the end of the update phase this last vector has positive size, ball recovery operations are carried and if unsuccessful, the relative ball removal from the attributes 
+must be carried. Now these steps will be explained. In this case, the ball localization algorithm is run on the new video frame. If the number of detected balls equals the one
+of the tracked balls then the recovery of the lost balls can be done. Firstly, for each ball which tracking update was succesfully performed, the closest detected bounding box
+is assigned to it and removed from the list of the found ones. Then, the same procedure is carried on the lost balls with the remaining boxes. For each pair of lost ball and box,
+the relative tracker and \textit{Ball} struct is re-initialized accordingly.
+
+Instead, in the case in which the localization returns a different number of boxes, the tracking update is declared as failed and the lost balls are deleted. 
+The \textit{removeBalls} method was implemented to perform such operation. Using the given vector of indexes representing the list of balls to delete, the respective
+tracker and \textit{Ball} struct are erased from the vector attributes.
+
+Additionaly, a \textit{getRealBalls} method was implemented to obtained the de-scaled (true size) bounding box versions of the balls using the same constant adopted in
+the constructor. This was useful to obtain the real-size boxes at the end of the tracking, in the last video frame, and therefore to be able to compute correctly
+the performances also in such case.
