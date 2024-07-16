@@ -1,6 +1,8 @@
 #include "rendering/render_table.hpp"
+#include "opencv2/imgcodecs.hpp"
 #include "opencv2/imgproc.hpp"
 #include "utils/bboxesUtils.hpp"
+#include "../data/table.h"
 #include <algorithm>
 using namespace cv;
 
@@ -93,7 +95,9 @@ cv::Mat TableRenderer::nextFrame(){
     }
 
     const std::string TABLE_PATH = "../data/table.png";
-    Mat table = imread(TABLE_PATH, IMREAD_UNCHANGED);
+    //Mat table = imread(TABLE_PATH, IMREAD_UNCHANGED);
+    std::vector<unsigned char> img_data(table_png, table_png + table_png_len);
+    Mat table = cv::imdecode(img_data, IMREAD_UNCHANGED);
 
     const float TABLE_RATIO = 1.3;
     resize(table, table, Size(screen.cols*TABLE_RATIO, screen.rows*TABLE_RATIO));
