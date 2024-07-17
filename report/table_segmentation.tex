@@ -15,7 +15,7 @@ color, therefore it is sensible to assume it would be thresholded the same
 way throughout. This proved unfruitful, as the segmentation was too rough.
 The second approach was to use kmeans clustering, in particular exploiting the
 adaptability of the algorithm in order to use spatial features too to improve
-the segmentation, as we assume the table is a continuous entity. Out of the k clusters obtained the most centered one was picked.
+the segmentation, as we assume the table is a continuous entity. Out of the k clusters obtained the most centered one was picked as shown in figure \ref{fig:kmeanstabol}.
 The segmentation obtained was fairly precise but contained multiple disconnected
 components, however we can consider the table the biggest and pick it, in particular
 before doing this operation open is applied in order to remove weakly connected objects.
@@ -25,10 +25,9 @@ images it fails, as it clusters some unrelated parts of the table with the fabri
 for example, to lighting.
 For this reason further processing was required, given we have obtained a rough mask of
 the table we now obtain the mean color of the image in the pixels where the mask is non-zero.
-After this we use a color thresholding by distance from the mean and the same way we 
+After this we use a color thresholding by distance, as shown in figure \ref{fig:colorsegtabol} from the mean and the same way we 
 did before to obtain the largest connectedcomponent. thresholding on the hue
-is the most robust (instead of using the distance between bgr colors), in particular a low distance, 5, was chosen, but similar distances give similar
-results.\par
+is the most robust (instead of using the distance between bgr colors), in particular a low distance, 5, was chosen, but different values close to 5 similar results.\par
 after having obtained this result dilation is applied in order to remove some noise from the mask,
 for example balls or other objects. Afterwards the hough transform is used to find the lines, 
 with a threshold in order to remove similar lines.
@@ -40,18 +39,29 @@ As for the the other two other cases they are ignored for a compromise in perfor
 cases the change in illumination is severe, causing some parts of the table to have extreme 
 differences in color, for example the internal parts of the table. It is also to consider that the morphological operations used to isolate the connected component of the table will also worsen
 the general outlines. For this reason the output of the line detection is preferred, as it yields
-more consistent and stable results
+more consistent and stable results, as shown in figure \ref{fig:finalsegtabol}
 
-\begin{figure}
+\begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{./imgs/kmeans_cluster.png}
+    \begin{subfigure}[b]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{./imgs/kmeans_cluster.png}
     \caption{initial kmeans clustering result}
-    \vspace{30}
+    \label{fig:kmeanstabol}
+    \end{subfigure}
     \centering
-    \includegraphics[width=0.6\textwidth]{./imgs/color_cluster.png}
-    \caption{color clustering result}
-    \vspace{30}
-    \includegraphics[width=0.6\textwidth]{./imgs/maskfill.png}
-    \caption{mask obtained from filling the area contained in the lines found}
-\end{figure}
+    \begin{subfigure}[b]{0.4\textwidth}
 
+    \includegraphics[width=\textwidth]{./imgs/color_cluster.png}
+    \caption{color clustering result}
+    \label{fig:colorsegtabol}
+    \end{subfigure}
+    \vspace{30}
+    \begin{subfigure}[b]{0.4\textwidth}
+
+    \includegraphics[width=\textwidth]{./imgs/maskfill.png}
+    \caption{mask obtained from filling the area contained in the lines found}
+    \label{fig:finalsegtabol}
+    \end{subfigure}
+    \caption{stages of the segmentation}
+    \vspace{30}
+\end{figure}
