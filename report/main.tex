@@ -2,9 +2,9 @@
 \usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
-    linkcolor=blue,
-    filecolor=magenta,      
-    urlcolor=cyan,
+    linkcolor=black,
+    filecolor=black,      
+    urlcolor=black,
     pdftitle={Overleaf Example},
     pdfpagemode=FullScreen,
     }
@@ -16,50 +16,88 @@
  left=20mm,
  top=20mm,
  }
- \usepackage{graphicx}
- \usepackage{titling}
+\usepackage{graphicx}
+\usepackage{titling}
+\usepackage{subcaption}
+\usepackage{caption}
 
- \title{Billiard table segmentation, balls location, segmentation and tracking
+ \title{\huge \textbf{Sport video analysis for billiard matches} \newline \Large Computer Vision Project - June/July 2024
 }
-\author{Artico Giovanni Giacomin Marco Toffolon Mattia}
-\date{July 2024}
+\author{Artico Giovanni \\ \href{mailto:giovanni.artico@studenti.unipd.it}{giovanni.artico@studenti.unipd.it} \\ \\
+        Giacomin Marco \\  \href{mailto:marco.giacomin@studenti.unipd.it}{marco.giacomin@studenti.unipd.it} \\ \\
+        Toffolon Mattia \\ \href{mailto:mattia.toffolon@studenti.unipd.it}{mattia.toffolon@studenti.unipd.it}}
+\date{}
  
 \usepackage{fancyhdr}
-\fancypagestyle{plain}{%  the preset of fancyhdr 
-    \fancyhf{} % clear all header and footer fields
-    \fancyfoot[L]{\thedate}
-    \fancyhead[L]{Description of Assignment}
-    \fancyhead[R]{\theauthor}
-}
+% \fancypagestyle{plain}{%  the preset of fancyhdr 
+%     \fancyhf{} % clear all header and footer fields
+%     \fancyfoot[L]{\thedate}
+%     \fancyhead[L]{Computer Vision AY 2023/2024}
+%     \fancyhead[R]{\theauthor}
+% }
 \makeatletter
-\def\@maketitle{%
-  \newpage
-  \null
-  \vskip 1em%
-  \begin{center}%
-  \let \footnote \thanks
-    {\LARGE \@title \par}%
-    \vskip 1em%
-    %{\large \@date}%
-  \end{center}%
-  \par
-  \vskip 1em}
-\makeatother
+% \def\@maketitle{%
+%   \newpage
+%   \null
+%   \vskip 1em%
+%   \begin{center}%
+%   \let \footnote \thanks
+%     {\LARGE \@title \par}%
+%     \vskip 1em%
+%     %{\large \@date}%
+%   \end{center}%
+%   \par
+%   \vskip 1em}
+% \makeatother
 
 \usepackage{lipsum}  
 
 \begin{document}
 
 \maketitle
+\vspace{10mm}
+\tableofcontents
 
-\section*{Table Segmentation (Artico Giovanni)}
+\newpage
+
+\section{Introduction}
+\input{intro.tex}
+
+\section{Table Segmentation (Artico Giovanni)}
 \input{table_segmentation.tex}
-\section*{side Recognition (Artico Giovanni)}
+
+\section{Table Side Recognition (Artico Giovanni)}
 \input{sides_recognition.tex}
-\section*{Tracker Architecture (Artico Giovanni?)}
-\input{tracker_design.tex}
-\section*{Minimap Rendering (Artico Giovanni)}
+
+\section{Ball Localization and Segmentation (Toffolon Mattia)}
+\input{ball_localization.tex}
+
+\section{Ball Identification (Giacomin Marco)}
+\input{ball_identification.tex}
+
+\section{Ball Tracking (Toffolon Mattia)}
+\input{tracker.tex}
+
+\section{Minimap Rendering (Artico Giovanni)}
 \input{minimap_renderer.tex}
-\section*{results}
-\input{results.tex}
+
+\section{System Performance Evaluation (Giacomin Marco)}
+\label{sec:performance}
+\input{performance_measure.tex}
+
+\section{Results}
+% \input{results.tex}
+
+\section{Project Structure}
+\input{project_struct.tex}
+
+\section{Experimental Setup}
+\input{experimental_setup.tex}
+
+\section{Work Split}
+\input{work_split.tex}
+
+\section{Conclusions}
+\input{conclusions.tex}
+
 \end{document}

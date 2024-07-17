@@ -73,7 +73,7 @@ vector<Ball> TrackBalls::update(Mat frame, vector<int>& renderer_remove_idxs) {
 //     return;
 // }
 
-void TrackBalls::removeBalls(vector<int> indexEraseList, Mat frame) {
+void TrackBalls::removeBalls(vector<int> indexEraseList) {
     for(int i=indexEraseList.size()-1; i>=0; i--) {
         balls.erase(balls.begin() + indexEraseList[i]);
         multi_tracker.erase(multi_tracker.begin() + indexEraseList[i]);
@@ -106,7 +106,7 @@ void TrackBalls::adjustBalls(vector<int> found_indexes, vector<int> lost_indexes
     
     if(balls.size() > found_bboxes.size()) {
         // cout<<"NOT ENOUGH BALLS"<<endl;
-        removeBalls(lost_indexes, frame);
+        removeBalls(lost_indexes);
         renderer_remove_idxs = lost_indexes;
         return;
     }

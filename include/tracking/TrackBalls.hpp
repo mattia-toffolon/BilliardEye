@@ -18,10 +18,11 @@ class TrackBalls{
      */
     std::vector<Ball> update(cv::Mat frame, std::vector<int>& renderer_remove_idxs);
 
-    void removeBalls(std::vector<int> indexKeepList, cv::Mat frame);
-    std::vector<Ball> getRealBalls();
-    private:
+    void removeBalls(std::vector<int> indexKeepList);
 
+    std::vector<Ball> getRealBalls();
+
+    private:
 
     float sqEuclideanDist(cv::Rect r1, cv::Rect r2);
 
