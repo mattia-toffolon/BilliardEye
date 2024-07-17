@@ -1,3 +1,4 @@
+//Giovanni Artico
 #include <iostream>
 #include <string>
 #include <numeric>
@@ -154,8 +155,8 @@ int main(int argc, char** argv) {
         ioulcueseg.push_back(intersectionOverUnion(cueltseg, cuelpseg));
         //eight balls
         vector<float> eightfiou, eightliou;
-        eightfiou = manyToManyIoU(eightft, eightfp);
-        eightliou = manyToManyIoU(eightlt, eightlp);
+        eightfiou = manyToManyIoU(eightfp, eightft);
+        eightliou = manyToManyIoU(eightlp, eightlt);
         ioufeight.push_back(std::accumulate(eightfiou.begin(),eightfiou.end(), 0.0)/static_cast<float>(eightfiou.size()));
         iouleight.push_back(std::accumulate(eightliou.begin(),eightliou.end(), 0.0)/static_cast<float>(eightliou.size()));
         Mat eightftseg, eightltseg, eightfpseg, eightlpseg;
@@ -167,8 +168,8 @@ int main(int argc, char** argv) {
         iouleightseg.push_back(intersectionOverUnion(eightltseg, eightlpseg));
         //solid balls
         vector<float> solidfiou, solidliou;
-        solidfiou = manyToManyIoU(solidft, solidfp);
-        solidliou = manyToManyIoU(solidlt, solidlp);
+        solidfiou = manyToManyIoU(solidfp, solidft);
+        solidliou = manyToManyIoU(solidlp, solidlt);
         ioufsolid.push_back(std::accumulate(solidfiou.begin(),solidfiou.end(), 0.0)/static_cast<float>(solidfiou.size()));
         ioulsolid.push_back(std::accumulate(solidliou.begin(),solidliou.end(), 0.0)/static_cast<float>(solidliou.size()));
         Mat solidftseg, solidltseg, solidfpseg, solidlpseg;
@@ -180,8 +181,8 @@ int main(int argc, char** argv) {
         ioulsolidseg.push_back(intersectionOverUnion(solidltseg, solidlpseg));
         //striped
         vector<float> stripefiou, stripeliou;
-        stripefiou = manyToManyIoU(stripeft, stripefp);
-        stripeliou = manyToManyIoU(stripelt, stripelp);
+        stripefiou = manyToManyIoU(stripefp, stripeft);
+        stripeliou = manyToManyIoU(stripelp, stripelt);
         ioufstripe.push_back(std::accumulate(stripefiou.begin(),stripefiou.end(), 0.0)/static_cast<float>(stripefiou.size()));
         ioulstripe.push_back(std::accumulate(stripeliou.begin(),stripeliou.end(), 0.0)/static_cast<float>(stripeliou.size()));
         Mat stripedftseg, stripedltseg, stripedfpseg, stripedlpseg;
@@ -194,16 +195,16 @@ int main(int argc, char** argv) {
     }
     for(int i = 0; i < samples; i ++){
         std::cout << "sample " << i << std::endl;
-        std::cout << "mean average precision first " << precisionsf[i] << std::endl;
-        std::cout << "mean average precision last " << precisionsl[i] << std::endl;
-        std::cout << "mean iou bbox first cue " << ioufcue[i] << std::endl;
-        std::cout << "mean iou bbox last cue " << ioulcue[i] << std::endl;
-        std::cout << "mean iou bbox first eight " << ioufeight[i] << std::endl;
-        std::cout << "mean iou bbox last eight " << iouleight[i] << std::endl;
-        std::cout << "mean iou bbox first solid " << ioufsolid[i] << std::endl;
-        std::cout << "mean iou bbox last solid " << ioulsolid[i] << std::endl;
-        std::cout << "mean iou bbox first stripe " << ioufstripe[i] << std::endl;
-        std::cout << "mean iou bbox last stripe " << ioulstripe[i] << std::endl;
+        std::cout << "average precision first of localization " << precisionsf[i] << std::endl;
+        std::cout << "average precision last of localization " << precisionsl[i] << std::endl;
+        //std::cout << "mean iou bbox first cue " << ioufcue[i] << std::endl;
+        //std::cout << "mean iou bbox last cue " << ioulcue[i] << std::endl;
+        //std::cout << "mean iou bbox first eight " << ioufeight[i] << std::endl;
+        //std::cout << "mean iou bbox last eight " << iouleight[i] << std::endl;
+        //std::cout << "mean iou bbox first solid " << ioufsolid[i] << std::endl;
+        //std::cout << "mean iou bbox last solid " << ioulsolid[i] << std::endl;
+        //std::cout << "mean iou bbox first stripe " << ioufstripe[i] << std::endl;
+        //std::cout << "mean iou bbox last stripe " << ioulstripe[i] << std::endl;
         std::cout << "mean iou segmentation first cue " << ioufcueseg[i] << std::endl;
         std::cout << "mean iou segmentation last cue " << ioulcueseg[i] << std::endl;
         std::cout << "mean iou segmentation first eight " << ioufeightseg[i] << std::endl;
@@ -212,8 +213,10 @@ int main(int argc, char** argv) {
         std::cout << "mean iou segmentation last solid " << ioulsolidseg[i] << std::endl;
         std::cout << "mean iou segmentation first stripe " << ioufstripeseg[i] << std::endl;
         std::cout << "mean iou segmentation last stripe " << ioulstripeseg[i] << std::endl;
-        std::cout << "precision mask first" << precisionMaskFirst[i] << std::endl;
-        std::cout << "precision mask last" << precisionMaskLast[i] << std::endl;
+        std::cout << "precision mask first: " << precisionMaskFirst[i] << std::endl;
+        std::cout << "precision mask last: " << precisionMaskLast[i] << std::endl;
+        std::cout << "mIOU first: " << (ioufcueseg[i] + ioufeightseg[i] + ioufsolidseg[i] + ioufstripeseg[i] + precisionMaskFirst[i]) / 5.0 <<std::endl;
+        std::cout << "mIOU last: " << (ioulcueseg[i] + iouleightseg[i] + ioulsolidseg[i] + ioulstripeseg[i] + precisionMaskLast[i]) / 5.0 <<std::endl;
         std::cout << std::endl;
     }
 }

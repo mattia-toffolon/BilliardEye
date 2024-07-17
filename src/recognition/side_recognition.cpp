@@ -1,3 +1,4 @@
+//Giovanni Artico
 #include "recognition/side_recognition.hpp"
 #include "recognition/transformPoints.hpp"
 

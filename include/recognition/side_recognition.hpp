@@ -1,3 +1,4 @@
+//Giovanni Artico
 #ifndef SIDE_RECOGNITION
 #define SIDE_RECOGNITION
 #include <opencv2/imgproc.hpp>

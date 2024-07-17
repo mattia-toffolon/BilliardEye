@@ -1,3 +1,4 @@
+//Giovanni Artico
 #ifndef RENDER_TABLE
 #define RENDER_TABLE
 #include "tracking/TrackBalls.hpp"

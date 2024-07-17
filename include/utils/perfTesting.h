@@ -39,11 +39,11 @@ float oneToManyIoU(cv::Rect region, std::vector<cv::Rect> candidates);
 /**
  * @brief Return array of best IoUs found between pairs of one vector and the other
  * 
- * @param regions1 vector of rects
- * @param regions2 second vector of rects
+ * @param predictions vector of rects
+ * @param ground_truth second vector of rects
  * @return std::vector<float> best IoU found for each member of `regions1`
  */
-std::vector<float> manyToManyIoU(std::vector<cv::Rect> regions1, std::vector<cv::Rect> regions2);
+std::vector<float> manyToManyIoU(std::vector<cv::Rect> predictions, std::vector<cv::Rect> ground_truth);
 
 /**
  * @brief Calculates a (discrete) precision-recall curve over given BBs

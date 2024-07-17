@@ -1,3 +1,4 @@
+//Giovanni Artico
 #include "rendering/render_table.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/imgproc.hpp"
