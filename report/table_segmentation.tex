@@ -1,3 +1,5 @@
+\section{Table Segmentation}
+
 The following assumptions were made for the segmentation of the table
 \begin{itemize}
     \item the table is a uniform color and is a prevalent part of the image
@@ -42,9 +44,11 @@ the general outlines. For this reason the output of the line detection is prefer
 more consistent and stable results, as shown in figure \ref{fig:finalsegtabol}
 
 \begin{figure}[h]
+    \centering
     \includegraphics[width=0.4\textwidth]{./imgs/otsu_table.png}
     \caption{example of Otsu segmentation}
 \end{figure}
+
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.4\textwidth}
@@ -59,7 +63,7 @@ more consistent and stable results, as shown in figure \ref{fig:finalsegtabol}
     \caption{color clustering result}
     \label{fig:colorsegtabol}
     \end{subfigure}
-    \vspace{30}
+    \vspace{30pt}
     \begin{subfigure}[b]{0.4\textwidth}
 
     \includegraphics[width=\textwidth]{./imgs/maskfill.png}
@@ -67,5 +71,5 @@ more consistent and stable results, as shown in figure \ref{fig:finalsegtabol}
     \label{fig:finalsegtabol}
     \end{subfigure}
     \caption{stages of the segmentation}
-    \vspace{30}
+    \vspace{30pt}
 \end{figure}

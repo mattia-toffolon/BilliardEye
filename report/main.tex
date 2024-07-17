@@ -23,9 +23,11 @@
 
  \title{\huge \textbf{Sport video analysis for billiard matches} \newline \Large Computer Vision Project - June/July 2024
 }
-\author{Artico Giovanni \\ \href{mailto:giovanni.artico@studenti.unipd.it}{giovanni.artico@studenti.unipd.it} \\ \\
+\author{Information Engineering Department (DEI) - University of Padua \\ \\
+        Artico Giovanni \\ \href{mailto:giovanni.artico@studenti.unipd.it}{giovanni.artico@studenti.unipd.it} \\ \\
         Giacomin Marco \\  \href{mailto:marco.giacomin@studenti.unipd.it}{marco.giacomin@studenti.unipd.it} \\ \\
-        Toffolon Mattia \\ \href{mailto:mattia.toffolon@studenti.unipd.it}{mattia.toffolon@studenti.unipd.it}}
+        Toffolon Mattia \\ \href{mailto:mattia.toffolon@studenti.unipd.it}{mattia.toffolon@studenti.unipd.it} 
+}
 \date{}
  
 \usepackage{fancyhdr}
@@ -60,48 +62,33 @@
 \thispagestyle{empty}
 
 \newpage
-
 \pagenumbering{arabic}
-\section{Introduction}
-\input{intro.tex}
+% \section{Introduction}
+\include{intro.tex}
 
-\section{Table Segmentation}
-\input{table_segmentation.tex}
+\include{table_segmentation.tex}
 
-\section{Table Side Recognition}
-\input{sides_recognition.tex}
+\include{sides_recognition.tex}
 
-\section{Ball Localization and Segmentation}
-\input{ball_localization.tex}
+\include{ball_localization.tex}
 
-\section{Ball Identification}
-\input{ball_identification.tex}
+\include{ball_identification.tex}
 
-\section{Ball Tracking}
-\input{tracker.tex}
+\include{tracker.tex}
 
-\section{Minimap Rendering}
-\input{minimap_renderer.tex}
+\include{minimap_renderer.tex}
 
-\section{System Performance Evaluation}
 \label{sec:performance}
-\input{performance_measure.tex}
+\include{performance_measure.tex}
 
-\section{Results}
-\input{results.tex}
+\include{results.tex}
 
-\newpage
+\include{project_struct.tex}
 
-\section{Project Structure}
-\input{project_struct.tex}
+\include{experimental_setup.tex}
 
-\section{Experimental Setup}
-\input{experimental_setup.tex}
+\include{work_split.tex}
 
-\section{Work Split}
-\input{work_split.tex}
-
-\section{Conclusions and Future Work}
-\input{conclusions.tex}
+\include{conclusions.tex}
 
 \end{document}
