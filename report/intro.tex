@@ -1,0 +1,73 @@
+In this first section, the main purpose of the project and how the developed project has been evaluted will be presented.
+
+
+\subsection{Problem specifics}
+The aim of this project is to develop a computer vision system for analyzing video footage of various “Eight Ball”
+billiard game events by providing high-level information about the status of the match for each video frame in the form of a 
+2D top-view minimap.
+\newline
+More in detail, the system should be able to:
+\begin{itemize}
+    \item Recognize and localize all the balls inside the playing field, distinguishing them based on their category (1-the
+    white “cue ball”, 2-the black “8-ball”, 3-balls with solid colors, 4-balls with stripes);
+    \item Detect all the main lines (boundaries) of the playing field;
+    \item Segment the area inside the playing field boundaries detected in point 2 into the following categories: 1-the
+    white “cue ball”, 2-the black “8-ball”, 3-balls with solid colors, 4-balls with stripes, 5-playing field;
+    \item Represent the current state of the game in a 2D top-view visualization map, to be updated at each new frame
+    with the current ball positions and the trajectory of each ball that is moving;
+    \item Create a modified version of each video in which the generated 2D maps are 
+    overlayed on a corner of the respective frames.
+\end{itemize}
+
+\begin{flushleft}
+The available dataset consists of 10 folders each one corresponding to a different game event and containing:
+\end{flushleft}
+\begin{itemize}
+    \item a \verb|.mp4| file corresponding the event video;
+    \item a \verb|.png| file corresponding to the first frame of the video;
+    \item a \verb|.png| file corresponding to the last frame of the video.
+\end{itemize}
+
+% \begin{flushleft}
+% For each game event video frame, the developed system is able to produce: 
+% \end{flushleft}
+% \begin{itemize}
+%     \item a table segmentation mask;
+%     \item a vector of \verb|Ball| structs that, as it will be better explained later, are composed by a bounding box (\verb|Rect| object)
+%     defined by 4 parameters [x, y, width, height], where (x,y) are the top-left corner coordinates and width and height
+%     are the bounding box main dimensions, and a ball type (\textit{CUE} = 1, \textit{EIGHT} = 2, \textit{SOLID} = 3,
+%     \textit{STRIPED} = 4);
+%     \item a ball segmentatation mask derived from the produced bounding boxes;
+%     \item a 2D top-view visualization map representing the balls typology and current positions in the table, along with the trajectories of the balls
+%     that have moved in the video so far (video frames upto the current one).
+% \end{itemize}
+
+% \begin{flushleft}
+% For each game event video instead, the developed system is able to produce a modified version of the selected video in which the generated 2D maps are 
+% overlayed to the respective frames.
+% \end{flushleft}
+
+
+
+\subsection{Performance evaluation}
+To evaluate the system performance, the metrics that should be adopted are:
+\begin{itemize}
+    \item mean Average Precision (mAP);
+    \item mean Intersection over Union (mIoU).
+\end{itemize}
+\begin{flushleft}
+Further insights on how these values were computed and used can be found in Section \ref{sec:performance}.
+\end{flushleft}
+
+
+\subsection{Sub-task identification}
+To develop the system, the problem was divided into the following sub-tasks:
+\begin{itemize}
+    \item Table segmentation;
+    \item Table sides recognition;
+    \item Balls localization and segmentatation;
+    \item Balls identification;
+    \item Balls tracking;
+    \item Map rendering;
+    \item System performance evaluation.
+\end{itemize}

@@ -1,5 +1,5 @@
-The implemented algorithm that solves the ball localization and segmentation task 
-goes through the following three major steps:
+To solve the ball localization and segmentation sub-task the following algorithm was implemented.
+The latter goes through the following three major steps:
 \begin{itemize}
     \item Region proposals generation
     \item False positive filtering
@@ -7,7 +7,7 @@ goes through the following three major steps:
 \end{itemize}
 
 
-\subsection*{Region proposals generation}
+\subsection{Region proposals generation}
 This first step of the algorithm aims to generate regions of interest that will very likely 
 contain a ball. The idea behind this step is to find circular regions in the image and create for each one of them
 a bounding box to contain it. To do this, the Hough Transform algorithm applied to circles was adopted
@@ -96,7 +96,7 @@ Figure \ref{fig:fp_detection} shows an example of the results of the procedure u
 \end{figure}
 
 
-\subsection*{False positive filtering}
+\subsection{False positive filtering}
 As it can be noted from the previous image, to be able to propose regions that cover the whole set of balls in the table, many 
 false positive are generated. This happens since there are many circular regions in the table that do not come from any ball.
 The latters can belong to one of the following two classes: circles relative to holes and ones belonging to the player hand and arm if present 
@@ -180,7 +180,7 @@ negatives equal to zero across the whole provided dataset. Figure \ref{fig:filte
 \end{figure}
 
 
-\subsection*{Bounding boxes refinement}
+\subsection{Bounding boxes refinement}
 As suggested by the previous section titles, the found bounding boxes can only be considered as region proposals, since the circles
 found through \textit{HoughCircles} in the first step of the detection are not always accurate. This happens because the algorithm was used with a general range of parameters that is supposed to work 
 on every possibile image. To obtain the final set of bounding boxes, such regions must be refined.
