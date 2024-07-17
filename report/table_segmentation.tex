@@ -26,8 +26,8 @@ for example, to lighting.
 For this reason further processing was required, given we have obtained a rough mask of
 the table we now obtain the mean color of the image in the pixels where the mask is non-zero.
 After this we use a color thresholding by distance from the mean and the same way we 
-did before to obtain the largest connectedcomponent. thresholding on the hue
-is the most robust (instead of using the distance between bgr colors), in particular a low distance, 5, was chosen, but similar distances give similar
+did before to obtain the largest connectedcomponent. In particular thresholding on the hue
+is the most robust, in particular a low distance, 5, was chosen, but similar distances give similar
 results.\par
 after having obtained this result dilation is applied in order to remove some noise from the mask,
 for example balls or other objects. Afterwards the hough transform is used to find the lines, 
@@ -35,23 +35,12 @@ with a threshold in order to remove similar lines.
 The vertices of the table are found using the equations from \href{https://en.wikipedia.org/wiki/Line\%E2\%80\%93line\_intersection}{wikipedia}.
 It is to note that the last frame is used for such frame as most of the time it doesn't contain the player in the table, being at the end of
 a turn.
-The segmentation found is technically not precise, we count as part of table player, holes and billiard balls. The last can be easily solved by simply adding back the balls that are detected. 
-As for the the other two other cases they are ignored for a compromise in performance, as in some
-cases the change in illumination is severe, causing some parts of the table to have extreme 
-differences in color, for example the internal parts of the table. It is also to consider that the morphological operations used to isolate the connected component of the table will also worsen
-the general outlines. For this reason the output of the line detection is preferred, as it yields
-more consistent and stable results
 
 \begin{figure}
-    \centering
-    \includegraphics[width=0.6\textwidth]{./imgs/kmeans_cluster.png}
-    \caption{initial kmeans clustering result}
-    \vspace{30}
-    \centering
-    \includegraphics[width=0.6\textwidth]{./imgs/color_cluster.png}
-    \caption{color clustering result}
-    \vspace{30}
-    \includegraphics[width=0.6\textwidth]{./imgs/maskfill.png}
-    \caption{mask obtained from filling the area contained in the lines found}
+\includegraphics[width=0.6\textwidth]{./imgs/kmeans_cluster.png}
+\caption{initial kmeans clustering result}
 \end{figure}
-
+\begin{figure}
+\includegraphics[width=0.6\textwidth]{./imgs/color_cluster.png}
+\caption{final color clustering result}
+\end{figure}

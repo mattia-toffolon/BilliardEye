@@ -57,9 +57,11 @@
 \maketitle
 \vspace{10mm}
 \tableofcontents
+\thispagestyle{empty}
 
 \newpage
 
+\pagenumbering{arabic}
 \section{Introduction}
 \input{intro.tex}
 
@@ -86,7 +88,9 @@
 \input{performance_measure.tex}
 
 \section{Results}
-% \input{results.tex}
+\input{results.tex}
+
+\newpage
 
 \section{Project Structure}
 \input{project_struct.tex}
@@ -97,7 +101,7 @@
 \section{Work Split}
 \input{work_split.tex}
 
-\section{Conclusions}
+\section{Conclusions and Future Work}
 \input{conclusions.tex}
 
 \end{document}
