@@ -19,23 +19,28 @@ between the left and right segment. This does not work for two reasons:
 \end{itemize}
 \par
 Ultimately the way to recognize the sides was the following:
-\begin{itemize}
+\begin{enumerate}
     \item apply the Canny tranform on the initial image
     \item extract the rectangles from the transformed image
     \item rotate the rectangles so that they are horizontal
-    \item apply sobel on the x axis
+    \item apply sobel on the x axis shown in image \ref{fig:sidestabol}
     \item sum over the contribution on the middle two quarters of the image (normalized over the number of pixels contained)
     \item determine the longer sides by the highest contribution
-\end{itemize}
+\end{enumerate}
 This works because of the nature of the edges on the sides: on shorter sides there
 are only parallel lines, instead on longer there are strong lines orthogonal given by the holes.
 Only the middle two quarters are considers as to avoid counting the corner holes as edges.
 
 \begin{figure}
     \centering
-    \includegraphics[width=1.0\textwidth]{./imgs/sobel_long_side.png}
+    \begin{subfigure}[b]{\textwidth}
+    \includegraphics[width=\textwidth]{./imgs/sobel_long_side.png}
     \caption{processed rectangle of a long side}\par
-    \vspace{10pt}
-    \includegraphics[width=1.0\textwidth]{./imgs/sobel_short_side.png}
+    \end{subfigure}\vspace{10}
+    \begin{subfigure}[b]{\textwidth}
+    \includegraphics[width=\textwidth]{./imgs/sobel_short_side.png}
     \caption{processed rectangle of a long side}
+    \end{subfigure}
+    \caption{output of the processing of the sides}
+    \label{fig:sidestabol}
 \end{figure}
