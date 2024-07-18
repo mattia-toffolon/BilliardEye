@@ -17,6 +17,55 @@
 using namespace cv;
 using namespace std;
 
+vector<Rect> getBBoxes(Mat img, Mat mask, Mat transf) {
+
+    Mat img_BGR = img.clone();
+    Mat img_HSV;
+    cvtColor(img_BGR, img_HSV, COLOR_BGR2HSV);
+    
+    Mat crop_BGR = Mat::zeros(img_BGR.size(), img_BGR.type());
+    Mat crop_HSV = Mat::zeros(img_HSV.size(), img_HSV.type());
+    img_BGR.copyTo(crop_BGR, mask);
+    img_HSV.copyTo(crop_HSV, mask);
+
+    Mat sub_BGR = subtractTable(crop_BGR);
+    Mat sub_HSV = subtractTable(crop_HSV);
+
+    Mat gray_BGR, gray_HSV;
+    cvtColor(sub_BGR, gray_BGR, COLOR_BGR2GRAY);
+    Mat HSV_levels[3];
+    split(sub_HSV, HSV_levels);
+    gray_HSV = HSV_levels[2];
+
+    vector<Vec3f> circles_BGR = circlesFinder(gray_BGR, 90, 12, 5, 15);
+    vector<Vec3f> circles_HSV = circlesFinder(gray_HSV, 90, 12, 5, 15);
+
+    vector<Vec3f> circles = smartCircleMerge(circles_BGR, circles_HSV);
+    
+    vector<Rect> bboxes = bboxConverter(circles);
+
+    vector<Rect> filtered_bboxes = purgeFP(img, transf, bboxes);
+
+    vector<Rect> ref_bboxes = refineBBoxes(crop_HSV, filtered_bboxes);
+
+    return ref_bboxes;
+}
+
+Mat subtractTable(Mat img) {
+    Vec3b tableColor = getTableColor(img);
+    Mat out = img.clone();
+
+    for(int i=0; i<out.rows; i++) {
+        for(int j=0; j<out.cols; j++) {
+            Vec3b pixel = out.at<Vec3b>(i, j);
+            if(pixel == Vec3b(0, 0, 0)) continue;
+            out.at<Vec3b>(i, j) = Vec3b(abs(pixel[0]-tableColor[0]), abs(pixel[1]-tableColor[1]), abs(pixel[2]-tableColor[2]));
+        }
+    }
+
+    return out;
+}
+
 vector<Vec3f> circlesFinder(Mat img, double param1, double param2, int minRadius, int maxRadius, bool draw) {
     std::vector<cv::Vec3f> out;
     HoughCircles(img, out, HOUGH_GRADIENT, 1, img.rows/32, param1, param2, minRadius, maxRadius);
@@ -35,51 +84,6 @@ vector<Vec3f> circlesFinder(Mat img, double param1, double param2, int minRadius
     }
 
     return out;
-}
-
-vector<Rect> bboxConverter(vector<Vec3f> circles) {
-    vector<Rect> bboxes;
-    for(Vec3i c : circles) bboxes.push_back(Rect(c[0]-c[2], c[1]-c[2], 2*c[2], 2*c[2]));
-    
-    return bboxes;
-}
-
-vector<Rect> refineBBoxes(Mat img, vector<Rect> bboxes, bool draw) {
-    assert(bboxes.size() > 0);
-
-    int mean_width = 0;
-    for(Rect r : bboxes) mean_width += r.width;
-    mean_width /= bboxes.size();
-    
-    const float MULT = 2;
-    const int THR = 4;
-
-    vector<Vec3f> out;
-    Mat roi, mask, bgdModel, fgdModel;
-    for(Rect r : bboxes) {
-        Mat mask;
-        Rect new_r(r.x-(mean_width*MULT-r.width)/2, r.y-(mean_width*MULT-r.width)/2, mean_width*MULT, mean_width*MULT);
-
-        grabCut(img, mask, new_r, bgdModel, fgdModel, 3, GC_INIT_WITH_RECT);
-        Mat final = mask==3;
-
-        if(draw) {
-            imshow("window", img(new_r));
-            waitKey(0);
-            imshow("window", final);
-            waitKey(0);
-        }
-
-        vector<Vec3f> circle = circlesFinder(final, 60, 10, mean_width/3, mean_width*0.71, draw);
-        if(!circle.empty() && abs(circle[0][2]-r.width/2) > THR) {
-            out.push_back(circle[0]);
-        }
-        else {
-            out.push_back(toCircle(r));
-        }
-    }
-
-    return bboxConverter(out);
 }
 
 vector<Vec3f> smartCircleMerge(vector<Vec3f> first, vector<Vec3f> second) {
@@ -116,53 +120,11 @@ vector<Vec3f> smartCircleMerge(vector<Vec3f> first, vector<Vec3f> second) {
     return out;
 }
 
-Mat subtractTable(Mat img) {
-    Vec3b tableColor = getTableColor(img);
-    Mat out = img.clone();
-
-    for(int i=0; i<out.rows; i++) {
-        for(int j=0; j<out.cols; j++) {
-            Vec3b pixel = out.at<Vec3b>(i, j);
-            if(pixel == Vec3b(0, 0, 0)) continue;
-            out.at<Vec3b>(i, j) = Vec3b(abs(pixel[0]-tableColor[0]), abs(pixel[1]-tableColor[1]), abs(pixel[2]-tableColor[2]));
-        }
-    }
-
-    return out;
-}
-
-vector<Rect> getBBoxes(Mat img, Mat mask, Mat transf) {
-
-    Mat img_BGR = img.clone();
-    Mat img_HSV;
-    cvtColor(img_BGR, img_HSV, COLOR_BGR2HSV);
+vector<Rect> bboxConverter(vector<Vec3f> circles) {
+    vector<Rect> bboxes;
+    for(Vec3i c : circles) bboxes.push_back(Rect(c[0]-c[2], c[1]-c[2], 2*c[2], 2*c[2]));
     
-    Mat crop_BGR = Mat::zeros(img_BGR.size(), img_BGR.type());
-    Mat crop_HSV = Mat::zeros(img_HSV.size(), img_HSV.type());
-    img_BGR.copyTo(crop_BGR, mask);
-    img_HSV.copyTo(crop_HSV, mask);
-
-    Mat sub_BGR = subtractTable(crop_BGR);
-    Mat sub_HSV = subtractTable(crop_HSV);
-
-    Mat gray_BGR, gray_HSV;
-    cvtColor(sub_BGR, gray_BGR, COLOR_BGR2GRAY);
-    Mat HSV_levels[3];
-    split(sub_HSV, HSV_levels);
-    gray_HSV = HSV_levels[2];
-
-    vector<Vec3f> circles_BGR = circlesFinder(gray_BGR, 90, 12, 5, 15);
-    vector<Vec3f> circles_HSV = circlesFinder(gray_HSV, 90, 12, 5, 15);
-
-    vector<Vec3f> circles = smartCircleMerge(circles_BGR, circles_HSV);
-    
-    vector<Rect> bboxes = bboxConverter(circles);
-
-    vector<Rect> filtered_bboxes = purgeFP(img, transf, bboxes);
-
-    vector<Rect> ref_bboxes = refineBBoxes(crop_HSV, filtered_bboxes);
-
-    return ref_bboxes;
+    return bboxes;
 }
 
 vector<Rect> purgeFP(Mat img,  Mat transform, vector<Rect> bboxes){
@@ -276,4 +238,42 @@ vector<Rect> purgeByCanny(Mat canny_trns,  Mat transform, vector<Rect> bboxes, v
     }
 
     return filtered_bboxes;
+}
+
+vector<Rect> refineBBoxes(Mat img, vector<Rect> bboxes, bool draw) {
+    assert(bboxes.size() > 0);
+
+    int mean_width = 0;
+    for(Rect r : bboxes) mean_width += r.width;
+    mean_width /= bboxes.size();
+    
+    const float MULT = 2;
+    const int THR = 4;
+
+    vector<Vec3f> out;
+    Mat roi, mask, bgdModel, fgdModel;
+    for(Rect r : bboxes) {
+        Mat mask;
+        Rect new_r(r.x-(mean_width*MULT-r.width)/2, r.y-(mean_width*MULT-r.width)/2, mean_width*MULT, mean_width*MULT);
+
+        grabCut(img, mask, new_r, bgdModel, fgdModel, 3, GC_INIT_WITH_RECT);
+        Mat final = mask==3;
+
+        if(draw) {
+            imshow("window", img(new_r));
+            waitKey(0);
+            imshow("window", final);
+            waitKey(0);
+        }
+
+        vector<Vec3f> circle = circlesFinder(final, 60, 10, mean_width/3, mean_width*0.71, draw);
+        if(!circle.empty() && abs(circle[0][2]-r.width/2) > THR) {
+            out.push_back(circle[0]);
+        }
+        else {
+            out.push_back(toCircle(r));
+        }
+    }
+
+    return bboxConverter(out);
 }
