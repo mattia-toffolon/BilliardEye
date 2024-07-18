@@ -1,4 +1,4 @@
-\section{Project Structure}
+\section{Project Structure and Execution Instructions}
 
 
 The project has been developed using the CMake build system and it is organized with the
@@ -29,5 +29,15 @@ Additionaly, \verb|src| folder contains:
 \end{itemize}
 
 \noindent
-It must be noted that \verb|samples| folder is given in \verb|.zip| format for convenience.
-In order to run \verb|performance_main.cpp| successfully, such file must be unzipped.
+After successfully build the project using CMake, the two \textit{mains} can be executed under the following conditions.
+\verb|shared_main.cpp| requires the following three parameters as argument:
+\begin{enumerate}
+    \item path to the \verb|.png| file corresponding to the first video frame;
+    \item path to the \verb|.mp4| file corresponding to the video;
+    \item path to the folder in which the program output shall be saved.
+\end{enumerate}
+
+\noindent
+\verb|performance_main.cpp| instead doesn't need any argument but requires access to the \verb|samples| folder,
+which is provided as \verb|.zip| format for convenience. Therefore, in order to run the respective executable
+successfully, the \verb|.zip| file must be extracted.

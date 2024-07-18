@@ -232,7 +232,6 @@ Figure \ref{fig:refine} shows an example in which a ball was not precisely detec
     \caption{Example of bounding box refinement procedure (game1\_clip2)}
     \label{fig:refine}
 \end{figure}
-
 It must be noted that sometimes the \textit{GrabCut} algorithm fails to return an accurate ball segmentation since it sometimes consider the shadow of the ball as part of the latter.
 In such cases, \textit{HoughCircles} won't find any circles and therefore the relative bounding box won't be updated.
 For the same reason, this algorithm is adopted only in this last step and it is not used as backbone of the whole ball localization and segmentation procedure.
