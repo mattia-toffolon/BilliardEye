@@ -39,14 +39,10 @@ float oneToManyIoU(cv::Rect region, std::vector<cv::Rect> candidates);
 /**
  * @brief Return array of best IoUs found between pairs of one vector and the other
  * 
- * @param predictions vector of rects
- * @param ground_truth second vector of rects
- * @return std::vector<float> best IoU found for each member of `regions1`
  * @param predictions vector of predicted rects
  * @param truths vector of true rects
  * @return std::vector<float> best IoU found for each member of `predictions` (will be as long as it)
  */
-std::vector<float> manyToManyIoU(std::vector<cv::Rect> predictions, std::vector<cv::Rect> ground_truth);
 std::vector<float> manyToManyIoU(std::vector<cv::Rect> predictions, std::vector<cv::Rect> truths);
 
 /**
