@@ -69,6 +69,7 @@ int main(int argc, char** argv) {
     //writing the prediction of the first frame
     writeBallsFile(output + "/predicted_balls_first.txt", balls);
     imwrite(output + "/output_first.png", nice_render(img_first, points, balls));
+    imwrite(output + "/output_first_segmentation.png", nice_render_segmentation(img_first, points, balls));
 
     //creating the objects to render the video
     img_first = vid.nextFrame();
@@ -86,7 +87,7 @@ int main(int argc, char** argv) {
     int i = 0;
     while(1) {
         i++;
-        std::cout << "Frame " << i << " processed" << std::endl;
+        std::cout << "\u2764Frame\u2764" << i << "\u2764processed\u2764" << std::endl;
         Mat curfrend = rend.nextFrame();
         if(curfrend.rows == 0) break;
         fr = curfrend;
@@ -103,6 +104,7 @@ int main(int argc, char** argv) {
     auto ballin = rend.getBalls();
     writeBallsFile(output + "/predicted_balls_last.txt", ballin);
     imwrite(output + "/output_last.png", nice_render(img_last, points, ballin));
+    imwrite(output + "/output_last_segmentation.png", nice_render_segmentation(img_last, points, ballin));
 
     return 0;
 }

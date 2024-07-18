@@ -41,6 +41,10 @@ Mat drawCircles(vector<Ball> balls, Size s, Scalar color, Mat initial){
     }
     return ret;
 }
+float compute_average_precision(std::vector<Rect> prediction, std::vector<Rect> ground_truth, float threshold){
+        std::map<float, float> res = precisionRecallCurve(prediction, ground_truth, threshold);
+        return averagePrecision(res);
+}
 /*
  * letters in variable names:
  * f->First
@@ -83,11 +87,16 @@ int main(int argc, char** argv) {
     //iou threshold for map
     double threshold = 0.5;
     //metrics vectors
-    std::vector<float> precisionsf, precisionsl, precisionMaskFirst,precisionMaskLast;
-    std::vector<float> ioufcue,ioufeight,ioufsolid,ioufstripe
-                        ,ioulcue,iouleight,ioulsolid,ioulstripe;
-    std::vector<float> ioufcueseg,ioufeightseg,ioufsolidseg,ioufstripeseg
-                        ,ioulcueseg,iouleightseg,ioulsolidseg,ioulstripeseg;
+    std::vector<float> precisionsf, precisionsl,
+        precisionMaskFirst,precisionMaskLast,
+        precisionCueFirst,precisionCueLast,
+        precisionEightFirst,precisionEightLast,
+        precisionSolidFirst,precisionSolidLast,
+        precisionStripedFirst,precisionStripedLast;
+    std::vector<float> ioufcue,ioufeight,ioufsolid,ioufstriped
+                        ,ioulcue,iouleight,ioulsolid,ioulstriped;
+    std::vector<float> ioufcueseg,ioufeightseg,ioufsolidseg,ioufstripedseg
+                        ,ioulcueseg,iouleightseg,ioulsolidseg,ioulstripedseg;
     //compute performance for each sample
     for(int i = 0; i < samples; i ++){
         //current balls
@@ -98,17 +107,17 @@ int main(int argc, char** argv) {
         std::vector<Rect>
             cueft, cuefp, cuelt, cuelp,
             eightft, eightfp, eightlt, eightlp,
-            stripefp, stripeft,stripelt, stripelp,
+            stripedfp, stripedft,stripedlt, stripedlp,
             solidft, solidfp, solidlt, solidlp;
         //initializing vectors vectors
         curft = ground_truth_balls_first[i];
         curfp = predicted_balls_first[i];
         curlt = ground_truth_balls_last[i];
         curlp = predicted_balls_last[i];
-        fillTypes(curft, eightft, cueft, solidft, stripeft);
-        fillTypes(curlt, eightlt, cuelt, solidlt, stripelt);
-        fillTypes(curfp, eightfp, cuefp, solidfp, stripefp);
-        fillTypes(curlp, eightlp, cuelp, solidlp, stripelp);
+        fillTypes(curft, eightft, cueft, solidft, stripedft);
+        fillTypes(curlt, eightlt, cuelt, solidlt, stripedlt);
+        fillTypes(curfp, eightfp, cuefp, solidfp, stripedfp);
+        fillTypes(curlp, eightlp, cuelp, solidlp, stripedlp);
 
         for(int i = 0; i < curft.size(); i ++){
             curftr.push_back(curft[i].bbox);
@@ -123,13 +132,9 @@ int main(int argc, char** argv) {
             curlpr.push_back(curlp[i].bbox);
         }
 
-        //compute map
-        std::map<float, float> resf = precisionRecallCurve(curfpr, curftr, threshold);
-        std::map<float, float> resl = precisionRecallCurve(curlpr, curltr, threshold);
-        double curprecf =  averagePrecision(resf);
-        double curprecl =  averagePrecision(resl);
-        precisionsf.push_back(curprecf);
-        precisionsl.push_back(curprecl);
+        //compute map for localization alone
+        precisionsf.push_back(compute_average_precision(curfpr, curftr, threshold));
+        precisionsl.push_back(compute_average_precision(curlpr, curltr, threshold));
         //compute iou for the table
         Mat predicted_mask_first, predicted_mask_last;
         //balls are removed for better segmentation
@@ -145,7 +150,7 @@ int main(int argc, char** argv) {
         Mat cueftseg, cueltseg, cuefpseg, cuelpseg;
         ioufcue.push_back(std::accumulate(cuefiou.begin(),cuefiou.end(), 0.0)/static_cast<float>(cuefiou.size()));
         ioulcue.push_back(std::accumulate(cueliou.begin(),cueliou.end(), 0.0)/static_cast<float>(cueliou.size()));
-        //compute mean for segmentation, bounding boxes are considered 
+        //compute mean for segmentation, bounding boxes are considered as
         //perfectly circumscribing a circle
         cueftseg = (ground_truth_masks_first[i] == static_cast<char>(BallType::CUE));
         cueltseg = (ground_truth_masks_last[i] == static_cast<char>(BallType::CUE));
@@ -153,6 +158,8 @@ int main(int argc, char** argv) {
         cuelpseg = drawCircles(cuelp, (predicted_masks[i]).size());
         ioufcueseg.push_back(intersectionOverUnion(cueftseg, cuefpseg));
         ioulcueseg.push_back(intersectionOverUnion(cueltseg, cuelpseg));
+        precisionCueFirst.push_back(compute_average_precision(cuefp, cueft, threshold));
+        precisionCueLast.push_back(compute_average_precision(cuelp, cuelt, threshold));
         //eight balls
         vector<float> eightfiou, eightliou;
         eightfiou = manyToManyIoU(eightfp, eightft);
@@ -166,6 +173,8 @@ int main(int argc, char** argv) {
         eightlpseg = drawCircles(eightlp, (predicted_masks[i]).size());
         ioufeightseg.push_back(intersectionOverUnion(eightftseg, eightfpseg));
         iouleightseg.push_back(intersectionOverUnion(eightltseg, eightlpseg));
+        precisionEightFirst.push_back(compute_average_precision(eightfp, eightft, threshold));
+        precisionEightLast.push_back(compute_average_precision(eightlp, eightlt, threshold));
         //solid balls
         vector<float> solidfiou, solidliou;
         solidfiou = manyToManyIoU(solidfp, solidft);
@@ -179,19 +188,23 @@ int main(int argc, char** argv) {
         solidlpseg = drawCircles(solidlp, (predicted_masks[i]).size());
         ioufsolidseg.push_back(intersectionOverUnion(solidftseg, solidfpseg));
         ioulsolidseg.push_back(intersectionOverUnion(solidltseg, solidlpseg));
-        //striped
-        vector<float> stripefiou, stripeliou;
-        stripefiou = manyToManyIoU(stripefp, stripeft);
-        stripeliou = manyToManyIoU(stripelp, stripelt);
-        ioufstripe.push_back(std::accumulate(stripefiou.begin(),stripefiou.end(), 0.0)/static_cast<float>(stripefiou.size()));
-        ioulstripe.push_back(std::accumulate(stripeliou.begin(),stripeliou.end(), 0.0)/static_cast<float>(stripeliou.size()));
-        Mat stripedftseg, stripedltseg, stripedfpseg, stripedlpseg;
-        stripedftseg = (ground_truth_masks_first[i] == static_cast<char>(BallType::STRIPED));
-        stripedltseg = (ground_truth_masks_last[i] == static_cast<char>(BallType::STRIPED));
-        stripedfpseg = drawCircles(stripefp, (predicted_masks[i]).size());
-        stripedlpseg = drawCircles(stripelp, (predicted_masks[i]).size());
-        ioufstripeseg.push_back(intersectionOverUnion(stripedftseg, stripedfpseg));
-        ioulstripeseg.push_back(intersectionOverUnion(stripedltseg, stripedlpseg));
+        precisionSolidFirst.push_back(compute_average_precision(solidfp, solidft, threshold));
+        precisionSolidLast.push_back(compute_average_precision(solidlp, solidlt, threshold));
+        //stripedd
+        vector<float> stripedfiou, stripedliou;
+        stripedfiou = manyToManyIoU(stripedfp, stripedft);
+        stripedliou = manyToManyIoU(stripedlp, stripedlt);
+        ioufstriped.push_back(std::accumulate(stripedfiou.begin(),stripedfiou.end(), 0.0)/static_cast<float>(stripedfiou.size()));
+        ioulstriped.push_back(std::accumulate(stripedliou.begin(),stripedliou.end(), 0.0)/static_cast<float>(stripedliou.size()));
+        Mat stripeddftseg, stripeddltseg, stripeddfpseg, stripeddlpseg;
+        stripeddftseg = (ground_truth_masks_first[i] == static_cast<char>(BallType::STRIPED));
+        stripeddltseg = (ground_truth_masks_last[i] == static_cast<char>(BallType::STRIPED));
+        stripeddfpseg = drawCircles(stripedfp, (predicted_masks[i]).size());
+        stripeddlpseg = drawCircles(stripedlp, (predicted_masks[i]).size());
+        ioufstripedseg.push_back(intersectionOverUnion(stripeddftseg, stripeddfpseg));
+        ioulstripedseg.push_back(intersectionOverUnion(stripeddltseg, stripeddlpseg));
+        precisionStripedFirst.push_back(compute_average_precision(stripedfp, stripedft, threshold));
+        precisionStripedLast.push_back(compute_average_precision(stripedlp, stripedlt, threshold));
     }
     for(int i = 0; i < samples; i ++){
         std::cout << "sample " << i << std::endl;
@@ -203,20 +216,28 @@ int main(int argc, char** argv) {
         //std::cout << "mean iou bbox last eight " << iouleight[i] << std::endl;
         //std::cout << "mean iou bbox first solid " << ioufsolid[i] << std::endl;
         //std::cout << "mean iou bbox last solid " << ioulsolid[i] << std::endl;
-        //std::cout << "mean iou bbox first stripe " << ioufstripe[i] << std::endl;
-        //std::cout << "mean iou bbox last stripe " << ioulstripe[i] << std::endl;
-        std::cout << "mean iou segmentation first cue " << ioufcueseg[i] << std::endl;
-        std::cout << "mean iou segmentation last cue " << ioulcueseg[i] << std::endl;
-        std::cout << "mean iou segmentation first eight " << ioufeightseg[i] << std::endl;
-        std::cout << "mean iou segmentation last eight " << iouleightseg[i] << std::endl;
-        std::cout << "mean iou segmentation first solid " << ioufsolidseg[i] << std::endl;
-        std::cout << "mean iou segmentation last solid " << ioulsolidseg[i] << std::endl;
-        std::cout << "mean iou segmentation first stripe " << ioufstripeseg[i] << std::endl;
-        std::cout << "mean iou segmentation last stripe " << ioulstripeseg[i] << std::endl;
-        std::cout << "precision mask first: " << precisionMaskFirst[i] << std::endl;
-        std::cout << "precision mask last: " << precisionMaskLast[i] << std::endl;
-        std::cout << "mIOU first: " << (ioufcueseg[i] + ioufeightseg[i] + ioufsolidseg[i] + ioufstripeseg[i] + precisionMaskFirst[i]) / 5.0 <<std::endl;
-        std::cout << "mIOU last: " << (ioulcueseg[i] + iouleightseg[i] + ioulsolidseg[i] + ioulstripeseg[i] + precisionMaskLast[i]) / 5.0 <<std::endl;
+        //std::cout << "mean iou bbox first striped " << ioufstriped[i] << std::endl;
+        //std::cout << "mean iou bbox last striped " << ioulstriped[i] << std::endl;
+        std::cout << "iou segmentation first cue " << ioufcueseg[i] << std::endl;
+        std::cout << "iou segmentation last cue " << ioulcueseg[i] << std::endl;
+        std::cout << "iou segmentation first eight " << ioufeightseg[i] << std::endl;
+        std::cout << "iou segmentation last eight " << iouleightseg[i] << std::endl;
+        std::cout << "iou segmentation first solid " << ioufsolidseg[i] << std::endl;
+        std::cout << "iou segmentation last solid " << ioulsolidseg[i] << std::endl;
+        std::cout << "iou segmentation first striped " << ioufstripedseg[i] << std::endl;
+        std::cout << "iou segmentation last striped " << ioulstripedseg[i] << std::endl;
+        std::cout << "average precision table first: " << precisionMaskFirst[i] << std::endl;
+        std::cout << "average precision table last: " << precisionMaskLast[i] << std::endl;
+        std::cout << "average precision cue first: " << precisionCueFirst[i] << std::endl;
+        std::cout << "average precision cue last: " << precisionCueLast[i] << std::endl;
+        std::cout << "average precision eight first: " << precisionEightFirst[i] << std::endl;
+        std::cout << "average precision eight last: " << precisionEightLast[i] << std::endl;
+        std::cout << "average precision solid first: " << precisionSolidFirst[i] << std::endl;
+        std::cout << "average precision striped last: " << precisionStripedLast[i] << std::endl;
+        std::cout << "average precision striped first: " << precisionStripedFirst[i] << std::endl;
+        std::cout << "average precision solid last: " << precisionSolidLast[i] << std::endl;
+        std::cout << "mIOU first: " << (ioufcueseg[i] + ioufeightseg[i] + ioufsolidseg[i] + ioufstripedseg[i] + precisionMaskFirst[i]) / 5.0 <<std::endl;
+        std::cout << "mIOU last: " << (ioulcueseg[i] + iouleightseg[i] + ioulsolidseg[i] + ioulstripedseg[i] + precisionMaskLast[i]) / 5.0 <<std::endl;
         std::cout << std::endl;
     }
 }

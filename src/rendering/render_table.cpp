@@ -157,3 +157,20 @@ cv::Mat nice_render(cv::Mat img, std::vector<cv::Point2f> table_verts, std::vect
     }
     return render;
 }
+void drawCircles(std::vector<Ball> balls, Mat img){
+    for(auto r : balls){
+        Vec3f circ = toCircle(r.bbox);
+        circle(img, Point(circ[0],circ[1]), circ[2], getColor(r.type), FILLED);
+    }
+}
+cv::Mat nice_render_segmentation(cv::Mat img, std::vector<cv::Point2f> table_verts, std::vector<Ball> balls){
+    Mat render = img.clone();
+    std::vector<std::vector<Point>> tmp;
+    tmp.push_back(std::vector<Point>());
+    for(auto p : table_verts){
+        tmp[0].push_back(p);
+    }
+    fillPoly(render, tmp, Scalar(53,135,18));
+    drawCircles(balls,render);
+    return render;
+}
