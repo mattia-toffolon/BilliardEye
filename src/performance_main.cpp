@@ -143,6 +143,11 @@ int main(int argc, char** argv) {
         for(int i = 0; i < curlp.size(); i ++){
             curlpr.push_back(curlp[i].bbox);
         }
+        if(i == 2){
+        drawBBoxes(imread("./samples/sample2/frame_first.png"), curftr);
+        drawBBoxes(imread("./samples/sample2/frame_last.png"), curltr);
+
+        }
 
         //compute map for localization alone
         precisionsf.push_back(compute_average_precision(curfpr, curftr, threshold));
