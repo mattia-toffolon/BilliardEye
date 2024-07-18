@@ -2,401 +2,553 @@
 
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{../samples/sample0/frame_first.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample0/output_first.png}\par
-\includegraphics[width=0.5\textwidth]{../samples/sample0/frame_last.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample0/output_last.png}\par
-\centering
-\includegraphics[width=0.5\textwidth]{../samples/sample0/predicted_trajectory.png}
-\caption{game1\_clip1}
-\vspace{10pt}
+\includegraphics[width=0.49\textwidth]{../samples/sample0/frame_first.png}
+\includegraphics[width=0.49\textwidth]{../samples/sample0/frame_last.png}
+\newline
+\includegraphics[width=0.49\textwidth]{../samples/sample0/output_first.png}
+\includegraphics[width=0.49\textwidth]{../samples/sample0/output_last.png}
+\newline
+\includegraphics[width=0.49\textwidth]{../samples/sample0/output_first_segmentation.png}
+\includegraphics[width=0.49\textwidth]{../samples/sample0/output_last_segmentation.png}
+\newline
+\begin{subfigure}[b]{0.49\textwidth}
+    \vspace{20pt}
+    \includegraphics[width=\textwidth]{../samples/sample0/predicted_trajectory.png}
+    \caption*{game1\_clip1}
+\end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
 \begin{tabular}{|l|c|}
-\hline
-\textbf{Metric} & \textbf{Value} \\
-\hline
-Mean Average Precision First & 0.763636 \\
-Mean Average Precision Last & 0.878788 \\
-\hline
-Mean IoU BBox First Cue & 0.678201 \\
-Mean IoU BBox Last Cue & 0.678201 \\
-Mean IoU BBox First Eight & 0.761506 \\
-Mean IoU BBox Last Eight & 0.816667 \\
-Mean IoU BBox First Solid & 0.552232 \\
-Mean IoU BBox Last Solid & 0.560251 \\
-Mean IoU BBox First Stripe & 0.562766 \\
-Mean IoU BBox Last Stripe & 0.63534 \\
-\hline
-Mean IoU Segmentation First Cue & 0.548523 \\
-Mean IoU Segmentation Last Cue & 0.62069 \\
-Mean IoU Segmentation First Eight & 0.747475 \\
-Mean IoU Segmentation Last Eight & 0.743719 \\
-Mean IoU Segmentation First Solid & 0.53632 \\
-Mean IoU Segmentation Last Solid & 0.536812 \\
-Mean IoU Segmentation First Stripe & 0.505707 \\
-Mean IoU Segmentation Last Stripe & 0.579247 \\
-\hline
-Precision Mask First & 0.957752 \\
-Precision Mask Last & 0.968417 \\
-\hline
-\end{tabular} 
+    \hline
+    \textbf{Metric} & \textbf{Value} \\
+    \hline
+    Average Precision Localization First & 0.763636 \\
+    Average Precision Localization Last & 0.878788 \\
+    \hline
+    IoU Segmentation Cue First & 0.548523 \\
+    IoU Segmentation Cue Last & 0.62069 \\
+    IoU Segmentation Eight First & 0.747475 \\
+    IoU Segmentation Eight Last & 0.743719 \\
+    IoU Segmentation Solid First & 0.53632 \\
+    IoU Segmentation Solid Last & 0.536812 \\
+    IoU Segmentation Striped First & 0.505707 \\
+    IoU Segmentation Striped Last & 0.579247 \\
+    \hline
+    IoU Table First & 0.957752 \\
+    IoU Table Last & 0.968417 \\
+    IoU Background First & 0.969238 \\
+    IoU Background Last & 0.977193 \\
+    \hline
+    Average Precision Cue First & 1 \\
+    Average Precision Cue Last & 1 \\
+    Average Precision Eight First & 1 \\
+    Average Precision Eight Last & 1 \\
+    Average Precision Solid First & 0.818182 \\
+    Average Precision Solid Last & 0.818182 \\
+    Average Precision Striped First & 0.620779 \\
+    Average Precision Striped Last & 0.74026 \\
+    \hline
+    mIOU First & 0.710836 \\
+    mIOU Last & 0.73768 \\
+    mAP First & 0.85974 \\
+    mAP Last & 0.88961 \\
+    \hline
+\end{tabular}
+\end{subfigure}
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{../samples/sample1/frame_first.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample1/output_first.png}\par
-\includegraphics[width=0.5\textwidth]{../samples/sample1/frame_last.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample1/output_last.png}\par
-\centering
-\includegraphics[width=0.5\textwidth]{../samples/sample1/predicted_trajectory.png}
-\caption{game1\_clip2}
-\vspace{10pt}
-\begin{tabular}{|l|c|}
-\hline
-\textbf{Metric} & \textbf{Value} \\
-\hline
-Mean Average Precision First & 1 \\
-Mean Average Precision Last & 1 \\
-\hline
-Mean IoU BBox First Cue & 0.824201 \\
-Mean IoU BBox Last Cue & 0.745161 \\
-Mean IoU BBox First Eight & 0.878472 \\
-Mean IoU BBox Last Eight & 0.916667 \\
-Mean IoU BBox First Solid & 0.524886 \\
-Mean IoU BBox Last Solid & 0.515759 \\
-Mean IoU BBox First Stripe & 0.442362 \\
-Mean IoU BBox Last Stripe & 0.434364 \\
-\hline
-Mean IoU Segmentation First Cue & 0.890208 \\
-Mean IoU Segmentation Last Cue & 0.745263 \\
-Mean IoU Segmentation First Eight & 0.901124 \\
-Mean IoU Segmentation Last Eight & 0.905405 \\
-Mean IoU Segmentation First Solid & 0.379076 \\
-Mean IoU Segmentation Last Solid & 0.329148 \\
-Mean IoU Segmentation First Stripe & 0.36483 \\
-Mean IoU Segmentation Last Stripe & 0.340779 \\
-\hline
-Precision Mask First & 0.945966 \\
-Precision Mask Last & 0.956962 \\
-\hline
-\end{tabular}
+    \includegraphics[width=0.49\textwidth]{../samples/sample1/frame_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample1/frame_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample1/output_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample1/output_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample1/output_first_segmentation.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample1/output_last_segmentation.png}
+    \newline
+    \begin{subfigure}[b]{0.49\textwidth}
+        \vspace{20pt}
+        \includegraphics[width=\textwidth]{../samples/sample1/predicted_trajectory.png}
+        \caption*{game1\_clip2}
+    \end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Metric} & \textbf{Value} \\
+        \hline
+        Average Precision Localization First & 1 \\
+        Average Precision Localization Last & 1 \\
+        \hline
+        IoU Segmentation Cue First & 0.890208 \\
+        IoU Segmentation Cue Last & 0.745263 \\
+        IoU Segmentation Eight First & 0.901124 \\
+        IoU Segmentation Eight Last & 0.905405 \\
+        IoU Segmentation Solid First & 0.379076 \\
+        IoU Segmentation Solid Last & 0.329148 \\
+        IoU Segmentation Striped First & 0.36483 \\
+        IoU Segmentation Striped Last & 0.340779 \\
+        \hline
+        IoU Table First & 0.945966 \\
+        IoU Table Last & 0.956962 \\
+        IoU Background First & 0.978064 \\
+        IoU Background Last & 0.983876 \\
+        \hline
+        Average Precision Cue First & 1 \\
+        Average Precision Cue Last & 1 \\
+        Average Precision Eight First & 1 \\
+        Average Precision Eight Last & 1 \\
+        Average Precision Solid First & 0.597403 \\
+        Average Precision Solid Last & 0.597403 \\
+        Average Precision Striped First & 0.454545 \\
+        Average Precision Striped Last & 0.454545 \\
+        \hline
+        mIOU First & 0.743211 \\
+        mIOU Last & 0.710239 \\
+        mAP First & 0.762987 \\
+        mAP Last & 0.762987 \\
+        \hline
+    \end{tabular}    
+\end{subfigure}
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{../samples/sample2/frame_first.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample2/output_first.png}\par
-\includegraphics[width=0.5\textwidth]{../samples/sample2/frame_last.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample2/output_last.png}\par
-\centering
-\includegraphics[width=0.5\textwidth]{../samples/sample2/predicted_trajectory.png}
-\caption{game1\_clip3}
-\vspace{10pt}
-\begin{tabular}{|l|c|}
-\hline
-\textbf{Metric} & \textbf{Value} \\
-\hline
-Mean Average Precision First & 1 \\
-Mean Average Precision Last & 0.606061 \\
-\hline
-Mean IoU BBox First Cue & 0.581818 \\
-Mean IoU BBox Last Cue & 0.463768 \\
-Mean IoU BBox First Eight & 0.784496 \\
-Mean IoU BBox Last Eight & 0.784496 \\
-Mean IoU BBox First Solid & 0.787893 \\
-Mean IoU BBox Last Solid & 0.767947 \\
-Mean IoU BBox First Stripe & 0.417517 \\
-Mean IoU BBox Last Stripe & 0.410745 \\
-\hline
-Mean IoU Segmentation First Cue & 0.566092 \\
-Mean IoU Segmentation Last Cue & 0.441704 \\
-Mean IoU Segmentation First Eight & 0.748538 \\
-Mean IoU Segmentation Last Eight & 0.749511 \\
-Mean IoU Segmentation First Solid & 0.522388 \\
-Mean IoU Segmentation Last Solid & 0.379761 \\
-Mean IoU Segmentation First Stripe & 0.39342 \\
-Mean IoU Segmentation Last Stripe & 0.395045 \\
-\hline
-Precision Mask First & 0.954457 \\
-Precision Mask Last & 0.958917 \\
-\hline
-\end{tabular}
+    \includegraphics[width=0.49\textwidth]{../samples/sample2/frame_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample2/frame_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample2/output_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample2/output_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample2/output_first_segmentation.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample2/output_last_segmentation.png}
+    \newline
+    \begin{subfigure}[b]{0.49\textwidth}
+        \vspace{20pt}
+        \includegraphics[width=\textwidth]{../samples/sample2/predicted_trajectory.png}
+        \caption*{game1\_clip3}
+    \end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Metric} & \textbf{Value} \\
+        \hline
+        Average Precision Localization First & 1 \\
+        Average Precision Localization Last & 0.606061 \\
+        \hline
+        IoU Segmentation Cue First & 0.566092 \\
+        IoU Segmentation Cue Last & 0.441704 \\
+        IoU Segmentation Eight First & 0.748538 \\
+        IoU Segmentation Eight Last & 0.749511 \\
+        IoU Segmentation Solid First & 0.522388 \\
+        IoU Segmentation Solid Last & 0.379761 \\
+        IoU Segmentation Striped First & 0.39342 \\
+        IoU Segmentation Striped Last & 0.395045 \\
+        \hline
+        IoU Table First & 0.954457 \\
+        IoU Table Last & 0.958917 \\
+        IoU Background First & 0.980998 \\
+        IoU Background Last & 0.983055 \\
+        \hline
+        Average Precision Cue First & 1 \\
+        Average Precision Cue Last & 0 \\
+        Average Precision Eight First & 1 \\
+        Average Precision Eight Last & 1 \\
+        Average Precision Solid First & 0.666667 \\
+        Average Precision Solid Last & 0.5 \\
+        Average Precision Striped First & 0.636364 \\
+        Average Precision Striped Last & 0.363636 \\
+        \hline
+        mIOU First & 0.694316 \\
+        mIOU Last & 0.651332 \\
+        mAP First & 0.825758 \\
+        mAP Last & 0.465909 \\
+        \hline
+    \end{tabular}    
+\end{subfigure}
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{../samples/sample3/frame_first.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample3/output_first.png}\par
-\includegraphics[width=0.5\textwidth]{../samples/sample3/frame_last.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample3/output_last.png}\par
-\centering
-\includegraphics[width=0.5\textwidth]{../samples/sample3/predicted_trajectory.png}
-\caption{game1\_clip4}
-\vspace{10pt}
-\begin{tabular}{|l|c|}
-\hline
-\textbf{Metric} & \textbf{Value} \\
-\hline
-Mean Average Precision First & 1 \\
-Mean Average Precision Last & 0.902597 \\
-\hline
-Mean IoU BBox First Cue & 0.641026 \\
-Mean IoU BBox Last Cue & 0.498462 \\
-Mean IoU BBox First Eight & 0.788376 \\
-Mean IoU BBox Last Eight & 0.821429 \\
-Mean IoU BBox First Solid & 0.689041 \\
-Mean IoU BBox Last Solid & 0.658012 \\
-Mean IoU BBox First Stripe & 0.556094 \\
-Mean IoU BBox Last Stripe & 0.556718 \\
-\hline
-Mean IoU Segmentation First Cue & 0.601518 \\
-Mean IoU Segmentation Last Cue & 0.477358 \\
-Mean IoU Segmentation First Eight & 0.848723 \\
-Mean IoU Segmentation Last Eight & 0.859406 \\
-Mean IoU Segmentation First Solid & 0.549807 \\
-Mean IoU Segmentation Last Solid & 0.535469 \\
-Mean IoU Segmentation First Stripe & 0.516323 \\
-Mean IoU Segmentation Last Stripe & 0.525094 \\
-\hline
-Precision Mask First & 0.921017 \\
-Precision Mask Last & 0.945411 \\
-\hline
-\end{tabular}
+    \includegraphics[width=0.49\textwidth]{../samples/sample3/frame_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample3/frame_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample3/output_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample3/output_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample3/output_first_segmentation.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample3/output_last_segmentation.png}
+    \newline
+    \begin{subfigure}[b]{0.49\textwidth}
+        \vspace{20pt}
+        \includegraphics[width=\textwidth]{../samples/sample3/predicted_trajectory.png}
+        \caption*{game1\_clip4}
+    \end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Metric} & \textbf{Value} \\
+        \hline
+        Average Precision Localization First & 1 \\
+        Average Precision Localization Last & 0.902597 \\
+        \hline
+        IoU Segmentation Cue First & 0.601518 \\
+        IoU Segmentation Cue Last & 0.477358 \\
+        IoU Segmentation Eight First & 0.848723 \\
+        IoU Segmentation Eight Last & 0.859406 \\
+        IoU Segmentation Solid First & 0.549807 \\
+        IoU Segmentation Solid Last & 0.535469 \\
+        IoU Segmentation Striped First & 0.516323 \\
+        IoU Segmentation Striped Last & 0.525094 \\
+        \hline
+        IoU Table First & 0.921017 \\
+        IoU Table Last & 0.945411 \\
+        IoU Background First & 0.967132 \\
+        IoU Background Last & 0.977882 \\
+        \hline
+        Average Precision Cue First & 1 \\
+        Average Precision Cue Last & 0 \\
+        Average Precision Eight First & 1 \\
+        Average Precision Eight Last & 1 \\
+        Average Precision Solid First & 0.772727 \\
+        Average Precision Solid Last & 0.772727 \\
+        Average Precision Striped First & 0.636364 \\
+        Average Precision Striped Last & 0.636364 \\
+        \hline
+        mIOU First & 0.734087 \\
+        mIOU Last & 0.720103 \\
+        mAP First & 0.852273 \\
+        mAP Last & 0.602273 \\
+        \hline
+    \end{tabular}    
+\end{subfigure}
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{../samples/sample4/frame_first.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample4/output_first.png}\par
-\includegraphics[width=0.5\textwidth]{../samples/sample4/frame_last.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample4/output_last.png}\par
-\centering
-\includegraphics[width=0.5\textwidth]{../samples/sample4/predicted_trajectory.png}
-\caption{game2\_clip1}
-\vspace{10pt}
-\begin{tabular}{|l|c|}
-\hline
-\textbf{Metric} & \textbf{Value} \\
-\hline
-Mean Average Precision First & 0.833333 \\
-Mean Average Precision Last & 0.833333 \\
-\hline
-Mean IoU BBox First Cue & 0.806667 \\
-Mean IoU BBox Last Cue & 0.818594 \\
-Mean IoU BBox First Eight & 0 \\
-Mean IoU BBox Last Eight & 0 \\
-Mean IoU BBox First Solid & 0.319687 \\
-Mean IoU BBox Last Solid & 0.337008 \\
-Mean IoU BBox First Stripe & 0.67798 \\
-Mean IoU BBox Last Stripe & 0.704764 \\
-\hline
-Mean IoU Segmentation First Cue & 0.828571 \\
-Mean IoU Segmentation Last Cue & 0.837349 \\
-Mean IoU Segmentation First Eight & 0 \\
-Mean IoU Segmentation Last Eight & 0 \\
-Mean IoU Segmentation First Solid & 0.230531 \\
-Mean IoU Segmentation Last Solid & 0.243353 \\
-Mean IoU Segmentation First Stripe & 0.41396 \\
-Mean IoU Segmentation Last Stripe & 0.42682 \\
-\hline
-Precision Mask First & 0.973516 \\
-Precision Mask Last & 0.968534 \\
-\hline
-\end{tabular}
+    \includegraphics[width=0.49\textwidth]{../samples/sample4/frame_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample4/frame_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample4/output_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample4/output_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample4/output_first_segmentation.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample4/output_last_segmentation.png}
+    \newline
+    \begin{subfigure}[b]{0.49\textwidth}
+        \vspace{20pt}
+        \includegraphics[width=\textwidth]{../samples/sample4/predicted_trajectory.png}
+        \caption*{game2\_clip1}
+    \end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Metric} & \textbf{Value} \\
+        \hline
+        Average Precision Localization First & 0.833333 \\
+        Average Precision Localization Last & 0.833333 \\
+        \hline
+        IoU Segmentation Cue First & 0.828571 \\
+        IoU Segmentation Cue Last & 0.837349 \\
+        IoU Segmentation Eight First & 0 \\
+        IoU Segmentation Eight Last & 0 \\
+        IoU Segmentation Solid First & 0.230531 \\
+        IoU Segmentation Solid Last & 0.243353 \\
+        IoU Segmentation Striped First & 0.41396 \\
+        IoU Segmentation Striped Last & 0.42682 \\
+        \hline
+        IoU Table First & 0.973516 \\
+        IoU Table Last & 0.968534 \\
+        IoU Background First & 0.98538 \\
+        IoU Background Last & 0.981183 \\
+        \hline
+        Average Precision Cue First & 1 \\
+        Average Precision Cue Last & 1 \\
+        Average Precision Eight First & 0 \\
+        Average Precision Eight Last & 0 \\
+        Average Precision Solid First & 0.272727 \\
+        Average Precision Solid Last & 0.272727 \\
+        Average Precision Striped First & 0.6 \\
+        Average Precision Striped Last & 0.6 \\
+        \hline
+        mIOU First & 0.571993 \\
+        mIOU Last & 0.576207 \\
+        mAP First & 0.468182 \\
+        mAP Last & 0.468182 \\
+        \hline
+    \end{tabular}
+    
+\end{subfigure}
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{../samples/sample5/frame_first.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample5/output_first.png}\par
-\includegraphics[width=0.5\textwidth]{../samples/sample5/frame_last.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample5/output_last.png}\par
-\centering
-\includegraphics[width=0.5\textwidth]{../samples/sample5/predicted_trajectory.png}
-\caption{game2\_clip2}
-\vspace{10pt}
-\begin{tabular}{|l|c|}
-\hline
-\textbf{Metric} & \textbf{Value} \\
-\hline
-Mean Average Precision First & 1 \\
-Mean Average Precision Last & 0.909091 \\
-\hline
-Mean IoU BBox First Cue & 0.705882 \\
-Mean IoU BBox Last Cue & 0.393846 \\
-Mean IoU BBox First Eight & 0 \\
-Mean IoU BBox Last Eight & 0 \\
-Mean IoU BBox First Solid & 0.492903 \\
-Mean IoU BBox Last Solid & 0.437604 \\
-Mean IoU BBox First Stripe & 0.741733 \\
-Mean IoU BBox Last Stripe & 0.729695 \\
-\hline
-Mean IoU Segmentation First Cue & 0.727612 \\
-Mean IoU Segmentation Last Cue & 0.370301 \\
-Mean IoU Segmentation First Eight & 0 \\
-Mean IoU Segmentation Last Eight & 0 \\
-Mean IoU Segmentation First Solid & 0.511984 \\
-Mean IoU Segmentation Last Solid & 0.420787 \\
-Mean IoU Segmentation First Stripe & 0.653567 \\
-Mean IoU Segmentation Last Stripe & 0.652642 \\
-\hline
-Precision Mask First & 0.973231 \\
-Precision Mask Last & 0.972855 \\
-\hline
-\end{tabular}
+    \includegraphics[width=0.49\textwidth]{../samples/sample5/frame_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample5/frame_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample5/output_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample5/output_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample5/output_first_segmentation.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample5/output_last_segmentation.png}
+    \newline
+    \begin{subfigure}[b]{0.49\textwidth}
+        \vspace{20pt}
+        \includegraphics[width=\textwidth]{../samples/sample5/predicted_trajectory.png}
+        \caption*{game2\_clip2}
+    \end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Metric} & \textbf{Value} \\
+        \hline
+        Average Precision Localization First & 1 \\
+        Average Precision Localization Last & 0.909091 \\
+        \hline
+        IoU Segmentation Cue First & 0.727612 \\
+        IoU Segmentation Cue Last & 0.370301 \\
+        IoU Segmentation Eight First & 0 \\
+        IoU Segmentation Eight Last & 0 \\
+        IoU Segmentation Solid First & 0.511984 \\
+        IoU Segmentation Solid Last & 0.420787 \\
+        IoU Segmentation Striped First & 0.653567 \\
+        IoU Segmentation Striped Last & 0.652642 \\
+        \hline
+        IoU Table First & 0.973231 \\
+        IoU Table Last & 0.972855 \\
+        IoU Background First & 0.982659 \\
+        IoU Background Last & 0.984523 \\
+        \hline
+        Average Precision Cue First & 1 \\
+        Average Precision Cue Last & 0 \\
+        Average Precision Eight First & 0 \\
+        Average Precision Eight Last & 0 \\
+        Average Precision Solid First & 0.636364 \\
+        Average Precision Solid Last & 0.545455 \\
+        Average Precision Striped First & 0.924242 \\
+        Average Precision Striped Last & 0.924242 \\
+        \hline
+        mIOU First & 0.641509 \\
+        mIOU Last & 0.566851 \\
+        mAP First & 0.640152 \\
+        mAP Last & 0.367424 \\
+        \hline
+    \end{tabular}    
+\end{subfigure}
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{../samples/sample6/frame_first.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample6/output_first.png}\par
-\includegraphics[width=0.5\textwidth]{../samples/sample6/frame_last.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample6/output_last.png}\par
-\centering
-\includegraphics[width=0.5\textwidth]{../samples/sample6/predicted_trajectory.png}
-\caption{game3\_clip1}
-\vspace{10pt}
-\begin{tabular}{|l|c|}
-\hline
-\textbf{Metric} & \textbf{Value} \\
-\hline
-Mean Average Precision First & 1 \\
-Mean Average Precision Last & 0.806818 \\
-\hline
-Mean IoU BBox First Cue & 0.606811 \\
-Mean IoU BBox Last Cue & 0.371212 \\
-Mean IoU BBox First Eight & 0.733813 \\
-Mean IoU BBox Last Eight & 0.733813 \\
-Mean IoU BBox First Solid & 0.712934 \\
-Mean IoU BBox Last Solid & 0.758629 \\
-Mean IoU BBox First Stripe & 0.545351 \\
-Mean IoU BBox Last Stripe & 0.531898 \\
-\hline
-Mean IoU Segmentation First Cue & 0.562264 \\
-Mean IoU Segmentation Last Cue & 0.351415 \\
-Mean IoU Segmentation First Eight & 0.693182 \\
-Mean IoU Segmentation Last Eight & 0.696275 \\
-Mean IoU Segmentation First Solid & 0.588556 \\
-Mean IoU Segmentation Last Solid & 0.545855 \\
-Mean IoU Segmentation First Stripe & 0.537661 \\
-Mean IoU Segmentation Last Stripe & 0.542875 \\
-\hline
-Precision Mask First & 0.954921 \\
-Precision Mask Last & 0.968478 \\
-\hline
-\end{tabular}
+    \includegraphics[width=0.49\textwidth]{../samples/sample6/frame_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample6/frame_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample6/output_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample6/output_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample6/output_first_segmentation.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample6/output_last_segmentation.png}
+    \newline
+    \begin{subfigure}[b]{0.49\textwidth}
+        \vspace{20pt}
+        \includegraphics[width=\textwidth]{../samples/sample6/predicted_trajectory.png}
+        \caption*{game3\_clip1}
+    \end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Metric} & \textbf{Value} \\
+        \hline
+        Average Precision Localization First & 1 \\
+        Average Precision Localization Last & 0.806818 \\
+        \hline
+        IoU Segmentation Cue First & 0.562264 \\
+        IoU Segmentation Cue Last & 0.351415 \\
+        IoU Segmentation Eight First & 0.693182 \\
+        IoU Segmentation Eight Last & 0.696275 \\
+        IoU Segmentation Solid First & 0.588556 \\
+        IoU Segmentation Solid Last & 0.545855 \\
+        IoU Segmentation Striped First & 0.537661 \\
+        IoU Segmentation Striped Last & 0.542875 \\
+        \hline
+        IoU Table First & 0.954921 \\
+        IoU Table Last & 0.968478 \\
+        IoU Background First & 0.988175 \\
+        IoU Background Last & 0.992289 \\
+        \hline
+        Average Precision Cue First & 1 \\
+        Average Precision Cue Last & 0 \\
+        Average Precision Eight First & 1 \\
+        Average Precision Eight Last & 1 \\
+        Average Precision Solid First & 1 \\
+        Average Precision Solid Last & 1 \\
+        Average Precision Striped First & 0.727273 \\
+        Average Precision Striped Last & 0.727273 \\
+        \hline
+        mIOU First & 0.720793 \\
+        mIOU Last & 0.682864 \\
+        mAP First & 0.931818 \\
+        mAP Last & 0.681818 \\
+        \hline
+    \end{tabular}    
+\end{subfigure}
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{../samples/sample7/frame_first.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample7/output_first.png}\par
-\includegraphics[width=0.5\textwidth]{../samples/sample7/frame_last.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample7/output_last.png}\par
-\centering
-\includegraphics[width=0.5\textwidth]{../samples/sample7/predicted_trajectory.png}
-\caption{game3\_clip2}
-\vspace{10pt}
-\begin{tabular}{|l|c|}
-\hline
-\textbf{Metric} & \textbf{Value} \\
-\hline
-Mean Average Precision First & 1 \\
-Mean Average Precision Last & 1 \\
-\hline
-Mean IoU BBox First Cue & 0.753968 \\
-Mean IoU BBox Last Cue & 0.657692 \\
-Mean IoU BBox First Eight & 0.701299 \\
-Mean IoU BBox Last Eight & 0.701299 \\
-Mean IoU BBox First Solid & 0.462894 \\
-Mean IoU BBox Last Solid & 0.396073 \\
-Mean IoU BBox First Stripe & 0.229499 \\
-Mean IoU BBox Last Stripe & 0.240098 \\
-\hline
-Mean IoU Segmentation First Cue & 0.759804 \\
-Mean IoU Segmentation Last Cue & 0.749361 \\
-Mean IoU Segmentation First Eight & 0.6875 \\
-Mean IoU Segmentation Last Eight & 0.685637 \\
-Mean IoU Segmentation First Solid & 0.209217 \\
-Mean IoU Segmentation Last Solid & 0.148784 \\
-Mean IoU Segmentation First Stripe & 0.151724 \\
-Mean IoU Segmentation Last Stripe & 0.154028 \\
-\hline
-Precision Mask First & 0.945646 \\
-Precision Mask Last & 0.948466 \\
-\hline
-\end{tabular}
+    \includegraphics[width=0.49\textwidth]{../samples/sample7/frame_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample7/frame_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample7/output_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample7/output_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample7/output_first_segmentation.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample7/output_last_segmentation.png}
+    \newline
+    \begin{subfigure}[b]{0.49\textwidth}
+        \vspace{20pt}
+        \includegraphics[width=\textwidth]{../samples/sample7/predicted_trajectory.png}
+        \caption*{game3\_clip2}
+    \end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Metric} & \textbf{Value} \\
+        \hline
+        Average Precision Localization First & 1 \\
+        Average Precision Localization Last & 1 \\
+        \hline
+        IoU Segmentation Cue First & 0.759804 \\
+        IoU Segmentation Cue Last & 0.749361 \\
+        IoU Segmentation Eight First & 0.6875 \\
+        IoU Segmentation Eight Last & 0.685637 \\
+        IoU Segmentation Solid First & 0.209217 \\
+        IoU Segmentation Solid Last & 0.148784 \\
+        IoU Segmentation Striped First & 0.151724 \\
+        IoU Segmentation Striped Last & 0.154028 \\
+        \hline
+        IoU Table First & 0.945646 \\
+        IoU Table Last & 0.948466 \\
+        IoU Background First & 0.985851 \\
+        IoU Background Last & 0.986169 \\
+        \hline
+        Average Precision Cue First & 1 \\
+        Average Precision Cue Last & 1 \\
+        Average Precision Eight First & 1 \\
+        Average Precision Eight Last & 1 \\
+        Average Precision Solid First & 0.290909 \\
+        Average Precision Solid Last & 0.272727 \\
+        Average Precision Striped First & 0.242424 \\
+        Average Precision Striped Last & 0.242424 \\
+        \hline
+        mIOU First & 0.62329 \\
+        mIOU Last & 0.612074 \\
+        mAP First & 0.633333 \\
+        mAP Last & 0.628788 \\
+        \hline
+    \end{tabular}
+    
+\end{subfigure}
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{../samples/sample8/frame_first.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample8/output_first.png}\par
-\includegraphics[width=0.5\textwidth]{../samples/sample8/frame_last.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample8/output_last.png}\par
-\centering
-\includegraphics[width=0.5\textwidth]{../samples/sample8/predicted_trajectory.png}
-\caption{game4\_clip1}
-\vspace{10pt}
-\begin{tabular}{|l|c|}
-\hline
-\textbf{Metric} & \textbf{Value} \\
-\hline
-Mean Average Precision First & 1 \\
-Mean Average Precision Last & 1 \\
-\hline
-Mean IoU BBox First Cue & 0 \\
-Mean IoU BBox Last Cue & 0 \\
-Mean IoU BBox First Eight & 0.85 \\
-Mean IoU BBox Last Eight & 0.85 \\
-Mean IoU BBox First Solid & 0 \\
-Mean IoU BBox Last Solid & -nan \\
-Mean IoU BBox First Stripe & 0.470815 \\
-Mean IoU BBox Last Stripe & 0.481584 \\
-\hline
-Mean IoU Segmentation First Cue & 0 \\
-Mean IoU Segmentation Last Cue & 0 \\
-Mean IoU Segmentation First Eight & 0.866044 \\
-Mean IoU Segmentation Last Eight & 0.858934 \\
-Mean IoU Segmentation First Solid & 0 \\
-Mean IoU Segmentation Last Solid & 0 \\
-Mean IoU Segmentation First Stripe & 0.369556 \\
-Mean IoU Segmentation Last Stripe & 0.415295 \\
-\hline
-Precision Mask First & 0.965927 \\
-Precision Mask Last & 0.975223 \\
-\hline
-\end{tabular}
+    \includegraphics[width=0.49\textwidth]{../samples/sample8/frame_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample8/frame_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample8/output_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample8/output_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample8/output_first_segmentation.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample8/output_last_segmentation.png}
+    \newline
+    \begin{subfigure}[b]{0.49\textwidth}
+        \vspace{20pt}
+        \includegraphics[width=\textwidth]{../samples/sample8/predicted_trajectory.png}
+        \caption*{game4\_clip1}
+    \end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Metric} & \textbf{Value} \\
+        \hline
+        Average Precision Localization First & 1 \\
+        Average Precision Localization Last & 1 \\
+        \hline
+        IoU Segmentation Cue First & 0 \\
+        IoU Segmentation Cue Last & 0 \\
+        IoU Segmentation Eight First & 0.866044 \\
+        IoU Segmentation Eight Last & 0.858934 \\
+        IoU Segmentation Solid First & 0 \\
+        IoU Segmentation Solid Last & 0 \\
+        IoU Segmentation Striped First & 0.369556 \\
+        IoU Segmentation Striped Last & 0.415295 \\
+        \hline
+        IoU Table First & 0.965927 \\
+        IoU Table Last & 0.975223 \\
+        IoU Background First & 0.984447 \\
+        IoU Background Last & 0.989119 \\
+        \hline
+        Average Precision Cue First & 0 \\
+        Average Precision Cue Last & 0 \\
+        Average Precision Eight First & 1 \\
+        Average Precision Eight Last & 1 \\
+        Average Precision Solid First & 0 \\
+        Average Precision Solid Last & 0 \\
+        Average Precision Striped First & 0.484848 \\
+        Average Precision Striped Last & 0.545455 \\
+        \hline
+        mIOU First & 0.530996 \\
+        mIOU Last & 0.539762 \\
+        mAP First & 0.371212 \\
+        mAP Last & 0.386364 \\
+        \hline
+    \end{tabular}    
+\end{subfigure}
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{../samples/sample9/frame_first.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample9/output_first.png}\par
-\includegraphics[width=0.5\textwidth]{../samples/sample9/frame_last.png}
-\includegraphics[width=0.5\textwidth]{../samples/sample9/output_last.png}\par
-\centering
-\includegraphics[width=0.5\textwidth]{../samples/sample9/predicted_trajectory.png}
-\caption{game4\_clip2}
-\vspace{10pt}
-\begin{tabular}{|l|c|}
-\hline
-\textbf{Metric} & \textbf{Value} \\
-\hline
-Mean Average Precision First & 1 \\
-Mean Average Precision Last & 0.871212 \\
-\hline
-Mean IoU BBox First Cue & 0.670391 \\
-Mean IoU BBox Last Cue & 0.748538 \\
-Mean IoU BBox First Eight & 0.641604 \\
-Mean IoU BBox Last Eight & 0.641604 \\
-Mean IoU BBox First Solid & 0.512435 \\
-Mean IoU BBox Last Solid & 0.510357 \\
-Mean IoU BBox First Stripe & 0.679591 \\
-Mean IoU BBox Last Stripe & 0.629882 \\
-\hline
-Mean IoU Segmentation First Cue & 0.702899 \\
-Mean IoU Segmentation Last Cue & 0.711191 \\
-Mean IoU Segmentation First Eight & 0.61442 \\
-Mean IoU Segmentation Last Eight & 0.609375 \\
-Mean IoU Segmentation First Solid & 0.489948 \\
-Mean IoU Segmentation Last Solid & 0.498001 \\
-Mean IoU Segmentation First Stripe & 0.448905 \\
-Mean IoU Segmentation Last Stripe & 0.391053 \\
-\hline
-Precision Mask First & 0.952201 \\
-Precision Mask Last & 0.976351 \\
-\hline
-\end{tabular}
+    \includegraphics[width=0.49\textwidth]{../samples/sample9/frame_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample9/frame_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample9/output_first.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample9/output_last.png}
+    \newline
+    \includegraphics[width=0.49\textwidth]{../samples/sample9/output_first_segmentation.png}
+    \includegraphics[width=0.49\textwidth]{../samples/sample9/output_last_segmentation.png}
+    \newline
+    \begin{subfigure}[b]{0.49\textwidth}
+        \vspace{20pt}
+        \includegraphics[width=\textwidth]{../samples/sample9/predicted_trajectory.png}
+        \caption*{game4\_clip2}
+    \end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Metric} & \textbf{Value} \\
+        \hline
+        Average Precision Localization First & 1 \\
+        Average Precision Localization Last & 0.871212 \\
+        \hline
+        IoU Segmentation Cue First & 0.702899 \\
+        IoU Segmentation Cue Last & 0.711191 \\
+        IoU Segmentation Eight First & 0.61442 \\
+        IoU Segmentation Eight Last & 0.609375 \\
+        IoU Segmentation Solid First & 0.489948 \\
+        IoU Segmentation Solid Last & 0.498001 \\
+        IoU Segmentation Striped First & 0.448905 \\
+        IoU Segmentation Striped Last & 0.391053 \\
+        \hline
+        IoU Table First & 0.952201 \\
+        IoU Table Last & 0.976351 \\
+        IoU Background First & 0.97856 \\
+        IoU Background Last & 0.990622 \\
+        \hline
+        Average Precision Cue First & 1 \\
+        Average Precision Cue Last & 1 \\
+        Average Precision Eight First & 1 \\
+        Average Precision Eight Last & 1 \\
+        Average Precision Solid First & 0.727273 \\
+        Average Precision Solid Last & 0.727273 \\
+        Average Precision Striped First & 0.848485 \\
+        Average Precision Striped Last & 0.5 \\
+        \hline
+        mIOU First & 0.697822 \\
+        mIOU Last & 0.696099 \\
+        mAP First & 0.893939 \\
+        mAP Last & 0.806818 \\
+        \hline
+    \end{tabular}    
+\end{subfigure}
 \end{figure}
