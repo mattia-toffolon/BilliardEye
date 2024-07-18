@@ -112,8 +112,8 @@ vector<Rect> purgeByCanny(Mat canny_trns,  Mat transform, vector<Rect> bboxes, v
         }
     }
 
-    vector<Rect> tmp;
-    tmp.push_back(safe_area);
+    // vector<Rect> tmp;
+    // tmp.push_back(safe_area);
     // drawBBoxes(canny_trns, tmp);
 
     vector<Rect> filtered_bboxes;

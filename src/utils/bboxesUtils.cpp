@@ -26,7 +26,7 @@ void drawBBoxes(Mat img, vector<Rect> bboxes) {
     for(Rect r : bboxes) {
         Point p1 = Point(r.x, r.y);
         Point p2 = Point(r.x+r.width, r.y+r.height);
-        rectangle(tmp, p1, p2, Scalar(255,255,0), 1, LINE_AA);
+        rectangle(tmp, p1, p2, Scalar(0,255,0), 1, LINE_AA);
     }   
 
     imshow("window", tmp);

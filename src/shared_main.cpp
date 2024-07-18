@@ -43,8 +43,6 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
-    string clip_name = argv[1];
-
     const string video_path = argv[1];
     const string img_path = argv[2];
 
