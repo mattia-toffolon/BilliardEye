@@ -1,3 +1,6 @@
+// PERFORMANCE TESTING FUNCTIONS
+// by Marco Giacomin
+
 #ifndef PERFTESTING_H
 #define PERFTESTING_H
 

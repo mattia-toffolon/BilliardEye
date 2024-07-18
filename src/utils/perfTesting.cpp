@@ -1,3 +1,6 @@
+// PERFORMANCE TESTING IMPLEMENTATION
+// by Marco Giacomin
+
 #include "utils/perfTesting.h"
 
 using namespace cv;

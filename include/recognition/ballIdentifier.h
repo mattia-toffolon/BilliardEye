@@ -1,3 +1,6 @@
+// BALL IDENTIFICATION
+// by Marco Giacomin
+
 #ifndef BALLTYPE_H
 #define BALLTYPE_H
 
