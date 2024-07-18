@@ -1,4 +1,5 @@
-//Giovanni Artico 
+// AUTHOR: Artico Giovanni
+
 #ifndef SEG_TABLE
 #define SEG_TABLE
 #include <opencv2/core/matx.hpp>

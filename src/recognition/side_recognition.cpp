@@ -1,4 +1,5 @@
-//Giovanni Artico
+// AUTHOR: Artico Giovanni
+
 #include "recognition/side_recognition.hpp"
 #include "recognition/transformPoints.hpp"
 

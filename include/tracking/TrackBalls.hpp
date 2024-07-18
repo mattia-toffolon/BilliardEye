@@ -31,7 +31,6 @@ class TrackBalls{
      * 
      * @param frame next video frame
      * @param renderer_remove_idxs vector of ball indexes shared with method caller
-     * 
      * @return vector of updated Ball structs
      */
     std::vector<Ball> update(cv::Mat frame, std::vector<int>& renderer_remove_idxs);
@@ -68,7 +67,6 @@ class TrackBalls{
      * 
      * @param tracked reference bounding box
      * @param found vector of newly found bounding boxes in the image
-     * 
      * @return index of the closest box in "found" from the reference one
      */
     int getClosestBBoxIndex(cv::Rect tracked, std::vector<cv::Rect> found);
@@ -78,7 +76,6 @@ class TrackBalls{
      * 
      * @param r1 first bounding box
      * @param r2 second bounding box
-     * 
      * @return squared Euclidean distance between the two given boxes top-left corner
      */
     float sqEuclideanDist(cv::Rect r1, cv::Rect r2);

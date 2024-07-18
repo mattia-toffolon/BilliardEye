@@ -1,4 +1,5 @@
-//Giovanni Artico
+// AUTHOR: Artico Giovanni
+
 #ifndef VIDEOREADER
 #define VIDEOREADER
 #include <opencv2/core.hpp>

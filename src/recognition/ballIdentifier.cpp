@@ -1,5 +1,4 @@
-// BALL IDENTIFICATION
-// by Marco Giacomin
+// AUTHOR: Giacomin Marco
 
 #include <cstdlib>
 #include <iostream>

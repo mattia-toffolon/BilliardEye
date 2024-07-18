@@ -1,4 +1,5 @@
-//Giovanni Artico
+// AUTHOR: Artico Giovanni
+
 #include "recognition/transformPoints.hpp"
 
 using namespace cv;

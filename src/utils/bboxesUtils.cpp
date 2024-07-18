@@ -1,3 +1,5 @@
+// AUTHOR: Toffolon Mattia
+
 #include <iostream>
 #include <opencv2/highgui.hpp>
 #include <opencv2/core/types.hpp>

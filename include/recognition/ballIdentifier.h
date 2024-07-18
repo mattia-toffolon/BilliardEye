@@ -1,5 +1,4 @@
-// BALL IDENTIFICATION
-// by Marco Giacomin
+// AUTHOR: Giacomin Marco
 
 #ifndef BALLTYPE_H
 #define BALLTYPE_H
