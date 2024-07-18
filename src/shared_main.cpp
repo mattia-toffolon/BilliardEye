@@ -52,6 +52,7 @@ int main(int argc, char** argv) {
     Mat mask;
     //vertices of the table
     vector<Point2f> points = find_table(img_last, mask);
+    getRotatedborders(points,img_last);
     std::string output = argv[3];
     //since the prediction is done on the last frame we write only
     //one predicted table segmentation

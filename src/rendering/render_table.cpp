@@ -146,6 +146,12 @@ void draw_transparent(Mat img, Ball b){
         cv::addWeighted(img, 1, layer, 0.999, 0, img);
     }
 }
+void drawBBoxlines(Mat img, Rect bbox){
+    line(img, bbox.tl(), Point(bbox.x+bbox.width, bbox.y), Scalar(0,0,0));
+    line(img, Point(bbox.x+bbox.width, bbox.y), Point(bbox.x+bbox.width, bbox.y+bbox.height), Scalar(0,0,0));
+    line(img, Point(bbox.x+bbox.width, bbox.y+bbox.height), Point(bbox.x, bbox.y+bbox.height), Scalar(0,0,0));
+    line(img, Point(bbox.x, bbox.y+bbox.height), bbox.tl(), Scalar(0,0,0));
+}
 cv::Mat nice_render(cv::Mat img, std::vector<cv::Point2f> table_verts, std::vector<Ball> balls){
     Mat render = img.clone();
     Scalar line_color(255, 0, 255);
@@ -154,6 +160,7 @@ cv::Mat nice_render(cv::Mat img, std::vector<cv::Point2f> table_verts, std::vect
     }
     for(auto b : balls){
         draw_transparent(render, b);
+        drawBBoxlines(render, b.bbox);
     }
     return render;
 }
