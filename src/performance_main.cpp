@@ -222,8 +222,10 @@ int main(int argc, char** argv) {
         std::cout << "iou segmentation last solid " << ioulsolidseg[i] << std::endl;
         std::cout << "iou segmentation first striped " << ioufstripedseg[i] << std::endl;
         std::cout << "iou segmentation last striped " << ioulstripedseg[i] << std::endl;
-        std::cout << "average precision table first: " << precisionMaskFirst[i] << std::endl;
-        std::cout << "average precision table last: " << precisionMaskLast[i] << std::endl;
+        std::cout << "iou table first: " << precisionMaskFirst[i] << std::endl;
+        std::cout << "iou table last: " << precisionMaskLast[i] << std::endl;
+        std::cout << "iou background first: " << ioufbackground[i] << std::endl;
+        std::cout << "iou background last: " << ioulbackground[i] << std::endl;
         std::cout << "average precision cue first: " << precisionCueFirst[i] << std::endl;
         std::cout << "average precision cue last: " << precisionCueLast[i] << std::endl;
         std::cout << "average precision eight first: " << precisionEightFirst[i] << std::endl;
