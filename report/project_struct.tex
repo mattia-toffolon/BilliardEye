@@ -10,3 +10,24 @@ following structure:
     \item \verb|samples| directory, contains the system input, outputs and groud truths;
     \item \verb|CMakeLists.txt|, contains CMake instructions to organize the build of the project. 
 \end{itemize}
+
+\noindent
+Furthermore, folders \verb|include| and \verb|src| are further divided into:
+\begin{itemize}
+    \item \verb|segment| directory, contains the files for table and balls segmentatation;
+    \item \verb|recognition| directory, contains the files for balls classification and side recognition;
+    \item \verb|tracking| directory, contains the files for balls tracking;
+    \item \verb|rendering| directory, contains the files for the map rendering;
+    \item \verb|utils| directory, contains additional files that implement various utilities.
+\end{itemize}
+
+\noindent
+Additionaly, \verb|src| folder contains:
+\begin{itemize}
+    \item \verb|shared_main.cpp| file, implements the full video rendering and masks generation;
+    \item \verb|performance_main.cpp|, implements the computation of all performance metrics across all videos.
+\end{itemize}
+
+\noindent
+It must be noted that \verb|samples| folder is given in \verb|.zip| format for convenience.
+In order to run \verb|performance_main.cpp| successfully, such file must be unzipped.
