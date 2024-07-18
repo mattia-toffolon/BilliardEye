@@ -25,26 +25,34 @@ void fillTypes(const vector<Ball> &all, vector<Rect> &eight, vector<Rect> &cue, 
         }
     }
 }
+
 Mat drawCircles(vector<Rect> balls, Size s, Scalar color = Scalar(255)){
     Mat ret = Mat::zeros(s, CV_8UC1);
+
     for(auto r : balls){
         Vec3f circ = toCircle(r);
         circle(ret, Point(circ[0],circ[1]), circ[2], color, FILLED);
     }
+
     return ret;
 }
+
 Mat drawCircles(vector<Ball> balls, Size s, Scalar color, Mat initial){
     Mat ret = initial.clone();
+
     for(auto r : balls){
         Vec3f circ = toCircle(r.bbox);
         circle(ret, Point(circ[0],circ[1]), circ[2], color, FILLED);
     }
+
     return ret;
 }
+
 float compute_average_precision(std::vector<Rect> prediction, std::vector<Rect> ground_truth, float threshold){
         std::map<float, float> res = precisionRecallCurve(prediction, ground_truth, threshold);
         return averagePrecision(res);
 }
+
 /*
  * letters in variable names:
  * f->First
@@ -74,6 +82,7 @@ int main(int argc, char** argv) {
     
     std::vector<Mat> ground_truth_masks_first, ground_truth_masks_last, predicted_masks;
     std::vector<std::vector<Ball>> ground_truth_balls_first, predicted_balls_first,ground_truth_balls_last, predicted_balls_last;
+
     //read output files and ground truth
     for(int i = 0; i < samples; i++){
         ground_truth_masks_first.push_back(imread(argv[1] + directory + std::to_string(i) + ground_mask_first + png, IMREAD_GRAYSCALE));
@@ -84,19 +93,22 @@ int main(int argc, char** argv) {
         ground_truth_balls_last.push_back(readBallsFile(argv[1] + directory + std::to_string(i) + ground_balls_last + txt));
         predicted_balls_last.push_back(readBallsFile(argv[1] + directory + std::to_string(i) + predicted_ball_last + txt));
     }
+
     //iou threshold for map
     double threshold = 0.5;
     //metrics vectors
+
     std::vector<float> precisionsf, precisionsl,
         precisionMaskFirst,precisionMaskLast,
         precisionCueFirst,precisionCueLast,
         precisionEightFirst,precisionEightLast,
         precisionSolidFirst,precisionSolidLast,
         precisionStripedFirst,precisionStripedLast;
-    std::vector<float> ioufcue,ioufeight,ioufsolid,ioufstriped
-                        ,ioulcue,iouleight,ioulsolid,ioulstriped;
+
     std::vector<float> ioufcueseg,ioufeightseg,ioufsolidseg,ioufstripedseg
-                        ,ioulcueseg,iouleightseg,ioulsolidseg,ioulstripedseg;
+                        ,ioulcueseg,iouleightseg,ioulsolidseg,ioulstripedseg
+                        ,ioufbackground, ioulbackground;
+
     //compute performance for each sample
     for(int i = 0; i < samples; i ++){
         //current balls
@@ -135,6 +147,12 @@ int main(int argc, char** argv) {
         //compute map for localization alone
         precisionsf.push_back(compute_average_precision(curfpr, curftr, threshold));
         precisionsl.push_back(compute_average_precision(curlpr, curltr, threshold));
+        //compute iou background
+        Mat antiBack_first = drawCircles(curfp, predicted_masks[i].size(), Scalar(1),predicted_masks[i]);
+        Mat antiBack_last = drawCircles(curlp, predicted_masks[i].size(), Scalar(1),predicted_masks[i]);
+
+        ioufbackground.push_back(intersectionOverUnion((ground_truth_masks_first[i] == 0), (antiBack_first == 0)));
+        ioulbackground.push_back(intersectionOverUnion((ground_truth_masks_last[i] == 0), (antiBack_last == 0)));
         //compute iou for the table
         Mat predicted_mask_first, predicted_mask_last;
         //balls are removed for better segmentation
@@ -142,16 +160,14 @@ int main(int argc, char** argv) {
         predicted_mask_last = drawCircles(curlp, predicted_masks[i].size(), Scalar(0),predicted_masks[i]);
         precisionMaskFirst.push_back(intersectionOverUnion(ground_truth_masks_first[i] ==5, predicted_mask_first));
         precisionMaskLast.push_back(intersectionOverUnion(ground_truth_masks_last[i] == 5, predicted_mask_last));
+
         //cue balls
+        
         vector<float> cuefiou, cueliou;
-        //compute mean iou using bounding boxes
-        cuefiou = manyToManyIoU(cueft, cuefp);
-        cueliou = manyToManyIoU(cuelt, cuelp);
-        Mat cueftseg, cueltseg, cuefpseg, cuelpseg;
-        ioufcue.push_back(std::accumulate(cuefiou.begin(),cuefiou.end(), 0.0)/static_cast<float>(cuefiou.size()));
-        ioulcue.push_back(std::accumulate(cueliou.begin(),cueliou.end(), 0.0)/static_cast<float>(cueliou.size()));
+
         //compute mean for segmentation, bounding boxes are considered as
         //perfectly circumscribing a circle
+        Mat cueftseg, cueltseg, cuefpseg, cuelpseg;
         cueftseg = (ground_truth_masks_first[i] == static_cast<char>(BallType::CUE));
         cueltseg = (ground_truth_masks_last[i] == static_cast<char>(BallType::CUE));
         cuefpseg = drawCircles(cuefp, (predicted_masks[i]).size());
@@ -161,11 +177,7 @@ int main(int argc, char** argv) {
         precisionCueFirst.push_back(compute_average_precision(cuefp, cueft, threshold));
         precisionCueLast.push_back(compute_average_precision(cuelp, cuelt, threshold));
         //eight balls
-        vector<float> eightfiou, eightliou;
-        eightfiou = manyToManyIoU(eightfp, eightft);
-        eightliou = manyToManyIoU(eightlp, eightlt);
-        ioufeight.push_back(std::accumulate(eightfiou.begin(),eightfiou.end(), 0.0)/static_cast<float>(eightfiou.size()));
-        iouleight.push_back(std::accumulate(eightliou.begin(),eightliou.end(), 0.0)/static_cast<float>(eightliou.size()));
+
         Mat eightftseg, eightltseg, eightfpseg, eightlpseg;
         eightftseg = (ground_truth_masks_first[i] == static_cast<char>(BallType::EIGHT));
         eightltseg = (ground_truth_masks_last[i] == static_cast<char>(BallType::EIGHT));
@@ -176,11 +188,7 @@ int main(int argc, char** argv) {
         precisionEightFirst.push_back(compute_average_precision(eightfp, eightft, threshold));
         precisionEightLast.push_back(compute_average_precision(eightlp, eightlt, threshold));
         //solid balls
-        vector<float> solidfiou, solidliou;
-        solidfiou = manyToManyIoU(solidfp, solidft);
-        solidliou = manyToManyIoU(solidlp, solidlt);
-        ioufsolid.push_back(std::accumulate(solidfiou.begin(),solidfiou.end(), 0.0)/static_cast<float>(solidfiou.size()));
-        ioulsolid.push_back(std::accumulate(solidliou.begin(),solidliou.end(), 0.0)/static_cast<float>(solidliou.size()));
+
         Mat solidftseg, solidltseg, solidfpseg, solidlpseg;
         solidftseg = (ground_truth_masks_first[i] == static_cast<char>(BallType::SOLID));
         solidltseg = (ground_truth_masks_last[i] == static_cast<char>(BallType::SOLID));
@@ -191,11 +199,7 @@ int main(int argc, char** argv) {
         precisionSolidFirst.push_back(compute_average_precision(solidfp, solidft, threshold));
         precisionSolidLast.push_back(compute_average_precision(solidlp, solidlt, threshold));
         //stripedd
-        vector<float> stripedfiou, stripedliou;
-        stripedfiou = manyToManyIoU(stripedfp, stripedft);
-        stripedliou = manyToManyIoU(stripedlp, stripedlt);
-        ioufstriped.push_back(std::accumulate(stripedfiou.begin(),stripedfiou.end(), 0.0)/static_cast<float>(stripedfiou.size()));
-        ioulstriped.push_back(std::accumulate(stripedliou.begin(),stripedliou.end(), 0.0)/static_cast<float>(stripedliou.size()));
+
         Mat stripeddftseg, stripeddltseg, stripeddfpseg, stripeddlpseg;
         stripeddftseg = (ground_truth_masks_first[i] == static_cast<char>(BallType::STRIPED));
         stripeddltseg = (ground_truth_masks_last[i] == static_cast<char>(BallType::STRIPED));
@@ -210,14 +214,6 @@ int main(int argc, char** argv) {
         std::cout << "sample " << i << std::endl;
         std::cout << "average precision first of localization " << precisionsf[i] << std::endl;
         std::cout << "average precision last of localization " << precisionsl[i] << std::endl;
-        //std::cout << "mean iou bbox first cue " << ioufcue[i] << std::endl;
-        //std::cout << "mean iou bbox last cue " << ioulcue[i] << std::endl;
-        //std::cout << "mean iou bbox first eight " << ioufeight[i] << std::endl;
-        //std::cout << "mean iou bbox last eight " << iouleight[i] << std::endl;
-        //std::cout << "mean iou bbox first solid " << ioufsolid[i] << std::endl;
-        //std::cout << "mean iou bbox last solid " << ioulsolid[i] << std::endl;
-        //std::cout << "mean iou bbox first striped " << ioufstriped[i] << std::endl;
-        //std::cout << "mean iou bbox last striped " << ioulstriped[i] << std::endl;
         std::cout << "iou segmentation first cue " << ioufcueseg[i] << std::endl;
         std::cout << "iou segmentation last cue " << ioulcueseg[i] << std::endl;
         std::cout << "iou segmentation first eight " << ioufeightseg[i] << std::endl;
@@ -236,8 +232,10 @@ int main(int argc, char** argv) {
         std::cout << "average precision striped last: " << precisionStripedLast[i] << std::endl;
         std::cout << "average precision striped first: " << precisionStripedFirst[i] << std::endl;
         std::cout << "average precision solid last: " << precisionSolidLast[i] << std::endl;
-        std::cout << "mIOU first: " << (ioufcueseg[i] + ioufeightseg[i] + ioufsolidseg[i] + ioufstripedseg[i] + precisionMaskFirst[i]) / 5.0 <<std::endl;
-        std::cout << "mIOU last: " << (ioulcueseg[i] + iouleightseg[i] + ioulsolidseg[i] + ioulstripedseg[i] + precisionMaskLast[i]) / 5.0 <<std::endl;
+        std::cout << "mIOU first: " << (ioufcueseg[i] + ioufeightseg[i] + ioufsolidseg[i] + ioufstripedseg[i] + precisionMaskFirst[i] + ioufbackground[i]) / 6.0 <<std::endl;
+        std::cout << "mIOU last: " << (ioulcueseg[i] + iouleightseg[i] + ioulsolidseg[i] + ioulstripedseg[i] + precisionMaskLast[i] + ioulbackground[i]) / 6.0 <<std::endl;
+        std::cout << "mAP first: " << (precisionCueFirst[i] + precisionEightFirst[i] + precisionSolidFirst[i] + precisionStripedFirst[i]) / 4.0 <<std::endl;
+        std::cout << "mAP last: " << (precisionCueLast[i] + precisionEightLast[i] + precisionSolidLast[i] + precisionStripedLast[i]) / 4.0 <<std::endl;
         std::cout << std::endl;
     }
 }
