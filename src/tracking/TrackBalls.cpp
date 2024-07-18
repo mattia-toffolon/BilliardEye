@@ -1,3 +1,5 @@
+// AUTHOR: Toffolon Mattia
+
 #include "tracking/TrackBalls.hpp"
 #include "opencv2/core/types.hpp"
 #include "segment/segBalls.h"
@@ -11,9 +13,8 @@ using namespace cv;
 using namespace std;
 
 TrackBalls::TrackBalls(Mat frame, vector<Ball> bb) {
-    // legacy::TrackerCSRT::Params params;
     for(auto ball : bb) {
-        Rect aug_bbox = Rect(ball.bbox.x-delta, ball.bbox.y-delta, ball.bbox.width+2*delta, ball.bbox.height+2*delta);
+        Rect aug_bbox = Rect(ball.bbox.x-DELTA, ball.bbox.y-DELTA, ball.bbox.width+2*DELTA, ball.bbox.height+2*DELTA);
         Ball aug_ball{aug_bbox, ball.type};
         balls.push_back(aug_ball);
         auto cur = TrackerCSRT::create();
@@ -40,38 +41,17 @@ vector<Ball> TrackBalls::update(Mat frame, vector<int>& renderer_remove_idxs) {
     }
 
     if(lost_indexes.size() > 0) {
-        // cout<<"Lost balls: ";
-        // for(int i : lost_indexes) cout<<i<<" ";
-        // cout<<endl;
-
         Mat mask;
         vector<Point2f> points = find_table(frame, mask);
         Mat transf = getTransformation(frame, points);
 
         vector<Rect> found_bboxes = getBBoxes(frame, mask, transf);
-        // drawBBoxes(frame, found_bboxes);
 
         adjustBalls(found_indexes, lost_indexes, found_bboxes, frame, renderer_remove_idxs);
     }
 
     return balls;
 }
-
-// void TrackBalls::removeBalls(vector<int> indexKeepList, Mat frame) {
-//     vector<Ball> new_balls;
-//     vector<Ptr<TrackerCSRT>> new_multi_tracker;
-//     for(int i : indexKeepList) {
-//         new_balls.push_back(balls[i]);
-//         auto tracker = TrackerCSRT::create();
-//         tracker->init(frame, balls[i].bbox);
-//         new_multi_tracker.push_back(tracker);
-//     }
-
-//     balls = new_balls;
-//     multi_tracker = new_multi_tracker;
-
-//     return;
-// }
 
 void TrackBalls::removeBalls(vector<int> indexEraseList) {
     for(int i=indexEraseList.size()-1; i>=0; i--) {
@@ -82,11 +62,38 @@ void TrackBalls::removeBalls(vector<int> indexEraseList) {
     return;
 }
 
-float TrackBalls::sqEuclideanDist(Rect r1, Rect r2) {
-    float dist = (r1.x-r2.x)*(r1.x-r2.x) + (r1.y-r2.y)*(r1.y-r2.y);
-    return dist; 
+vector<Ball> TrackBalls::getRealBalls() {
+    vector<Ball> ret;
+    for(Ball ball : balls) {
+        Rect red_bbox = Rect(ball.bbox.x+DELTA, ball.bbox.y+DELTA, ball.bbox.width-2*DELTA, ball.bbox.height-2*DELTA);
+        ret.push_back(Ball{red_bbox, ball.type});
+    }
+
+    return ret;
 }
 
+void TrackBalls::adjustBalls(vector<int> found_indexes, vector<int> lost_indexes, vector<Rect> found_bboxes, Mat frame, vector<int>& renderer_remove_idxs) {
+    
+    if(balls.size() > found_bboxes.size()) {
+        removeBalls(lost_indexes);
+        renderer_remove_idxs = lost_indexes;
+        return;
+    }
+
+    for(int i : found_indexes) {
+        int relative_bbox_index = getClosestBBoxIndex(balls[i].bbox, found_bboxes);
+        found_bboxes.erase(found_bboxes.begin() + relative_bbox_index);
+    }
+
+    for(int i : lost_indexes) {
+        int relative_bbox_index = getClosestBBoxIndex(balls[i].bbox, found_bboxes);
+        balls[i].bbox = found_bboxes[relative_bbox_index];
+    }
+
+    for(int i : lost_indexes) multi_tracker[i]->init(frame, balls[i].bbox);
+
+    return;
+}
 
 int TrackBalls::getClosestBBoxIndex(Rect tracked, vector<Rect> found) {
     if(found.empty()) return -1;
@@ -102,41 +109,7 @@ int TrackBalls::getClosestBBoxIndex(Rect tracked, vector<Rect> found) {
     return index;
 }
 
-void TrackBalls::adjustBalls(vector<int> found_indexes, vector<int> lost_indexes, vector<Rect> found_bboxes, Mat frame, vector<int>& renderer_remove_idxs) {
-    
-    if(balls.size() > found_bboxes.size()) {
-        // cout<<"NOT ENOUGH BALLS"<<endl;
-        removeBalls(lost_indexes);
-        renderer_remove_idxs = lost_indexes;
-        return;
-    }
-
-    // drawBBoxes(frame, found_bboxes);
-
-    for(int i : found_indexes) {
-        int relative_bbox_index = getClosestBBoxIndex(balls[i].bbox, found_bboxes);
-        // cout<<balls[i].bbox<<" --- "<<found_bboxes[relative_bbox_index]<<endl;
-        found_bboxes.erase(found_bboxes.begin() + relative_bbox_index);
-    }
-
-    // drawBBoxes(frame, found_bboxes);
-
-    for(int i : lost_indexes) {
-        int relative_bbox_index = getClosestBBoxIndex(balls[i].bbox, found_bboxes);
-        balls[i].bbox = found_bboxes[relative_bbox_index];
-    }
-
-    for(int i : lost_indexes) multi_tracker[i]->init(frame, balls[i].bbox);
-
-    return;
-}
-
-vector<Ball> TrackBalls::getRealBalls() {
-    vector<Ball> ret;
-    for(Ball ball : balls) {
-        Rect red_bbox = Rect(ball.bbox.x+delta, ball.bbox.y+delta, ball.bbox.width-2*delta, ball.bbox.height-2*delta);
-        ret.push_back(Ball{red_bbox, ball.type});
-    }
-
-    return ret;
+float TrackBalls::sqEuclideanDist(Rect r1, Rect r2) {
+    float dist = (r1.x-r2.x)*(r1.x-r2.x) + (r1.y-r2.y)*(r1.y-r2.y);
+    return dist; 
 }

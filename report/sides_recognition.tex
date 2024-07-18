@@ -1,4 +1,6 @@
-the points are ordered from the upper-left-most point clockwise, but this doesn't give
+\section{Table Side Recognition}
+
+The points are ordered from the upper-left-most point clockwise, but this doesn't give
 any information on how the sides are ordered. It is unfortunately impossible (or out of my
 mathematical capabilities) to find any meaningful geometrical relation between the sides
 given the perspective deformations in some cases. The only feature we can go off of is the 
@@ -31,12 +33,12 @@ This works because of the nature of the edges on the sides: on shorter sides the
 are only parallel lines, instead on longer there are strong lines orthogonal given by the holes.
 Only the middle two quarters are considers as to avoid counting the corner holes as edges.
 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \begin{subfigure}[b]{\textwidth}
     \includegraphics[width=\textwidth]{./imgs/sobel_long_side.png}
     \caption{processed rectangle of a long side}\par
-    \end{subfigure}\vspace{10}
+    \end{subfigure}\vspace{10pt}
     \begin{subfigure}[b]{\textwidth}
     \includegraphics[width=\textwidth]{./imgs/sobel_short_side.png}
     \caption{processed rectangle of a long side}

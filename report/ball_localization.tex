@@ -1,10 +1,21 @@
-To solve the ball localization and segmentation sub-task the following algorithm was implemented.
+\section{Ball Localization and Segmentation}
+
+To solve the ball localization and segmentation sub-tasks the following algorithm was implemented.
 The latter goes through the following three major steps:
-\begin{itemize}
+\begin{enumerate}
     \item Region proposals generation
     \item False positive filtering
     \item Bounding boxes refinement
-\end{itemize}
+\end{enumerate}
+
+Before starting with the actual algorithm presentation, a few consideration must be made.
+Exclusively for this project part, the used first video frame is the one contained in the given "frames" folder, which is different
+from the one taken directly from the video using OpenCV due to compression factors. This choice was made because better system performance relative to 
+ball localization and segmentation were obtained using the former.
+
+Furthermore, this section only accurately covers the Ball Localization task solution, showing how the final set of bounding boxes is obtained.
+The adopted solution for the Ball Segmentation task, simply consists in creating a mask obtained by fitting a circle inside the found bounding boxes.
+Since the boxes are constrained to be squared, this operation is trivial.
 
 
 \subsection{Region proposals generation}

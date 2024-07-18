@@ -1,3 +1,8 @@
+% BALL IDENTIFICATION REPORT
+% by Marco Giacomin
+
+\section{Ball Identification}
+
 The task of ball identification is as such: 
 given a precise window inside an image that is assumed to 
 contain a ball of the game of pool, we want to identify 
@@ -23,13 +28,16 @@ The main challenges of this sub-task are:
 \end{enumerate}
 
 A typical input image will look like this:
-\begin{figure}
-  \includegraphics[width=0.6\textwidth]{./imgs/cueball_grey.png}
-  \caption{greyscale image of a cueball}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.4\textwidth]{./imgs/cueball_grey.png}
+  \caption{Grayscale image of a cueball}
 \end{figure}
-\begin{figure}
-  \includegraphics[width=0.6\textwidth]{./imgs/difficult_solid.png}
-  \caption{greyscale image of a solid ball}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.4\textwidth]{./imgs/difficult_solid.png}
+  \caption{Grayscale image of a solid ball}
 \end{figure}
 
 My first approach was to attempt Otsu thresholding segmentation
@@ -39,14 +47,16 @@ Unfortunately this produced a very inconsistent separation between white and
 colored pixels which only sometimes corresponded to a real white region 
 on the image, especially for images of solid colored balls.
 
-\begin{figure}
-  \includegraphics[width=0.6\textwidth]{./imgs/cueball_otsu.png}
-  \caption{otsu segmentation of a cueball}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.4\textwidth]{./imgs/cueball_otsu.png}
+  \caption{Otsu segmentation of a cueball}
 \end{figure}
 
-\begin{figure}
-  \includegraphics[width=0.6\textwidth]{./imgs/bad_otsu.png}
-  \caption{failed otsu segmentation of a solid ball}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.4\textwidth]{./imgs/bad_otsu.png}
+  \caption{Failed otsu segmentation of a solid ball}
 \end{figure}
 
 My second attempt involved color-space clustering via \verb|kmeans|. 
@@ -76,9 +86,10 @@ intensity of the remaining pixels is stretched to occupy the full
 data) is then applied and the ball type is decided based on the 
 percentage of white pixels remaining.
 
-\begin{figure}
-  \includegraphics[width=0.6\textwidth]{./imgs/difficult_solid_identified.png}
-  \caption{correctly segmented white part of a solid ball}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.4\textwidth]{./imgs/difficult_solid_identified.png}
+  \caption{Correctly segmented white part of a solid ball}
 \end{figure}
 
 Unfortunately, this method produces some incorrect classifications 

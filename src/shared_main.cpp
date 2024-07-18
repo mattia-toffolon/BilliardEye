@@ -43,8 +43,6 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
-    string clip_name = argv[1];
-
     const string video_path = argv[1];
     const string img_path = argv[2];
 
@@ -88,7 +86,7 @@ int main(int argc, char** argv) {
     int i = 0;
     while(1) {
         i++;
-        std::cout << i << std::endl;
+        std::cout << "Frame " << i << " processed" << std::endl;
         Mat curfrend = rend.nextFrame();
         if(curfrend.rows == 0) break;
         fr = curfrend;

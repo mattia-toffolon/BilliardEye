@@ -1,3 +1,6 @@
+// BALL IDENTIFICATION
+// by Marco Giacomin
+
 #include <cstdlib>
 #include <iostream>
 #include <vector>
