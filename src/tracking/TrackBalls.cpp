@@ -62,24 +62,14 @@ void TrackBalls::removeBalls(vector<int> indexEraseList) {
     return;
 }
 
-float TrackBalls::sqEuclideanDist(Rect r1, Rect r2) {
-    float dist = (r1.x-r2.x)*(r1.x-r2.x) + (r1.y-r2.y)*(r1.y-r2.y);
-    return dist; 
-}
-
-
-int TrackBalls::getClosestBBoxIndex(Rect tracked, vector<Rect> found) {
-    if(found.empty()) return -1;
-
-    float min_dist = sqEuclideanDist(tracked, found[0]);
-    int index = 0;
-    for(int i=1; i<found.size(); i++) {
-        float dist = sqEuclideanDist(tracked, found[i]);
-        index = (dist < min_dist ? i : index);
-        min_dist = (dist < min_dist ? dist : min_dist);
+vector<Ball> TrackBalls::getRealBalls() {
+    vector<Ball> ret;
+    for(Ball ball : balls) {
+        Rect red_bbox = Rect(ball.bbox.x+DELTA, ball.bbox.y+DELTA, ball.bbox.width-2*DELTA, ball.bbox.height-2*DELTA);
+        ret.push_back(Ball{red_bbox, ball.type});
     }
 
-    return index;
+    return ret;
 }
 
 void TrackBalls::adjustBalls(vector<int> found_indexes, vector<int> lost_indexes, vector<Rect> found_bboxes, Mat frame, vector<int>& renderer_remove_idxs) {
@@ -105,12 +95,21 @@ void TrackBalls::adjustBalls(vector<int> found_indexes, vector<int> lost_indexes
     return;
 }
 
-vector<Ball> TrackBalls::getRealBalls() {
-    vector<Ball> ret;
-    for(Ball ball : balls) {
-        Rect red_bbox = Rect(ball.bbox.x+DELTA, ball.bbox.y+DELTA, ball.bbox.width-2*DELTA, ball.bbox.height-2*DELTA);
-        ret.push_back(Ball{red_bbox, ball.type});
+int TrackBalls::getClosestBBoxIndex(Rect tracked, vector<Rect> found) {
+    if(found.empty()) return -1;
+
+    float min_dist = sqEuclideanDist(tracked, found[0]);
+    int index = 0;
+    for(int i=1; i<found.size(); i++) {
+        float dist = sqEuclideanDist(tracked, found[i]);
+        index = (dist < min_dist ? i : index);
+        min_dist = (dist < min_dist ? dist : min_dist);
     }
 
-    return ret;
+    return index;
+}
+
+float TrackBalls::sqEuclideanDist(Rect r1, Rect r2) {
+    float dist = (r1.x-r2.x)*(r1.x-r2.x) + (r1.y-r2.y)*(r1.y-r2.y);
+    return dist; 
 }

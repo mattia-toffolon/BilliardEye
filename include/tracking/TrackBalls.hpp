@@ -53,14 +53,15 @@ class TrackBalls{
     private:
 
     /**
-     * Method that computes the squared Euclidean distance between two bounding boxes top-left corner
+     * Method that handles the Ball tracking update failures
      * 
-     * @param r1 first bounding box
-     * @param r2 second bounding box
-     * 
-     * @return squared Euclidean distance between the two given boxes top-left corner
+     * @param found_indexs vector of indexes of correctly updated Balls
+     * @param lost_indexes vector of indexes of Balls which tracking update has failed
+     * @param found_bboxes vector of newly found bounding boxes
+     * @param frame next video frame
+     * @param renderer_remove_idxs vector of ball indexes shared with method caller
      */
-    float sqEuclideanDist(cv::Rect r1, cv::Rect r2);
+    void adjustBalls(std::vector<int> found_indexes, std::vector<int> lost_indexes, std::vector<cv::Rect> found_bboxes, cv::Mat frame, std::vector<int>& renderer_remove_idxs);
 
     /**
      * Method that return the index of the closest bounding box in a given vector from a given reference box
@@ -73,16 +74,14 @@ class TrackBalls{
     int getClosestBBoxIndex(cv::Rect tracked, std::vector<cv::Rect> found);
 
     /**
-     * Method that handles the Ball tracking update failures
+     * Method that computes the squared Euclidean distance between two bounding boxes top-left corner
      * 
-     * @param found_indexs vector of indexes of correctly updated Balls
-     * @param lost_indexes vector of indexes of Balls which tracking update has failed
-     * @param found_bboxes vector of newly found bounding boxes
-     * @param frame next video frame
-     * @param renderer_remove_idxs vector of ball indexes shared with method caller
+     * @param r1 first bounding box
+     * @param r2 second bounding box
+     * 
+     * @return squared Euclidean distance between the two given boxes top-left corner
      */
-    void adjustBalls(std::vector<int> found_indexes, std::vector<int> lost_indexes, std::vector<cv::Rect> found_bboxes, cv::Mat frame, std::vector<int>& renderer_remove_idxs);
-
+    float sqEuclideanDist(cv::Rect r1, cv::Rect r2);
 };
 
 #endif
