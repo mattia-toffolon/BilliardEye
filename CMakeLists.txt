@@ -74,12 +74,6 @@ add_library(table_transform
 )
 target_include_directories(table_transform PRIVATE ${OpenCV_INCLUDE_DIRS})
 
-add_library(purgefp
-    ./include/utils/PurgeFP.hpp
-    ./src/utils/PurgeFP.cpp
-)
-target_include_directories(purgefp PRIVATE ${OpenCV_INCLUDE_DIRS})
-
 add_library(perfTesting
     ./include/utils/perfTesting.h
     ./src/utils/perfTesting.cpp
@@ -101,7 +95,6 @@ target_link_libraries(segBill
     table_transform
     ball_tracking 
     rendering 
-    purgefp
     perfTesting
     ${OpenCV_LIBS}
     )
