@@ -31,13 +31,14 @@ float oneToManyIoU(Rect region, vector<Rect> candidates)
     return best;
 }
 
-vector<float> manyToManyIoU(vector<Rect> regions1, vector<Rect> regions2)
+vector<float> manyToManyIoU(vector<Rect> predictions, vector<Rect> truths)
 {
     vector<float> ans;
-    for (Rect r1 : regions1)
+    for (Rect r1 : predictions)
     {
-        ans.push_back(oneToManyIoU(r1,regions2));
+        ans.push_back(oneToManyIoU(r1,truths));
     }
+    if (predictions.size()<=0) ans.push_back(0);
     return ans;
 }
 
@@ -48,6 +49,17 @@ map<float,float> precisionRecallCurve(
 )
 {
     map<float,float> ans;
+
+    int emptyVecs = 0;
+    if (predictions.size()<=0) emptyVecs++;
+    if (truths.size()<=0) emptyVecs++;
+    if (emptyVecs == 1) return ans; // Return curve of area 0
+    if (emptyVecs == 2)
+    {
+        // Make a curve of area 1
+        ans.insert({1,1});
+        return ans;
+    }
     
     float truePos = 0;
     float falsePos = 0;
