@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
     int i = 0;
     while(1) {
         i++;
-        std::cout << "\u2764Frame\u2764" << i << "\u2764processed\u2764" << std::endl;
+        std::cout << "Frame " << i << " processed" << std::endl;
         Mat curfrend = rend.nextFrame();
         if(curfrend.rows == 0) break;
         fr = curfrend;
