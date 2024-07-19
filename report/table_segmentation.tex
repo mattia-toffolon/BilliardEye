@@ -14,18 +14,18 @@ be problematic, as the strongest lines in the image are not only the table
 fabric, but also the table itself and various other things in the image.
 The initial approach was to use Otsu's thresholding, as the table is a uniform
 color, therefore it is sensible to assume it would be thresholded the same
-way throughout. This proved unfruitful, as the segmentation was too rough.
+way throughout. This proved unfruitful, as the segmentation was too rough as shown in figure \ref{fig:otsutable}.
 The second approach was to use kmeans clustering, in particular exploiting the
 adaptability of the algorithm in order to use spatial features too to improve
 the segmentation, as we assume the table is a continuous entity. Out of the k clusters obtained the most centered one was picked as shown in figure \ref{fig:kmeanstabol}.
 The segmentation obtained was fairly precise but contained multiple disconnected
 components, however we can consider the table the biggest and pick it, in particular
-before doing this operation open is applied in order to remove weakly connected objects.
+before doing this, the morphological operation open is applied in order to remove weakly connected objects.
 the k (empirically) chosen was 3, as 2 lead to undersegmentation of the image and 4 to oversegmentation.
 The resulting segmentation is precise in most cases, but given the nature of kmeans on some
 images it fails, as it clusters some unrelated parts of the table with the fabric, due,
 for example, to lighting.
-For this reason further processing was required, given we have obtained a rough mask of
+For this reason further processing was required: given we have obtained a rough mask of
 the table we now obtain the mean color of the image in the pixels where the mask is non-zero.
 After this we use a color thresholding by distance, as shown in figure \ref{fig:colorsegtabol} from the mean and the same way we 
 did before to obtain the largest connectedcomponent. thresholding on the hue
@@ -47,6 +47,7 @@ more consistent and stable results, as shown in figure \ref{fig:finalsegtabol}
     \centering
     \includegraphics[width=0.4\textwidth]{./imgs/otsu_table.png}
     \caption{example of Otsu segmentation}
+    \label{fig:otsutable}
 \end{figure}
 
 \begin{figure}[h]

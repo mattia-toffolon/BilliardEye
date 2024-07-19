@@ -42,7 +42,6 @@ vector<Mat> getRotatedborders(const vector<Point2f> points, const Mat img, int t
         warpAffine(img, rotated, M, img.size(), INTER_CUBIC);
         getRectSubPix(rotated, rect_size, rect.center, cropped);
         ret.push_back(cropped);
-
     }
 
     return ret;
