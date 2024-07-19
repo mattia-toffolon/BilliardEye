@@ -145,6 +145,8 @@ int main(int argc, char** argv) {
         for(int i = 0; i < curlp.size(); i ++){
             curlpr.push_back(curlp[i].bbox);
         }
+
+        //compute iou for localization alone
         Mat ballsfpseg = drawCircles(curfpr, (predicted_masks[i]).size());
         Mat ballslpseg = drawCircles(curlpr, (predicted_masks[i]).size());
         
@@ -165,7 +167,7 @@ int main(int argc, char** argv) {
         ioulbackground.push_back(intersectionOverUnion((ground_truth_masks_last[i] == 0), (antiBack_last == 0)));
         //compute iou for the table
         Mat predicted_mask_first, predicted_mask_last;
-        //balls are removed for better segmentation
+        //balls are removed from table mask for better segmentation
         predicted_mask_first = drawCircles(curfp, predicted_masks[i].size(), Scalar(0),predicted_masks[i]);
         predicted_mask_last = drawCircles(curlp, predicted_masks[i].size(), Scalar(0),predicted_masks[i]);
         precisionMaskFirst.push_back(intersectionOverUnion(ground_truth_masks_first[i] ==5, predicted_mask_first));
@@ -184,8 +186,10 @@ int main(int argc, char** argv) {
         cuelpseg = drawCircles(cuelp, (predicted_masks[i]).size());
         ioufcueseg.push_back(intersectionOverUnion(cueftseg, cuefpseg));
         ioulcueseg.push_back(intersectionOverUnion(cueltseg, cuelpseg));
+
         precisionCueFirst.push_back(compute_average_precision(cuefp, cueft, threshold));
         precisionCueLast.push_back(compute_average_precision(cuelp, cuelt, threshold));
+
         //eight balls
 
         Mat eightftseg, eightltseg, eightfpseg, eightlpseg;
@@ -195,8 +199,10 @@ int main(int argc, char** argv) {
         eightlpseg = drawCircles(eightlp, (predicted_masks[i]).size());
         ioufeightseg.push_back(intersectionOverUnion(eightftseg, eightfpseg));
         iouleightseg.push_back(intersectionOverUnion(eightltseg, eightlpseg));
+        
         precisionEightFirst.push_back(compute_average_precision(eightfp, eightft, threshold));
         precisionEightLast.push_back(compute_average_precision(eightlp, eightlt, threshold));
+
         //solid balls
 
         Mat solidftseg, solidltseg, solidfpseg, solidlpseg;
@@ -206,9 +212,11 @@ int main(int argc, char** argv) {
         solidlpseg = drawCircles(solidlp, (predicted_masks[i]).size());
         ioufsolidseg.push_back(intersectionOverUnion(solidftseg, solidfpseg));
         ioulsolidseg.push_back(intersectionOverUnion(solidltseg, solidlpseg));
+
         precisionSolidFirst.push_back(compute_average_precision(solidfp, solidft, threshold));
         precisionSolidLast.push_back(compute_average_precision(solidlp, solidlt, threshold));
-        //stripedd
+
+        //striped
 
         Mat stripeddftseg, stripeddltseg, stripeddfpseg, stripeddlpseg;
         stripeddftseg = (ground_truth_masks_first[i] == static_cast<char>(BallType::STRIPED));
@@ -217,15 +225,16 @@ int main(int argc, char** argv) {
         stripeddlpseg = drawCircles(stripedlp, (predicted_masks[i]).size());
         ioufstripedseg.push_back(intersectionOverUnion(stripeddftseg, stripeddfpseg));
         ioulstripedseg.push_back(intersectionOverUnion(stripeddltseg, stripeddlpseg));
+
         precisionStripedFirst.push_back(compute_average_precision(stripedfp, stripedft, threshold));
         precisionStripedLast.push_back(compute_average_precision(stripedlp, stripedlt, threshold));
     }
     for(int i = 0; i < samples; i ++){
         std::cout << "sample " << i << std::endl;
-        std::cout << "average precision localization first: " << precisionsf[i] << std::endl;
-        std::cout << "average precision localization last: " << precisionsl[i] << std::endl;
-        std::cout << "IOU localization first: " << iouallBallsf[i] << std::endl;
-        std::cout << "IOU localization last: " << iouallBallsl[i] << std::endl;
+        std::cout << "average precision localization (alone) first: " << precisionsf[i] << std::endl;
+        std::cout << "average precision localization (alone) last: " << precisionsl[i] << std::endl;
+        std::cout << "IOU localization (alone) first: " << iouallBallsf[i] << std::endl;
+        std::cout << "IOU localization (alone) last: " << iouallBallsl[i] << std::endl;
         std::cout << "IoU segmentation cue first: " << ioufcueseg[i] << std::endl;
         std::cout << "IoU segmentation cue last: " << ioulcueseg[i] << std::endl;
         std::cout << "IoU segmentation eight first: " << ioufeightseg[i] << std::endl;
