@@ -1,4 +1,5 @@
-//Giovanni Artico
+// AUTHOR: Artico Giovanni
+
 #include <iostream>
 #include <string>
 #include <numeric>

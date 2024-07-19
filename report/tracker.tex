@@ -1,6 +1,6 @@
-\section{Ball Tracking}
+\section{Balls Tracking}
 
-To perform the tracking of the balls along the video we decided not to run the ball detection algorithm on each frame since it could generate false positives and negatives.
+To perform the balls tracking along the video we decided not to run the ball detection algorithm on each frame since it would have been unefficient and could, even if rarely, generate false positives and negatives.
 Instead, we preferred using the \textit{Tracker} classes provided by \textit{OpenCV} that are supposed to provide greater stability and performance with respect to manual detection.
 Initially, we adopted the \textit{MultiTracker} class but it didn't provide the level of control we needed. In fact, using such class it was not possibile to distinguish
 between tracked balls leading to problems such as not being able to know which ball is lost when the tracker fails. Therefore, we decided to use a vector of single trackers,

@@ -1,4 +1,5 @@
-//Giovanni Artico
+// AUTHOR: Artico Giovanni
+
 #ifndef TRANSFORMPOINTS
 #define TRANSFORMPOINTS
 #include <opencv2/highgui.hpp>

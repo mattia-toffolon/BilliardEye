@@ -1,4 +1,5 @@
-//Giovanni Artico
+// AUTHOR: Artico Giovanni
+
 #ifndef RENDER_TABLE
 #define RENDER_TABLE
 #include "tracking/TrackBalls.hpp"

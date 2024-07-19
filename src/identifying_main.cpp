@@ -1,3 +1,5 @@
+// AUTHOR: Artico Giovanni
+
 #include "utils/perfTesting.h"
 #include "recognition/ballIdentifier.h"
 #include <iostream>

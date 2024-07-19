@@ -1,5 +1,4 @@
-// PERFORMANCE TESTING IMPLEMENTATION
-// by Marco Giacomin
+// AUTHOR: Giacomin Marco
 
 #include "utils/perfTesting.h"
 

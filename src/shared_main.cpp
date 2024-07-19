@@ -1,4 +1,5 @@
-//Giovanni Artico
+// AUTHOR: Artico Giovanni
+
 #include <cmath>
 #include <cstdlib>
 #include <iostream>

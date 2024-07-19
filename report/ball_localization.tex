@@ -1,4 +1,4 @@
-\section{Ball Localization and Segmentation}
+\section{Balls Localization and Segmentation}
 
 To solve the ball localization and segmentation sub-tasks the following algorithm was implemented.
 The latter goes through the following three major steps:
@@ -14,8 +14,8 @@ from the one taken directly from the video using OpenCV due to compression facto
 ball localization and segmentation were obtained using the former.
 
 Furthermore, this section only accurately covers the Ball Localization task solution, showing how the final set of bounding boxes is obtained.
-The adopted solution for the Ball Segmentation task, simply consists in creating a mask obtained by fitting a circle inside the found bounding boxes.
-Since the boxes are constrained to be squared, this operation is trivial.
+The adopted solution for the Balls Segmentation task, simply consists in creating a mask obtained by fitting a circle inside the found bounding boxes.
+As it will explained, the boxes were constrained to be squared, so this operation was trivial.
 
 
 \subsection{Region proposals generation}
@@ -25,11 +25,30 @@ a bounding box to contain it. To do this, the Hough Transform algorithm applied 
 (\textit{HoughCircles()} in OpenCV).
 
 Although, the algorithm wasn't applied directly on the grayscale version of the image since
-this would have lead to a great number of false positives and false negatives. The following
-pre-processing was applied to the image.
+this would have lead to a great number of false positives and false negatives. 
+The false positive origin from circles in the image coming from objects in the table different from the balls.
+False negatives instead are caused by some balls having almost exactly the same grayscale pixel intensity value of the table cloth,
+making \verb|HoughCircles| unable to detect them.
+For this algorithm step, the aim is to nullify the number of false negatives, ensuring that every ball is covered by bounding box.
+The removal of false positives from the set of found boxes is covered by the second step of the algorithm.
+
+A pre-processing that highlights the balls in the table was needed in order to ease the detection via \verb|HoughCircles|.
+The first try involved \verb|K-means| clustering in the color space. Ideally, with parameter \verb|K| big enough, table and balls should have been
+clustered in different sets given the differences in color. Although, given the great number of table cloth color variations caused by major illumination
+differences between table areas, a great number of found centroids belonged to the table instead of the balls, leading to many balls being clustered
+into table regions. Given this result, the second try involved associating each pixel with the closest center (Euclidead distance) in the color space given a pre-defined sets of centers.
+The latters were manually defined as ideal ball colors and estimated table cloth color (this estimation is explained later in this section).
+In this way it was possibile to correctly clusterize all table pixels but with the inconvenience of including some balls to the table cluster, since the estimated
+cloth color was closer to the pixel intensity that the respective ideal ball color. This problem is caused mostly by the fact that the illumination condition of the balls
+makes the ball much darker than it actually is. To counteract this issue, additional centers were added to the set exploiting the "value" channel of the HSV enconding
+the generate darker variations of the ball colors. Despite the higher quality of the newly found found clustering, a few false negatives were still generated.
+The cause of this issue was still the extreme color similary between some balls and table cloth. More specifically, if a dark green ball is located in a poorly lit 
+region of a green table, the ball became undetectable. Same reasoning for the blue case.
+
+The best image pre-processing found with respect to the aim of this algorithm step, proved to be the following.
 Firstly, the mask obtained through the table segmentation was used to isolate the table in the image
 in order to constrain HoughCircles to detect circles only inside the table (Figure \ref{fig:masking}). \\
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
@@ -54,7 +73,7 @@ In this way, all table pixels were set at a value close to zero and instead the 
 across at least one of the three channels due to differences from the table.
 This results in an alternative version of the image in which the table is darker and the transition
 between table and balls is much more marked (Figure \ref{fig:subtraction}). \\
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.85\textwidth]{imgs/ball_localization/subtracted.jpg}
     \caption{Custom local operation is applied to non-zero value pixels (game1\_clip4)}
@@ -62,20 +81,21 @@ between table and balls is much more marked (Figure \ref{fig:subtraction}). \\
 \end{figure}
 
 After this, the image was converted to grayscale and HoughCircles was used on it with a general range
-of parameters (Method: \textit{Hough Gradient}, Radius range: 5-15, Distance between circles: img.rows/32, Accumulator threshold: 12).
+of parameters (Method: \verb|Hough_Gradient|, Radius range: 5-15, Distance between circles: \verb|img.rows|/32, Accumulator threshold: 12).
 Working only with the BGR version of the image proved to be unsufficient to find all balls because of the 
-overreliance on the color (hue) of the table that made impossibile to detect some balls. To solve this issue
+poor attention to illumination changes of the table color that made impossibile to detect some balls. To solve this issue
 the previous steps are performed a second time on the HSV version of the image in order to focus more on 
-the brightness. Figure \ref{fig:circles} illustrates an example of these two detections. \\
-\begin{figure}[h]
+the colors brightness (value channel). Figure \ref{fig:circles} illustrates an example of these two detections. \\
+\begin{figure}[h!]
     \centering
-    \begin{subfigure}[b]{0.45\textwidth}
+    \begin{subfigure}[b]{0.85\textwidth}
         \centering
         \includegraphics[width=\textwidth]{imgs/ball_localization/circlesBGR.jpg}
         \caption{starting with the BGR version}
     \end{subfigure}
-    \hspace{0.05\textwidth}
-    \begin{subfigure}[b]{0.45\textwidth}
+    % \hspace{0.05\textwidth}
+    \\
+    \begin{subfigure}[b]{0.85\textwidth}
         \centering
         \includegraphics[width=\textwidth]{imgs/ball_localization/circlesHSV.jpg}
         \caption{starting with the HSV version}
@@ -86,9 +106,9 @@ the brightness. Figure \ref{fig:circles} illustrates an example of these two det
 
 Many balls were detected in both iterations so a smart way to merge the detected circles was necessary.
 The final vector of circles is generated by adding all the ones found from the BGR version of the image, that proved 
-to generate more accurate ball contours, and every circles obtained from the HSV version that do not overlap with circles
-in the first set. Figure \ref{fig:circles_final} shows the output of such merge on the previous example.
-\begin{figure}[h]
+to represent more accurately the ball contours, and every circles obtained from the HSV version that do not overlap with the ones
+in the first set. Figure \ref{fig:circles_final} shows the output of such merge on the previous example. \\
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.85\textwidth]{imgs/ball_localization/circles_merged.jpg}
     \caption{Final set of circles found in the image (game2\_clip1)}
@@ -99,7 +119,7 @@ Circles were then converted into bounding boxes by creating a Rect object for ea
 width and height equal to double the circle radius (diameter).
 Through this procedure, for each image a set of bounding boxes is generated, among which exactly one bounding box per ball is contained. 
 Figure \ref{fig:fp_detection} shows an example of the results of the procedure upto this point.\\
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.85\textwidth]{imgs/ball_localization/fp_detection.jpg}
     \caption{Results of the region proposals generation step (game1\_clip4)}
@@ -108,10 +128,23 @@ Figure \ref{fig:fp_detection} shows an example of the results of the procedure u
 
 
 \subsection{False positive filtering}
-As it can be noted from the previous image, to be able to propose regions that cover the whole set of balls in the table, many 
+As it can be noted from Figure \ref{fig:fp_detection}, to be able to propose regions that cover the whole set of balls in the table, many 
 false positive are generated. This happens since there are many circular regions in the table that do not come from any ball.
-The latters can belong to one of the following two classes: circles relative to holes and ones belonging to the player hand and arm if present 
-inside the table region. Using these informations, the following algorithm to filter the false positives was created and implemented.
+
+The first attept at filtering such false positives resulted in the following algorithm. Given the fact that the balls are always inside the table, the surrounding area
+of the detected circles (identified as the circular ring of width double the circle diameter and center equal to the circle one) is supposed to have mean intensity similiar to the table 
+cloth one and the mean intensity of the area contained in the circle to be different from it. By estimating the table color
+and setting proper distance thresholds in the color space, the implemented filter was able to correctly detect most false positives with a few exceptions.
+If the player has his arm particulary stretched on the table, circles detected on his hand were detected as true positives and in case of balls touching the table borders with
+width almost imperceptible due to perspective effects, the relative circles were detected as false positives.
+These errors were caused by the wrong assumptions initially made.
+
+Because of this, other properties of false and true positives were necessary to be identified in order to create an efficient filter.
+The found ones are the following.
+
+False positives can belong to either one of the following two classes: circles relative to holes and circles belonging to the player hand and arm if present 
+inside the table region. Additionaly, as it will be later better explained, false positives relative to holes are isolated whereas ones relative to the player are always
+grouped together. Using these informations, the following algorithm to filter the false positives was created and implemented.
 
 The filter is composed by two sub-filters placed in cascade to detect the false positives.
 The first one operates in the following manner. Given the facts that false positive relative to holes can be found on the longest table
@@ -123,13 +156,13 @@ non-overlapping boxes will now overlap. Figure \ref{fig:safe_area} shows an exam
 Note that such rectangle was set at 98\% of the image width and 85\% of its height. These dimensions proved to be effective for the purpose. 
 Figure \ref{fig:exp_bboxes} instead shows the result of the bounding boxes expansion applied just for this first filter step. As it can be noticed, close
 boxes now overlap, having a better understanding of how much one is isolated.\\
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.85\textwidth]{imgs/ball_localization/safe_area.jpg}
     \caption{Projected table with "safe area" (game1\_clip4)}
     \label{fig:safe_area}
 \end{figure}
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.85\textwidth]{imgs/ball_localization/exp_boxes_filter.jpg}
     \caption{Expanded bounding boxes in the image (game1\_clip4)}
@@ -146,9 +179,9 @@ In this way, a new image is obtained from the transformed canny one by setting a
 borders or are labeled as background (label 0).
 At this point, the percentage of non-zero pixels in each patch of this last image defined by the bounding boxes is computed.
 Following our assumptions, all boxes relative to false positives will now contain a low amount of non-zero pixels.
-A threshold at 24\% proved to be effective. Figure \ref{fig:cannyprocess} shows the image resulting from the processing done via \textit{Canny} and \textit{connectedComponentsWithStats}
+A threshold set at 24\% proved to be effective. Figure \ref{fig:cannyprocess} shows the image resulting from the processing done via \textit{Canny} and \textit{connectedComponentsWithStats}
 on which the previously identified bounding boxes are drawn. \\
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.85\textwidth]{imgs/ball_localization/conn_comp1.jpg}
     \caption{Results of the canny image processing with bounding boxes (game1\_clip4)}
@@ -164,15 +197,16 @@ computed during the first iteration are saved into a vector and used during the 
 and so in the second run the percentage has greatly increased (at least +30\%), then the bounding box is detected as true positive and added
 the set of true positives previously computed. Figure \ref{fig:opening} shows an example of this image processing in which when using the Opening operator a ball is disconnected
 from the table border and therefore becomes detectable as positive (see the top-left border).\\
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
-    \begin{subfigure}[b]{0.45\textwidth}
+    \begin{subfigure}[b]{0.85\textwidth}
         \centering
         \includegraphics[width=\textwidth]{imgs/ball_localization/final_first.jpg}
         \caption{without Opening (untouched)}
     \end{subfigure}
-    \hspace{0.05\textwidth}
-    \begin{subfigure}[b]{0.45\textwidth}
+    % \hspace{0.05\textwidth}
+    \\
+    \begin{subfigure}[b]{0.85\textwidth}
         \centering
         \includegraphics[width=\textwidth]{imgs/ball_localization/final_second.jpg}
         \caption{with Opening (modified)}
@@ -183,7 +217,7 @@ from the table border and therefore becomes detectable as positive (see the top-
 
 Using this filter, only the regions (bounding boxes) relative to the balls were kept, ensuring a number of false positives and false
 negatives equal to zero across the whole provided dataset. Figure \ref{fig:filtering} shows an example of the final results of the complete false positives filtering step of the algorithm.\\
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.85\textwidth]{imgs/ball_localization/filtered_bboxes.jpg}
     \caption{Results of the false positives filtering step (game1\_clip4)}
@@ -210,7 +244,7 @@ This estimation is valid since at most a few boxes have dimensions sensibly diff
 does not worsen the quality of already precise bounding boxes. More precisely, only the bounding boxes for which the detected circle has absolute value of difference between radius and previous box
 width halfs greater than $4$ are updated. The update is performed by substituting the previous box with the found circle coverted to bounding box in the manner explained before.
 Figure \ref{fig:refine} shows an example in which a ball was not precisely detected in the first step and the respective bounding box is refined by the procedure explained in this section. \\
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \begin{subfigure}[b]{0.25\textwidth}
         \centering
@@ -232,7 +266,6 @@ Figure \ref{fig:refine} shows an example in which a ball was not precisely detec
     \caption{Example of bounding box refinement procedure (game1\_clip2)}
     \label{fig:refine}
 \end{figure}
-
-It must be noted that sometimes the \textit{GrabCut} algorithm fails to return an accurate ball segmentation since it sometimes consider the shadow of the ball as part of the latter.
+It must be noted that sometimes the \textit{GrabCut} algorithm fails to return an accurate ball segmentation since it sometimes considers table borders, holes and shadow of the ball as part of the latter.
 In such cases, \textit{HoughCircles} won't find any circles and therefore the relative bounding box won't be updated.
 For the same reason, this algorithm is adopted only in this last step and it is not used as backbone of the whole ball localization and segmentation procedure.
