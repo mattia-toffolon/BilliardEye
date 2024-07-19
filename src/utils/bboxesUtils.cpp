@@ -12,7 +12,7 @@ Rect toRect(Vec3f circle) {
 }
 
 Vec3f toCircle(Rect box) {
-    return Vec3f(box.x + box.width/2, box.y + box.height/2, box.width/2);
+    return Vec3f(box.x + box.width/2.0, box.y + box.height/2.0, box.width/2.0);
 }
 
 void drawBBoxes(Mat img, vector<Rect> bboxes) {
