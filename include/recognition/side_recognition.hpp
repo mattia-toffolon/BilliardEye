@@ -11,6 +11,7 @@
  * @param thick the width of the rectangle orthogonal to the side
  */
 std::vector<cv::Mat> getRotatedborders(const std::vector<cv::Point2f> points, const cv::Mat img, int thick = 20);
+
 /**
  * @brief returns true if the (ordered) sides have a short side as first
  *  

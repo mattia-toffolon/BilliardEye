@@ -16,10 +16,10 @@ Scalar getColor(BallType b){
         return Scalar(0, 0, 0);
     }
     else if(b == BallType::SOLID){
-        return Scalar(255, 0, 0);
+        return Scalar(0, 0, 255);
     }
     else{
-        return Scalar(0, 0, 255);
+        return Scalar(255, 0, 0);
     }
 }
 
@@ -51,13 +51,16 @@ cv::Mat TableRenderer::nextFrame(){
     if(fram.rows == 0){
         return fram;
     }
+
     std::vector<int> removed, remove_track;
-    const std::vector<Ball> newballs = tracker.update(fram, removed);
     std::vector<Rect> bounding;
+
+
+    const std::vector<Ball> newballs = tracker.update(fram, removed);
     for(auto b : newballs){
         bounding.push_back(b.bbox);
     }
-    //drawBBoxes(fram, bounding);
+
     int real = 0;
     for(int i = 0; i < bbs.size(); i++){
         if(std::find(removed.begin(), removed.end(), i) != removed.end()){
@@ -77,6 +80,7 @@ cv::Mat TableRenderer::nextFrame(){
         bbs[i].bbox = newballs[real].bbox;
         real++;
     }
+
     std::sort(removed.begin(), removed.end());
     for(int i = removed.size()-1; i >=0; i--){
         bbs.erase(bbs.begin()+removed[i],bbs.begin()+removed[i]+1);
@@ -96,8 +100,7 @@ cv::Mat TableRenderer::nextFrame(){
         circle(screen, vec[0], rad, Scalar(0,0,0), 1, LINE_AA);
     }
 
-    const std::string TABLE_PATH = "../data/table.png";
-    //Mat table = imread(TABLE_PATH, IMREAD_UNCHANGED);
+    //read image from header file
     std::vector<unsigned char> img_data(table_png, table_png + table_png_len);
     Mat table = cv::imdecode(img_data, IMREAD_UNCHANGED);
 
@@ -124,6 +127,8 @@ cv::Mat TableRenderer::nextFrame(){
 std::vector<Ball> TableRenderer::getBalls(){
     return this->tracker.getRealBalls();
 }
+
+//draw transparent bbox of the ball
 void draw_transparent(Mat img, Ball b){
     if(b.type == BallType::EIGHT){
         Mat roi = img(b.bbox);
@@ -147,12 +152,14 @@ void draw_transparent(Mat img, Ball b){
         cv::addWeighted(img, 1, layer, 0.999, 0, img);
     }
 }
+
 void drawBBoxlines(Mat img, Rect bbox){
     line(img, bbox.tl(), Point(bbox.x+bbox.width, bbox.y), Scalar(0,0,0));
     line(img, Point(bbox.x+bbox.width, bbox.y), Point(bbox.x+bbox.width, bbox.y+bbox.height), Scalar(0,0,0));
     line(img, Point(bbox.x+bbox.width, bbox.y+bbox.height), Point(bbox.x, bbox.y+bbox.height), Scalar(0,0,0));
     line(img, Point(bbox.x, bbox.y+bbox.height), bbox.tl(), Scalar(0,0,0));
 }
+
 cv::Mat nice_render(cv::Mat img, std::vector<cv::Point2f> table_verts, std::vector<Ball> balls){
     Mat render = img.clone();
     Scalar line_color(255, 0, 255);
@@ -165,20 +172,23 @@ cv::Mat nice_render(cv::Mat img, std::vector<cv::Point2f> table_verts, std::vect
     }
     return render;
 }
+
 void drawCircles(std::vector<Ball> balls, Mat img){
     for(auto r : balls){
         Vec3f circ = toCircle(r.bbox);
         circle(img, Point(circ[0],circ[1]), circ[2], getColor(r.type), FILLED);
     }
 }
+
 cv::Mat nice_render_segmentation(cv::Mat img, std::vector<cv::Point2f> table_verts, std::vector<Ball> balls){
-    Mat render = img.clone();
+    Mat render = Mat::zeros(img.size(), CV_8UC3);
+    render.setTo(Vec3b(128,128,128));
     std::vector<std::vector<Point>> tmp;
     tmp.push_back(std::vector<Point>());
     for(auto p : table_verts){
         tmp[0].push_back(p);
     }
-    fillPoly(render, tmp, Scalar(53,135,18));
+    fillPoly(render, tmp, Scalar(0,255,0));
     drawCircles(balls,render);
     return render;
 }

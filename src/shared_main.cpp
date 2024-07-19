@@ -11,10 +11,8 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/features2d.hpp>
 
-#include <set>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 #include "recognition/ballIdentifier.h"
 #include "recognition/side_recognition.hpp"
@@ -23,8 +21,6 @@
 #include "segment/segTable.h"
 #include "tracking/TrackBalls.hpp"
 #include "utils/VideoReader.hpp"
-#include "utils/bboxesUtils.hpp"
-#include "recognition/transformPoints.hpp"
 
 using namespace cv;
 using namespace std;
@@ -86,6 +82,7 @@ int main(int argc, char** argv) {
     Rect spot(10, img_last.rows*2/3 - 10, img_last.rows*2/3,  img_last.rows/3);
     Mat fr;
     int i = 0;
+    //rendering the video
     while(1) {
         i++;
         std::cout << "Frame " << i << " processed" << std::endl;
