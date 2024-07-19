@@ -36,7 +36,7 @@ A pre-processing that highlights the balls in the table was needed in order to e
 The first try involved \verb|K-means| clustering in the color space. Ideally, with parameter \verb|K| big enough, table and balls should have been
 clustered in different sets given the differences in color. Although, given the great number of table cloth color variations caused by major illumination
 differences between table areas, a great number of found centroids belonged to the table instead of the balls, leading to many balls being clustered
-into table regions. Given this result, the second try involved associating each pixel with the closest center (Euclidead distance) in the color space given a pre-defined sets of centers.
+into table regions. Given this result, the second try involved associating each pixel with the closest center (Euclidean distance) in the color space given a pre-defined sets of centers.
 The latters were manually defined as ideal ball colors and estimated table cloth color (this estimation is explained later in this section).
 In this way it was possibile to correctly clusterize all table pixels but with the inconvenience of including some balls to the table cluster, since the estimated
 cloth color was closer to the pixel intensity that the respective ideal ball color. This problem is caused mostly by the fact that the illumination condition of the balls
@@ -131,7 +131,7 @@ Figure \ref{fig:fp_detection} shows an example of the results of the procedure u
 As it can be noted from Figure \ref{fig:fp_detection}, to be able to propose regions that cover the whole set of balls in the table, many 
 false positive are generated. This happens since there are many circular regions in the table that do not come from any ball.
 
-The first attept at filtering such false positives resulted in the following algorithm. Given the fact that the balls are always inside the table, the surrounding area
+The first attempt at filtering such false positives resulted in the following algorithm. Given the fact that the balls are always inside the table, the surrounding area
 of the detected circles (identified as the circular ring of width double the circle diameter and center equal to the circle one) is supposed to have mean intensity similiar to the table 
 cloth one and the mean intensity of the area contained in the circle to be different from it. By estimating the table color
 and setting proper distance thresholds in the color space, the implemented filter was able to correctly detect most false positives with a few exceptions.
@@ -235,7 +235,7 @@ bounding box width was computed. For each box center, a rectangular mask with di
 the image in such point to focus on the surrounding area around of the ball. The scaling is necessary to ensure that the whole ball appears in the mask image, since the previously computed bounding
 boxes are often really tight.
 
-After doing so, \textit{GrabCut} algorithm (\textit{grubCut()} in OpenCV) is used to perform foreground extraction in order to obtain an approximate segmentation of the ball in the masked image in HSV format. 
+After doing so, \textit{GrabCut} algorithm (\textit{grabCut()} in OpenCV) is used to perform foreground extraction in order to obtain an approximate segmentation of the ball in the masked image in HSV format. 
 Then, \textit{HoughCircles} is used on the obtained image with the same set of parameters used before with the exception of the accumulator threshold now set at $10$, and
 the radius range that now goes from a third to $70\%$ of the mean bounding box width. The choice on this parameters was made to ensure the detection of circles with true ball dimensions
 in the specific image, which were estimated through the mean width computation.
