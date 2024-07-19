@@ -136,16 +136,11 @@ std::vector<struct linestr> line4line(Mat img, double thresh){
     //on the table may create issues
     morphologyEx(img, disp, MORPH_CLOSE, kernl);
 
-    //the parameters are taken from an opencv
-    //tutorial but they shouldn't make much difference 
-    //on a binary mask
     Canny(disp, disp, 128, 100);
 
     //hough
     std::vector<Vec3f> lines;
-    //from opencv documentation, modifications were made to
-    //theta and threshold to avoid incorrect lines because of
-    //noisy borders
+
     HoughLines(disp, lines,1, CV_PI/90, 30);
     Mat show;
     cvtColor(disp, show, COLOR_GRAY2BGR);
@@ -251,7 +246,7 @@ Vec3b meanMask(Mat img, Mat mask){
 
 Mat threshHue(const cv::Mat in, const cv::Vec3b color, int thresh){
 
-    //find the hue of the color given
+    //find the hue of the color provided
     //done this way to avoid not easily
     //detectable errors or imprecisions
     Mat x(1,1,CV_8UC3);

@@ -6,6 +6,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <vector>
+
 //simple struct used to represent lines
 struct linestr{
     cv::Point2f start;
@@ -20,7 +21,6 @@ bool arelinessimilar(const struct linestr a, const struct linestr b, double thre
 
 /**
  * @brief return a binary mask of the most centered of the k clusters
- *  
  * @param in 3-channel image to apply kmeans to
  * @param blurSize GaussianBlur to apply to image in as preprocessing
  */
@@ -64,12 +64,5 @@ cv::Mat threshHue(const cv::Mat in, const cv::Vec3b color, int thresh=5);
  * @param mask destination matrix for the table binary mask
  */
 std::vector<cv::Point2f> find_table(cv::Mat img, cv::Mat &mask);
-//segmentation pipeline:
-//1)nonbinarykmeans with k=3 (2 leads to undersementation, 4 to oversegmentation)
-//2)findgreatest island
-//3)from given mask obtain mean color
-//4)threshhold by hue with threshol=5 (empirically very robust)
-//5)find lines with obtained mask
-//6)find vertices from given lines
-//7)profit
+
 #endif

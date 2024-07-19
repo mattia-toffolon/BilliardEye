@@ -5,13 +5,16 @@
 #include "tracking/TrackBalls.hpp"
 #include "utils/VideoReader.hpp"
 #include <vector>
+
+//found empirically
+const float hole_radius = 20;
+
 class TableRenderer{
     VideoReader vid;
     TrackBalls tracker;
     cv::Mat curimg;
     std::vector<Ball> bbs;
     std::vector<cv::Point> holes;
-    float hole_radius = 20;
     cv::Mat transform;
     public:
     /**
@@ -35,6 +38,18 @@ class TableRenderer{
     private:
     bool is_holed(cv::Point ball);
 };
+
+
+/**
+ * @brief returns the render of the image for table sides and balls localization
+ * 
+ */
 cv::Mat nice_render(cv::Mat img, std::vector<cv::Point2f> table_verts, std::vector<Ball> balls);
+
+/**
+ * @brief returns the render of the image for table and balls segmentation
+ * 
+ */
 cv::Mat nice_render_segmentation(cv::Mat img, std::vector<cv::Point2f> table_verts, std::vector<Ball> balls);
+
 #endif

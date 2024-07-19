@@ -20,6 +20,7 @@ std::vector<Ball> readBallsFile(std::string filename){
     gt.close();
     return balls;
 }
+
 void writeBallsFile(std::string filename, std::vector<Ball> balls){
     std::ofstream file(filename);
     for(int i = 0; i < balls.size(); i++){
