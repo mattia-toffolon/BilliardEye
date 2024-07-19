@@ -1,52 +1,55 @@
 \section{Table Segmentation}
 
-The following assumptions were made for the segmentation of the table
+The following assumptions were made for the segmentation of the table:
 \begin{itemize}
-    \item the table is a uniform color and is a prevalent part of the image
-    \item the table is centered (or close to being centered) in the image
+    \item the table is of uniform color and it is a prevalent part of the image;
+    \item the table is centered (or close to being centered) in the image.
 \end{itemize}
-It is going to be apparent the reason for these when the full algorithm for
-the segmentation of the table is explained.\par
-The first thing that was to be found was a rough segmentation of the table,
-as finding the lines with only the Canny-transform of the full image would 
-be problematic, as the strongest lines in the image are not only the table
-fabric, but also the table itself and various other things in the image.
-The initial approach was to use Otsu's thresholding, as the table is a uniform
-color, therefore it is sensible to assume it would be thresholded the same
-way throughout. This proved unfruitful, as the segmentation was too rough as shown in figure \ref{fig:otsutable}.
-The second approach was to use kmeans clustering with kmeans++ initialization, in particular exploiting the
-adaptability of the algorithm in order to use spatial features to improve
-the segmentation, as we assume the table is a continuous entity. Out of the k clusters obtained the most centered one was picked as shown in figure \ref{fig:kmeanstabol}.\par
-The segmentation obtained was fairly precise but contained multiple disconnected
-components, however we can assume the table is the biggest and pick it, in particular
-before doing this, the morphological operation open is applied in order to remove weakly connected objects.
-the k (empirically) chosen was 3, as 2 lead to undersegmentation of the image and 4 to oversegmentation.
-The resulting segmentation is precise in most cases, but given the nature of kmeans on some
-images it fails, as it clusters some unrelated parts of the table with the fabric, due,
-for example, to lighting.
-For this reason further processing was required: given we have obtained a rough mask of
-the table we now obtain the mean color of the image in the pixels where the mask is non-zero.
-After this we use a color thresholding by distance, as shown in figure \ref{fig:colorsegtabol} from the mean and the same way we 
-did before to obtain the largest connectedcomponent. thresholding on the hue
-is the most robust (instead of using the distance between bgr colors), in particular a low distance, 5, was chosen, but different values close to 5 similar results.\par
-After having obtained this result the morphological operation close is applied in order to remove some noise from the mask,
-for example balls or other objects. Afterwards the hough transform is used to find the lines, 
-with a threshold in order to remove similar lines.
-The vertices of the table are found using the equations from \href{https://en.wikipedia.org/wiki/Line\%E2\%80\%93line\_intersection}{wikipedia}.
-It is to note that the last frame is used for such frame as most of the time it doesn't contain the player in the table, being at the end of
-a turn.
-The segmentation found is technically not precise, we count as part of table player, holes and billiard balls. The last can be easily solved by simply adding back the balls that are detected. 
-As for the the other two other cases they are ignored for a compromise in performance, as in some
-cases the change in illumination is severe, causing some parts of the table to have extreme 
-differences in color, for example the internal parts of the table, and this isse is solved through 
-the hough transform. It is also to consider that the morphological operations used to isolate the connected component of the table will also worsen
-the general outlines. For this reason the output of the line detection is preferred, as it yields
-more consistent and stable results, as shown in figure \ref{fig:finalsegtabol}.
 
-\begin{figure}
+\noindent
+The reason for these is going to be evident when the full algorithm for
+the table segmentation is explained. \par
+The first thing that had to be found was a rough segmentation of the table.
+Finding the lines with only the Canny-transform of the full image was 
+problematic, as the strongest lines in the image do not correspond to only the table
+fabric, but also the table itself and other things in the image.
+The initial approach was to use Otsu's thresholding. Since the table is of uniform
+color, it was assumed that the table would have been thresholded the same
+way throughout. Althought, this proved unfruitful because the obtained segmentation was too rough (Figure \ref{fig:otsutable}).
+The second approach involved K-means clustering with Kmeans++ initialization, in particular exploiting the
+adaptability of the algorithm to the use of spatial features to improve
+the segmentation, as we assumed the table being a continuous entity. Out of the K clusters obtained, the most centered one was picked as shown in figure \ref{fig:kmeanstabol}. \par
+The segmentation obtained was fairly precise but contained multiple disconnected
+components. However, we can assume the table being the biggest one and pick it. Additionally,
+before doing this, the morphological operation \textit{Opening} is applied in order to remove weakly connected objects.
+The K parameter was empirically chosen as 3, since 2 lead to undersegmentation of the image and 4 to oversegmentation.
+The resulting segmentation is precise in most cases, but given the nature of Kmeans, on some
+images the algorithm fails because it clusterizes some unrelated parts of the table with the fabric, due,
+for example, to lighting effects.
+For this reason further processing was required: given the obtained rough mask of
+the table, we now obtain the mean color of the image in the pixels where the mask is non-zero.
+After this, we use a color thresholding by distance as shown in figure \ref{fig:colorsegtabol} from the mean and the same way we 
+did before to obtain the largest connected component. Thresholding on the hue channel
+was the most robust option (instead of using the distance between BGR colors). In particular, a low distance of $5$ was chosen, but different values close to $5$ showed similar results.\par
+After having obtained this result, the morphological operation \textit{Close} was applied in order to remove some noise from the mask,
+like balls and other objects. Afterwards the \textit{Hough Transform} algorithm is used to find the lines, 
+with a threshold in order to remove similar ones.
+The vertices of the table were found using the equations from \href{https://en.wikipedia.org/wiki/Line\%E2\%80\%93line\_intersection}{wikipedia}.
+It must noted that the last frame is used for this task, as most of the time it doesn't contain the player in the table since it's the end of
+his turn.
+The segmentation found is technically not precise since we count as part of table player, holes and billiard balls. The latter can be easily solved by simply removing the areas of the balls that are detected. 
+As for the other two cases, they were ignored for a compromise on performance, as in some
+cases the change in illumination is severe, causing some parts of the table to have extreme 
+differences in color, for example in the internal parts of the table. This isse was solved through 
+the \textit{Hough Transform}.
+It should also be considered that the morphological operations used to isolate the connected component of the table, also worsen
+the general table outlines. For this reason the output of the line detection is preferred, as it yields
+more consistent and stable results as shown in figure \ref{fig:finalsegtabol}.
+
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.4\textwidth]{./imgs/otsu_table.png}
-    \caption{Example of Otsu Segmentation applied to game4clip2}
+    \caption{Example of Otsu Segmentation applied to game4\_clip2}
     \label{fig:otsutable}
 \end{figure}
 
@@ -54,7 +57,7 @@ more consistent and stable results, as shown in figure \ref{fig:finalsegtabol}.
     \centering
     \begin{subfigure}[b]{0.75\textwidth}
         \includegraphics[width=\textwidth]{./imgs/kmeans_cluster.png}
-        \caption{Initial kmeans clustering result}
+        \caption{Initial Kmeans clustering result applied to game4\_clip2}
         \label{fig:kmeanstabol}
     \end{subfigure}
     \\
@@ -69,6 +72,6 @@ more consistent and stable results, as shown in figure \ref{fig:finalsegtabol}.
         \caption{Mask obtained from filling the area contained in the lines found}
         \label{fig:finalsegtabol}
     \end{subfigure}
-    \caption{Stages of the segmentation applied to game4clip2}
+    \caption{Stages of the segmentation applied to game4\_clip2}
     \vspace{30pt}
 \end{figure}

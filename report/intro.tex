@@ -1,6 +1,6 @@
 \section{Introduction}
 
-In this first section, the main purpose of the project and how the developed project has been evaluted will be presented.
+In this first section, the main purpose of the project and how the developed system has been evaluted will be presented.
 
 
 \subsection{Problem specifics}
@@ -28,27 +28,6 @@ The available dataset consists of 10 folders each one corresponding to a differe
     \item a \verb|.png| file corresponding to the first frame of the video;
     \item a \verb|.png| file corresponding to the last frame of the video.
 \end{itemize}
-
-% \begin{flushleft}
-% For each game event video frame, the developed system is able to produce: 
-% \end{flushleft}
-% \begin{itemize}
-%     \item a table segmentation mask;
-%     \item a vector of \verb|Ball| structs that, as it will be better explained later, are composed by a bounding box (\verb|Rect| object)
-%     defined by 4 parameters [x, y, width, height], where (x,y) are the top-left corner coordinates and width and height
-%     are the bounding box main dimensions, and a ball type (\textit{CUE} = 1, \textit{EIGHT} = 2, \textit{SOLID} = 3,
-%     \textit{STRIPED} = 4);
-%     \item a ball segmentatation mask derived from the produced bounding boxes;
-%     \item a 2D top-view visualization map representing the balls typology and current positions in the table, along with the trajectories of the balls
-%     that have moved in the video so far (video frames upto the current one).
-% \end{itemize}
-
-% \begin{flushleft}
-% For each game event video instead, the developed system is able to produce a modified version of the selected video in which the generated 2D maps are 
-% overlayed to the respective frames.
-% \end{flushleft}
-
-
 
 \subsection{Performance evaluation}
 To evaluate the system performance, the metrics that should be adopted are:
