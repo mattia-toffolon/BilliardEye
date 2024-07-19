@@ -1,4 +1,4 @@
-\section{Minimap Rendering}
+\section{Map Rendering}
 
 The renderer for the minimap was developed in order for it to use the videoPlayer and 
 tracker directly. In order to represent the balls correctly the perspective transformation
@@ -24,4 +24,4 @@ This also is problematic when the hole is occluded by the table border itself, a
 to be precise. Another problem is when a ball is particularly close to a hole but not inside, as it
 might be falsely put into a hole. If the renderer detects a ball entering a hole it communicates
 this to the tracker which drops the ball.
-We also decided to generate a struct for the table.png in order for the executable to not be dependent on the position in the filesystem.
+We also decided to generate a struct for the \verb|table.png| file, in order for the executable to not be dependent on the position in the filesystem.

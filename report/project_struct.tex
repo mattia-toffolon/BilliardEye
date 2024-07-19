@@ -7,10 +7,14 @@ following structure:
     \item \verb|include| directory, contains the header source code files;
     \item \verb|src| directory, contains the implementation source code files;
     \item \verb|data| directory, contains the background image used to generate the 2D map;
-    \item \verb|samples| directory, contains the system input, outputs and groud truths;
+    \item \verb|samples| directory, contains the system input, outputs, predictions and gronud truths;
     \item \verb|CMakeLists.txt|, contains CMake instructions to organize the build of the project. 
 \end{itemize}
 
+\noindent
+The \verb|sample| directory is structured into \verb|samplei| subfolders, where \verb|i| refers to the sample index (starting from zero).
+As mentioned before, each subfolder contains inputs, outputs, prediction and ground truths relative to a specific sample.
+\\
 \noindent
 Furthermore, folders \verb|include| and \verb|src| are further divided into:
 \begin{itemize}
@@ -38,11 +42,10 @@ After successfully build the project using CMake, the two \textit{mains} can be 
 \end{enumerate}
 
 \noindent
-\verb|performance_main.cpp| 
+\verb|performance_main.cpp| instead, requires the following parameters:
 \begin{enumerate}
-    \item path to the folder containing the samples
-    \item the number of samples
+    \item path to the \verb|samples| folder;
+    \item total number of samples in the folder.
 \end{enumerate}
-For convenience we restructured the dataset folder structure as shown in the \verb|sample| directory, containing inputs, ground truths, predictions and outputs divided into \verb|samplei|, where i refers to the index (starting from zero) of the sample.
-This is provided as \verb|.zip| format for convenience. Therefore, in order to run the respective executable
+\verb|sample| is provided in \verb|.zip| format for convenience. Therefore, in order to run the respective executable
 successfully, the \verb|.zip| file must be extracted.
