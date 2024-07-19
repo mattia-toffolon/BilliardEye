@@ -41,35 +41,33 @@ As for the the other two other cases they are ignored for a compromise in perfor
 cases the change in illumination is severe, causing some parts of the table to have extreme 
 differences in color, for example the internal parts of the table. It is also to consider that the morphological operations used to isolate the connected component of the table will also worsen
 the general outlines. For this reason the output of the line detection is preferred, as it yields
-more consistent and stable results, as shown in figure \ref{fig:finalsegtabol}
+more consistent and stable results, as shown in figure \ref{fig:finalsegtabol}.
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
-    \includegraphics[width=0.4\textwidth]{./imgs/otsu_table.png}
-    \caption{example of Otsu segmentation}
+    \includegraphics[width=0.45\textwidth]{./imgs/otsu_table.png}
+    \caption{Example of Otsu segmentation}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \begin{subfigure}[b]{0.4\textwidth}
-    \includegraphics[width=\textwidth]{./imgs/kmeans_cluster.png}
-    \caption{initial kmeans clustering result}
-    \label{fig:kmeanstabol}
+    \begin{subfigure}[b]{0.75\textwidth}
+        \includegraphics[width=\textwidth]{./imgs/kmeans_cluster.png}
+        \caption{Initial kmeans clustering result}
+        \label{fig:kmeanstabol}
     \end{subfigure}
-    \centering
-    \begin{subfigure}[b]{0.4\textwidth}
-
-    \includegraphics[width=\textwidth]{./imgs/color_cluster.png}
-    \caption{color clustering result}
-    \label{fig:colorsegtabol}
+    \\
+    \begin{subfigure}[b]{0.75\textwidth}
+        \includegraphics[width=\textwidth]{./imgs/color_cluster.png}
+        \caption{Color clustering result}
+        \label{fig:colorsegtabol}
     \end{subfigure}
-    \vspace{30pt}
-    \begin{subfigure}[b]{0.4\textwidth}
-
-    \includegraphics[width=\textwidth]{./imgs/maskfill.png}
-    \caption{mask obtained from filling the area contained in the lines found}
-    \label{fig:finalsegtabol}
+    \\
+    \begin{subfigure}[b]{0.75\textwidth}
+        \includegraphics[width=\textwidth]{./imgs/maskfill.png}
+        \caption{Mask obtained from filling the area contained in the lines found}
+        \label{fig:finalsegtabol}
     \end{subfigure}
-    \caption{stages of the segmentation}
+    \caption{Stages of the segmentation}
     \vspace{30pt}
 \end{figure}
