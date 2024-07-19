@@ -38,6 +38,11 @@ After successfully build the project using CMake, the two \textit{mains} can be 
 \end{enumerate}
 
 \noindent
-\verb|performance_main.cpp| instead doesn't need any argument but requires access to the \verb|samples| folder,
-which is provided as \verb|.zip| format for convenience. Therefore, in order to run the respective executable
+\verb|performance_main.cpp| 
+\begin{enumerate}
+    \item path to the folder containing the samples
+    \item the number of samples
+\end{enumerate}
+For convenience we restructured the dataset folder structure as shown in the \verb|sample| directory, containing inputs, ground truths, predictions and outputs divided into \verb|samplei|, where i refers to the index (starting from zero) of the sample.
+This is provided as \verb|.zip| format for convenience. Therefore, in order to run the respective executable
 successfully, the \verb|.zip| file must be extracted.
