@@ -149,10 +149,9 @@ int main(int argc, char** argv) {
         //compute iou for localization alone
         Mat ballsfpseg = drawCircles(curfpr, (predicted_masks[i]).size());
         Mat ballslpseg = drawCircles(curlpr, (predicted_masks[i]).size());
-        
         Mat ballsftseg = (ground_truth_masks_first[i] >=1 & ground_truth_masks_first[i] <5 );
         Mat ballsltseg = (ground_truth_masks_last[i] >=1 & ground_truth_masks_last[i] <5 );
-        waitKey(0);
+        
         iouallBallsf.push_back(intersectionOverUnion(ballsfpseg, ballsftseg));
         iouallBallsl.push_back(intersectionOverUnion(ballslpseg, ballsltseg));
         //compute map for localization alone
