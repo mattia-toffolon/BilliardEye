@@ -10,6 +10,7 @@ using namespace cv;
 Vec3b getTableColor(Mat img) {
     int counter = 0;
     Scalar acc(0, 0, 0);
+    // The table cloth color is estimated as the mean non-zero value pixel intensity and it is later returned
     for(int i=0; i<img.rows; i++) {
         for(int j=0; j<img.cols; j++) {
             if(img.at<Vec3b>(i, j) == Vec3b(0, 0, 0)) continue;
