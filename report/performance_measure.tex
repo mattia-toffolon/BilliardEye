@@ -8,8 +8,8 @@ measures to judge the quality of the segmentation produced
 by the program:
 
 \begin{enumerate}
-    \item Mean average precision (mAP) for ball localization
-    \item Mean intersection over union (mIoU) for the class segmentation
+    \item Mean intersection over union (mIoU) for the class segmentation;
+    \item Mean average precision (mAP) for ball localization.
 \end{enumerate}
 
 
@@ -71,6 +71,6 @@ The estimation is the average of the 11 values found this way. The "mean"
 in Mean Average Precision is simply the average of all the AP scores 
 calculated for each ball class.
 
-\textbf{Note:} in some clips we might have empty classes (for example, an 
+In must be noted that in some clips we might have empty classes (for example, an 
 endgame position where all the striped balls have been scored). The 
 AP for such cases is defined as 1.

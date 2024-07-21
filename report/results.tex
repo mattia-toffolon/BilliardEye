@@ -25,40 +25,28 @@ also the intermediate results of the metrics computation are reported.
     \caption*{game1\_clip1}
 \end{subfigure}
 \begin{subfigure}[b]{0.49\textwidth}
-\begin{tabular}{|l|c|}
+\begin{tabular}{|l|c|c|}
     \hline
-    \textbf{Metric} & \textbf{Value} \\
+    \textbf{Metric} & \textbf{First} & \textbf{Last} \\
     \hline
-    Average Precision Localization First & 0.763636 \\
-    Average Precision Localization Last & 0.878788 \\
+    AP localization (alone) & 0.763636 & 0.878788 \\ 
+    IOU localization (alone) & 0.58408 & 0.625756 \\ 
     \hline
-    IoU Segmentation Cue First & 0.548523 \\
-    IoU Segmentation Cue Last & 0.62069 \\
-    IoU Segmentation Eight First & 0.747475 \\
-    IoU Segmentation Eight Last & 0.743719 \\
-    IoU Segmentation Solid First & 0.53632 \\
-    IoU Segmentation Solid Last & 0.536812 \\
-    IoU Segmentation Striped First & 0.505707 \\
-    IoU Segmentation Striped Last & 0.579247 \\
+    IoU table & 0.957752 & 0.968417 \\ 
+    IoU background & 0.969238 & 0.977193 \\ 
     \hline
-    IoU Table First & 0.957752 \\
-    IoU Table Last & 0.968417 \\
-    IoU Background First & 0.969238 \\
-    IoU Background Last & 0.977193 \\
+    IoU segmentation cue & 0.548523 & 0.62069 \\ 
+    IoU segmentation eight & 0.747475 & 0.743719 \\ 
+    IoU segmentation solid & 0.53632 & 0.536812 \\ 
+    IoU segmentation striped & 0.505707 & 0.579247 \\ 
     \hline
-    Average Precision Cue First & 1 \\
-    Average Precision Cue Last & 1 \\
-    Average Precision Eight First & 1 \\
-    Average Precision Eight Last & 1 \\
-    Average Precision Solid First & 0.818182 \\
-    Average Precision Solid Last & 0.818182 \\
-    Average Precision Striped First & 0.620779 \\
-    Average Precision Striped Last & 0.74026 \\
+    AP cue & 1 & 1 \\ 
+    AP eight & 1 & 1 \\ 
+    AP solid & 0.818182 & 0.818182 \\ 
+    AP striped & 0.620779 & 0.74026 \\ 
     \hline
-    mIOU First & 0.710836 \\
-    mIOU Last & 0.73768 \\
-    mAP First & 0.85974 \\
-    mAP Last & 0.88961 \\
+    mIOU & 0.710836 & 0.73768 \\ 
+    mAP & 0.85974 & 0.88961 \\ 
     \hline
 \end{tabular}
 \end{subfigure}
@@ -80,40 +68,28 @@ also the intermediate results of the metrics computation are reported.
         \caption*{game1\_clip2}
     \end{subfigure}
 \begin{subfigure}[b]{0.49\textwidth}
-    \begin{tabular}{|l|c|}
+    \begin{tabular}{|l|c|c|}
         \hline
-        \textbf{Metric} & \textbf{Value} \\
+        \textbf{Metric} & \textbf{First} & \textbf{Last} \\
         \hline
-        Average Precision Localization First & 1 \\
-        Average Precision Localization Last & 1 \\
+        AP localization (alone) & 1 & 1 \\ 
+        IOU localization (alone) & 0.813857 & 0.772562 \\ 
         \hline
-        IoU Segmentation Cue First & 0.890208 \\
-        IoU Segmentation Cue Last & 0.745263 \\
-        IoU Segmentation Eight First & 0.901124 \\
-        IoU Segmentation Eight Last & 0.905405 \\
-        IoU Segmentation Solid First & 0.379076 \\
-        IoU Segmentation Solid Last & 0.329148 \\
-        IoU Segmentation Striped First & 0.36483 \\
-        IoU Segmentation Striped Last & 0.340779 \\
+        IoU table & 0.945966 & 0.956962 \\ 
+        IoU background & 0.978064 & 0.983876 \\ 
         \hline
-        IoU Table First & 0.945966 \\
-        IoU Table Last & 0.956962 \\
-        IoU Background First & 0.978064 \\
-        IoU Background Last & 0.983876 \\
+        IoU segmentation cue & 0.890208 & 0.745263 \\ 
+        IoU segmentation eight & 0.901124 & 0.905405 \\ 
+        IoU segmentation solid & 0.379076 & 0.329148 \\ 
+        IoU segmentation striped & 0.36483 & 0.340779 \\ 
         \hline
-        Average Precision Cue First & 1 \\
-        Average Precision Cue Last & 1 \\
-        Average Precision Eight First & 1 \\
-        Average Precision Eight Last & 1 \\
-        Average Precision Solid First & 0.597403 \\
-        Average Precision Solid Last & 0.597403 \\
-        Average Precision Striped First & 0.454545 \\
-        Average Precision Striped Last & 0.454545 \\
+        AP cue & 1 & 1 \\ 
+        AP eight & 1 & 1 \\ 
+        AP solid & 0.597403 & 0.597403 \\ 
+        AP striped & 0.454545 & 0.454545 \\ 
         \hline
-        mIOU First & 0.743211 \\
-        mIOU Last & 0.710239 \\
-        mAP First & 0.762987 \\
-        mAP Last & 0.762987 \\
+        mIOU & 0.743211 & 0.710239 \\ 
+        mAP & 0.762987 & 0.762987 \\ 
         \hline
     \end{tabular}    
 \end{subfigure}
@@ -135,40 +111,28 @@ also the intermediate results of the metrics computation are reported.
         \caption*{game1\_clip3}
     \end{subfigure}
 \begin{subfigure}[b]{0.49\textwidth}
-    \begin{tabular}{|l|c|}
+    \begin{tabular}{|l|c|c|}
         \hline
-        \textbf{Metric} & \textbf{Value} \\
+        \textbf{Metric} & \textbf{First} & \textbf{Last} \\
         \hline
-        Average Precision Localization First & 1 \\
-        Average Precision Localization Last & 0.606061 \\
+        AP localization (alone) & 1 & 0.606061 \\ 
+        IOU localization (alone) & 0.712201 & 0.671972 \\ 
         \hline
-        IoU Segmentation Cue First & 0.566092 \\
-        IoU Segmentation Cue Last & 0.441704 \\
-        IoU Segmentation Eight First & 0.748538 \\
-        IoU Segmentation Eight Last & 0.749511 \\
-        IoU Segmentation Solid First & 0.522388 \\
-        IoU Segmentation Solid Last & 0.379761 \\
-        IoU Segmentation Striped First & 0.39342 \\
-        IoU Segmentation Striped Last & 0.395045 \\
+        IoU table & 0.954457 & 0.958917 \\ 
+        IoU background & 0.980998 & 0.983055 \\ 
         \hline
-        IoU Table First & 0.954457 \\
-        IoU Table Last & 0.958917 \\
-        IoU Background First & 0.980998 \\
-        IoU Background Last & 0.983055 \\
+        IoU segmentation cue & 0.566092 & 0.441704 \\ 
+        IoU segmentation eight & 0.748538 & 0.749511 \\ 
+        IoU segmentation solid & 0.522388 & 0.379761 \\ 
+        IoU segmentation striped & 0.39342 & 0.395045 \\ 
         \hline
-        Average Precision Cue First & 1 \\
-        Average Precision Cue Last & 0 \\
-        Average Precision Eight First & 1 \\
-        Average Precision Eight Last & 1 \\
-        Average Precision Solid First & 0.666667 \\
-        Average Precision Solid Last & 0.5 \\
-        Average Precision Striped First & 0.636364 \\
-        Average Precision Striped Last & 0.363636 \\
+        AP cue & 1 & 0 \\ 
+        AP eight & 1 & 1 \\ 
+        AP solid & 0.666667 & 0.5 \\ 
+        AP striped & 0.636364 & 0.363636 \\ 
         \hline
-        mIOU First & 0.694316 \\
-        mIOU Last & 0.651332 \\
-        mAP First & 0.825758 \\
-        mAP Last & 0.465909 \\
+        mIOU & 0.694315 & 0.651332 \\ 
+        mAP & 0.825758 & 0.465909 \\ 
         \hline
     \end{tabular}    
 \end{subfigure}
@@ -190,40 +154,28 @@ also the intermediate results of the metrics computation are reported.
         \caption*{game1\_clip4}
     \end{subfigure}
 \begin{subfigure}[b]{0.49\textwidth}
-    \begin{tabular}{|l|c|}
+    \begin{tabular}{|l|c|c|}
         \hline
-        \textbf{Metric} & \textbf{Value} \\
+        \textbf{Metric} & \textbf{First} & \textbf{Last} \\
         \hline
-        Average Precision Localization First & 1 \\
-        Average Precision Localization Last & 0.902597 \\
+        AP localization (alone) & 1 & 0.902597 \\ 
+        IOU localization (alone) & 0.778315 & 0.758349 \\ 
         \hline
-        IoU Segmentation Cue First & 0.601518 \\
-        IoU Segmentation Cue Last & 0.477358 \\
-        IoU Segmentation Eight First & 0.848723 \\
-        IoU Segmentation Eight Last & 0.859406 \\
-        IoU Segmentation Solid First & 0.549807 \\
-        IoU Segmentation Solid Last & 0.535469 \\
-        IoU Segmentation Striped First & 0.516323 \\
-        IoU Segmentation Striped Last & 0.525094 \\
+        IoU table & 0.921017 & 0.945411 \\ 
+        IoU background & 0.967132 & 0.977882 \\ 
         \hline
-        IoU Table First & 0.921017 \\
-        IoU Table Last & 0.945411 \\
-        IoU Background First & 0.967132 \\
-        IoU Background Last & 0.977882 \\
+        IoU segmentation cue & 0.601518 & 0.477358 \\ 
+        IoU segmentation eight & 0.848723 & 0.859406 \\ 
+        IoU segmentation solid & 0.549807 & 0.535469 \\ 
+        IoU segmentation striped & 0.516323 & 0.525094 \\ 
         \hline
-        Average Precision Cue First & 1 \\
-        Average Precision Cue Last & 0 \\
-        Average Precision Eight First & 1 \\
-        Average Precision Eight Last & 1 \\
-        Average Precision Solid First & 0.772727 \\
-        Average Precision Solid Last & 0.772727 \\
-        Average Precision Striped First & 0.636364 \\
-        Average Precision Striped Last & 0.636364 \\
+        AP cue & 1 & 0 \\ 
+        AP eight & 1 & 1 \\ 
+        AP solid & 0.772727 & 0.772727 \\ 
+        AP striped & 0.636364 & 0.636364 \\ 
         \hline
-        mIOU First & 0.734087 \\
-        mIOU Last & 0.720103 \\
-        mAP First & 0.852273 \\
-        mAP Last & 0.602273 \\
+        mIOU & 0.734087 & 0.720103 \\ 
+        mAP & 0.852273 & 0.602273 \\ 
         \hline
     \end{tabular}    
 \end{subfigure}
@@ -245,43 +197,30 @@ also the intermediate results of the metrics computation are reported.
         \caption*{game2\_clip1}
     \end{subfigure}
 \begin{subfigure}[b]{0.49\textwidth}
-    \begin{tabular}{|l|c|}
+    \begin{tabular}{|l|c|c|}
         \hline
-        \textbf{Metric} & \textbf{Value} \\
+        \textbf{Metric} & \textbf{First} & \textbf{Last} \\
         \hline
-        Average Precision Localization First & 0.833333 \\
-        Average Precision Localization Last & 0.833333 \\
+        AP localization (alone) & 0.833333 & 0.833333 \\ 
+        IOU localization (alone) & 0.626341 & 0.602582 \\ 
         \hline
-        IoU Segmentation Cue First & 0.828571 \\
-        IoU Segmentation Cue Last & 0.837349 \\
-        IoU Segmentation Eight First & 0 \\
-        IoU Segmentation Eight Last & 0 \\
-        IoU Segmentation Solid First & 0.230531 \\
-        IoU Segmentation Solid Last & 0.243353 \\
-        IoU Segmentation Striped First & 0.41396 \\
-        IoU Segmentation Striped Last & 0.42682 \\
+        IoU table & 0.973516 & 0.968534 \\ 
+        IoU background & 0.98538 & 0.981183 \\ 
         \hline
-        IoU Table First & 0.973516 \\
-        IoU Table Last & 0.968534 \\
-        IoU Background First & 0.98538 \\
-        IoU Background Last & 0.981183 \\
+        IoU segmentation cue & 0.828571 & 0.837349 \\ 
+        IoU segmentation eight & 0 & 0 \\ 
+        IoU segmentation solid & 0.230531 & 0.243353 \\ 
+        IoU segmentation striped & 0.41396 & 0.42682 \\ 
         \hline
-        Average Precision Cue First & 1 \\
-        Average Precision Cue Last & 1 \\
-        Average Precision Eight First & 0 \\
-        Average Precision Eight Last & 0 \\
-        Average Precision Solid First & 0.272727 \\
-        Average Precision Solid Last & 0.272727 \\
-        Average Precision Striped First & 0.6 \\
-        Average Precision Striped Last & 0.6 \\
+        AP cue & 1 & 1 \\ 
+        AP eight & 0 & 0 \\ 
+        AP solid & 0.272727 & 0.272727 \\ 
+        AP striped & 0.6 & 0.6 \\ 
         \hline
-        mIOU First & 0.571993 \\
-        mIOU Last & 0.576207 \\
-        mAP First & 0.468182 \\
-        mAP Last & 0.468182 \\
+        mIOU & 0.571993 & 0.576207 \\ 
+        mAP & 0.468182 & 0.468182 \\ 
         \hline
-    \end{tabular}
-    
+    \end{tabular} 
 \end{subfigure}
 \end{figure}
 
@@ -301,40 +240,28 @@ also the intermediate results of the metrics computation are reported.
         \caption*{game2\_clip2}
     \end{subfigure}
 \begin{subfigure}[b]{0.49\textwidth}
-    \begin{tabular}{|l|c|}
+    \begin{tabular}{|l|c|c|}
         \hline
-        \textbf{Metric} & \textbf{Value} \\
+        \textbf{Metric} & \textbf{First} & \textbf{Last} \\
         \hline
-        Average Precision Localization First & 1 \\
-        Average Precision Localization Last & 0.909091 \\
+        AP localization (alone) & 1 & 0.909091 \\ 
+        IOU localization (alone) & 0.783316 & 0.664948 \\ 
         \hline
-        IoU Segmentation Cue First & 0.727612 \\
-        IoU Segmentation Cue Last & 0.370301 \\
-        IoU Segmentation Eight First & 0 \\
-        IoU Segmentation Eight Last & 0 \\
-        IoU Segmentation Solid First & 0.511984 \\
-        IoU Segmentation Solid Last & 0.420787 \\
-        IoU Segmentation Striped First & 0.653567 \\
-        IoU Segmentation Striped Last & 0.652642 \\
+        IoU table & 0.973231 & 0.972855 \\ 
+        IoU background & 0.982659 & 0.984523 \\ 
         \hline
-        IoU Table First & 0.973231 \\
-        IoU Table Last & 0.972855 \\
-        IoU Background First & 0.982659 \\
-        IoU Background Last & 0.984523 \\
+        IoU segmentation cue & 0.727612 & 0.370301 \\ 
+        IoU segmentation eight & 0 & 0 \\ 
+        IoU segmentation solid & 0.511984 & 0.420787 \\ 
+        IoU segmentation striped & 0.653567 & 0.652642 \\ 
         \hline
-        Average Precision Cue First & 1 \\
-        Average Precision Cue Last & 0 \\
-        Average Precision Eight First & 0 \\
-        Average Precision Eight Last & 0 \\
-        Average Precision Solid First & 0.636364 \\
-        Average Precision Solid Last & 0.545455 \\
-        Average Precision Striped First & 0.924242 \\
-        Average Precision Striped Last & 0.924242 \\
+        AP cue & 1 & 0 \\ 
+        AP eight & 0 & 0 \\ 
+        AP solid & 0.636364 & 0.545455 \\ 
+        AP striped & 0.924242 & 0.924242 \\ 
         \hline
-        mIOU First & 0.641509 \\
-        mIOU Last & 0.566851 \\
-        mAP First & 0.640152 \\
-        mAP Last & 0.367424 \\
+        mIOU & 0.641509 & 0.566851 \\ 
+        mAP & 0.640152 & 0.367424 \\ 
         \hline
     \end{tabular}    
 \end{subfigure}
@@ -356,40 +283,28 @@ also the intermediate results of the metrics computation are reported.
         \caption*{game3\_clip1}
     \end{subfigure}
 \begin{subfigure}[b]{0.49\textwidth}
-    \begin{tabular}{|l|c|}
+    \begin{tabular}{|l|c|c|}
         \hline
-        \textbf{Metric} & \textbf{Value} \\
+        \textbf{Metric} & \textbf{First} & \textbf{Last} \\
         \hline
-        Average Precision Localization First & 1 \\
-        Average Precision Localization Last & 0.806818 \\
+        AP localization (alone) & 1 & 0.806818 \\ 
+        IOU localization (alone) & 0.721776 & 0.698941 \\ 
         \hline
-        IoU Segmentation Cue First & 0.562264 \\
-        IoU Segmentation Cue Last & 0.351415 \\
-        IoU Segmentation Eight First & 0.693182 \\
-        IoU Segmentation Eight Last & 0.696275 \\
-        IoU Segmentation Solid First & 0.588556 \\
-        IoU Segmentation Solid Last & 0.545855 \\
-        IoU Segmentation Striped First & 0.537661 \\
-        IoU Segmentation Striped Last & 0.542875 \\
+        IoU table & 0.954921 & 0.968478 \\ 
+        IoU background & 0.988175 & 0.992289 \\ 
         \hline
-        IoU Table First & 0.954921 \\
-        IoU Table Last & 0.968478 \\
-        IoU Background First & 0.988175 \\
-        IoU Background Last & 0.992289 \\
+        IoU segmentation cue & 0.562264 & 0.351415 \\ 
+        IoU segmentation eight & 0.693182 & 0.696275 \\ 
+        IoU segmentation solid & 0.588556 & 0.545855 \\ 
+        IoU segmentation striped & 0.537661 & 0.542875 \\ 
         \hline
-        Average Precision Cue First & 1 \\
-        Average Precision Cue Last & 0 \\
-        Average Precision Eight First & 1 \\
-        Average Precision Eight Last & 1 \\
-        Average Precision Solid First & 1 \\
-        Average Precision Solid Last & 1 \\
-        Average Precision Striped First & 0.727273 \\
-        Average Precision Striped Last & 0.727273 \\
+        AP cue & 1 & 0 \\ 
+        AP eight & 1 & 1 \\ 
+        AP solid & 1 & 1 \\ 
+        AP striped & 0.727273 & 0.727273 \\ 
         \hline
-        mIOU First & 0.720793 \\
-        mIOU Last & 0.682864 \\
-        mAP First & 0.931818 \\
-        mAP Last & 0.681818 \\
+        mIOU & 0.720793 & 0.682864 \\ 
+        mAP & 0.931818 & 0.681818 \\ 
         \hline
     \end{tabular}    
 \end{subfigure}
@@ -411,40 +326,28 @@ also the intermediate results of the metrics computation are reported.
         \caption*{game3\_clip2}
     \end{subfigure}
 \begin{subfigure}[b]{0.49\textwidth}
-    \begin{tabular}{|l|c|}
+    \begin{tabular}{|l|c|c|}
         \hline
-        \textbf{Metric} & \textbf{Value} \\
+        \textbf{Metric} & \textbf{First} & \textbf{Last} \\
         \hline
-        Average Precision Localization First & 1 \\
-        Average Precision Localization Last & 1 \\
+        AP localization (alone) & 1 & 1 \\ 
+        IOU localization (alone) & 0.711106 & 0.729118 \\ 
         \hline
-        IoU Segmentation Cue First & 0.759804 \\
-        IoU Segmentation Cue Last & 0.749361 \\
-        IoU Segmentation Eight First & 0.6875 \\
-        IoU Segmentation Eight Last & 0.685637 \\
-        IoU Segmentation Solid First & 0.209217 \\
-        IoU Segmentation Solid Last & 0.148784 \\
-        IoU Segmentation Striped First & 0.151724 \\
-        IoU Segmentation Striped Last & 0.154028 \\
+        IoU table & 0.945646 & 0.948466 \\ 
+        IoU background & 0.985851 & 0.986169 \\ 
         \hline
-        IoU Table First & 0.945646 \\
-        IoU Table Last & 0.948466 \\
-        IoU Background First & 0.985851 \\
-        IoU Background Last & 0.986169 \\
+        IoU segmentation cue & 0.759804 & 0.749361 \\ 
+        IoU segmentation eight & 0.6875 & 0.685637 \\ 
+        IoU segmentation solid & 0.209217 & 0.148784 \\ 
+        IoU segmentation striped & 0.151724 & 0.154028 \\ 
         \hline
-        Average Precision Cue First & 1 \\
-        Average Precision Cue Last & 1 \\
-        Average Precision Eight First & 1 \\
-        Average Precision Eight Last & 1 \\
-        Average Precision Solid First & 0.290909 \\
-        Average Precision Solid Last & 0.272727 \\
-        Average Precision Striped First & 0.242424 \\
-        Average Precision Striped Last & 0.242424 \\
+        AP cue & 1 & 1 \\ 
+        AP eight & 1 & 1 \\ 
+        AP solid & 0.290909 & 0.272727 \\ 
+        AP striped & 0.242424 & 0.242424 \\ 
         \hline
-        mIOU First & 0.62329 \\
-        mIOU Last & 0.612074 \\
-        mAP First & 0.633333 \\
-        mAP Last & 0.628788 \\
+        mIOU & 0.62329 & 0.612074 \\ 
+        mAP & 0.633333 & 0.628788 \\ 
         \hline
     \end{tabular}
     
@@ -467,40 +370,28 @@ also the intermediate results of the metrics computation are reported.
         \caption*{game4\_clip1}
     \end{subfigure}
 \begin{subfigure}[b]{0.49\textwidth}
-    \begin{tabular}{|l|c|}
+    \begin{tabular}{|l|c|c|}
         \hline
-        \textbf{Metric} & \textbf{Value} \\
+        \textbf{Metric} & \textbf{First} & \textbf{Last} \\
         \hline
-        Average Precision Localization First & 1 \\
-        Average Precision Localization Last & 1 \\
+        AP localization (alone) & 1 & 1 \\ 
+        IOU localization (alone) & 0.705799 & 0.676221 \\ 
         \hline
-        IoU Segmentation Cue First & 0 \\
-        IoU Segmentation Cue Last & 0 \\
-        IoU Segmentation Eight First & 0.866044 \\
-        IoU Segmentation Eight Last & 0.858934 \\
-        IoU Segmentation Solid First & 0 \\
-        IoU Segmentation Solid Last & 0 \\
-        IoU Segmentation Striped First & 0.369556 \\
-        IoU Segmentation Striped Last & 0.415295 \\
+        IoU table & 0.965927 & 0.975223 \\ 
+        IoU background & 0.984447 & 0.989119 \\ 
         \hline
-        IoU Table First & 0.965927 \\
-        IoU Table Last & 0.975223 \\
-        IoU Background First & 0.984447 \\
-        IoU Background Last & 0.989119 \\
+        IoU segmentation cue & 0 & 0 \\ 
+        IoU segmentation eight & 0.866044 & 0.858934 \\ 
+        IoU segmentation solid & 0 & 0 \\ 
+        IoU segmentation striped & 0.369556 & 0.415295 \\ 
         \hline
-        Average Precision Cue First & 0 \\
-        Average Precision Cue Last & 0 \\
-        Average Precision Eight First & 1 \\
-        Average Precision Eight Last & 1 \\
-        Average Precision Solid First & 0 \\
-        Average Precision Solid Last & 0 \\
-        Average Precision Striped First & 0.484848 \\
-        Average Precision Striped Last & 0.545455 \\
+        AP cue & 0 & 0 \\ 
+        AP eight & 1 & 1 \\ 
+        AP solid & 0 & 0 \\ 
+        AP striped & 0.484848 & 0.545455 \\ 
         \hline
-        mIOU First & 0.530996 \\
-        mIOU Last & 0.539762 \\
-        mAP First & 0.371212 \\
-        mAP Last & 0.386364 \\
+        mIOU & 0.530996 & 0.539762 \\ 
+        mAP & 0.371212 & 0.386364 \\ 
         \hline
     \end{tabular}    
 \end{subfigure}
@@ -522,40 +413,28 @@ also the intermediate results of the metrics computation are reported.
         \caption*{game4\_clip2}
     \end{subfigure}
 \begin{subfigure}[b]{0.49\textwidth}
-    \begin{tabular}{|l|c|}
+    \begin{tabular}{|l|c|c|}
         \hline
-        \textbf{Metric} & \textbf{Value} \\
+        \textbf{Metric} & \textbf{First} & \textbf{Last} \\
         \hline
-        Average Precision Localization First & 1 \\
-        Average Precision Localization Last & 0.871212 \\
+        AP localization (alone) & 1 & 0.871212 \\ 
+        IOU localization (alone) & 0.660908 & 0.659676 \\ 
         \hline
-        IoU Segmentation Cue First & 0.702899 \\
-        IoU Segmentation Cue Last & 0.711191 \\
-        IoU Segmentation Eight First & 0.61442 \\
-        IoU Segmentation Eight Last & 0.609375 \\
-        IoU Segmentation Solid First & 0.489948 \\
-        IoU Segmentation Solid Last & 0.498001 \\
-        IoU Segmentation Striped First & 0.448905 \\
-        IoU Segmentation Striped Last & 0.391053 \\
+        IoU table & 0.952201 & 0.976351 \\ 
+        IoU background & 0.97856 & 0.990622 \\ 
         \hline
-        IoU Table First & 0.952201 \\
-        IoU Table Last & 0.976351 \\
-        IoU Background First & 0.97856 \\
-        IoU Background Last & 0.990622 \\
+        IoU segmentation cue & 0.702899 & 0.711191 \\ 
+        IoU segmentation eight & 0.61442 & 0.609375 \\ 
+        IoU segmentation solid & 0.489948 & 0.498001 \\ 
+        IoU segmentation striped & 0.448905 & 0.391053 \\ 
         \hline
-        Average Precision Cue First & 1 \\
-        Average Precision Cue Last & 1 \\
-        Average Precision Eight First & 1 \\
-        Average Precision Eight Last & 1 \\
-        Average Precision Solid First & 0.727273 \\
-        Average Precision Solid Last & 0.727273 \\
-        Average Precision Striped First & 0.848485 \\
-        Average Precision Striped Last & 0.5 \\
+        AP cue & 1 & 1 \\ 
+        AP eight & 1 & 1 \\ 
+        AP solid & 0.727273 & 0.727273 \\ 
+        AP striped & 0.848485 & 0.5 \\ 
         \hline
-        mIOU First & 0.697822 \\
-        mIOU Last & 0.696099 \\
-        mAP First & 0.893939 \\
-        mAP Last & 0.806818 \\
+        mIOU & 0.697822 & 0.696099 \\ 
+        mAP & 0.893939 & 0.806818 \\ 
         \hline
     \end{tabular}    
 \end{subfigure}
