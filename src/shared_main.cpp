@@ -44,11 +44,13 @@ int main(int argc, char** argv) {
     const string img_path = argv[2];
 
     //table detection
+    cout << "table detection starting\n";
     VideoReader vid(video_path);
     Mat img_last = vid.lastFrame();
     Mat mask;
     //vertices of the table
     vector<Point2f> points = find_table(img_last, mask);
+    cout << "table detection finished\n";
     std::string output = argv[3];
     //since the prediction is done on the last frame we write only
     //one predicted table segmentation
@@ -58,11 +60,15 @@ int main(int argc, char** argv) {
     Mat transf = getTransformation(img_last, points);
 
     //ball detection
+    cout << "ball detection starting\n";
     Mat img_first = imread(img_path);
     vector<Rect> bboxes = getBBoxes(img_first, mask, transf);
+    cout << "ball detection finished\n";
 
     //ball classification
+    cout << "ball classification starting\n";
     vector<Ball> balls = classifyBalls(img_first, bboxes);
+    cout << "ball classification finished\n";
     //writing the prediction of the first frame
     writeBallsFile(output + "/predicted_balls_first.txt", balls);
     imwrite(output + "/output_first.png", nice_render(img_first, points, balls));
@@ -83,6 +89,7 @@ int main(int argc, char** argv) {
     Mat fr;
     int i = 0;
     //rendering the video
+    cout << "video rendering started\n";
     while(1) {
         i++;
         std::cout << "Frame " << i << " processed" << std::endl;
@@ -94,6 +101,7 @@ int main(int argc, char** argv) {
         curfrend.copyTo(curfr(spot));
         outvideo.write(curfr);
     }
+    cout << "video rendering ended\n";
     outvideo.release();
 
     //writing the last frame of the render to have the trajectory

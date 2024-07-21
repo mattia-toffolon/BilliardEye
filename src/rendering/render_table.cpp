@@ -16,10 +16,10 @@ Scalar getColor(BallType b){
         return Scalar(0, 0, 0);
     }
     else if(b == BallType::SOLID){
-        return Scalar(0, 0, 255);
+        return Scalar(255, 0, 0);
     }
     else{
-        return Scalar(255, 0, 0);
+        return Scalar(0, 0, 255);
     }
 }
 
