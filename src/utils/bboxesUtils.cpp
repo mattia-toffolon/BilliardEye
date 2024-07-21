@@ -74,7 +74,7 @@ void drawBBoxesCanvas(Mat img, vector<Rect> bboxes1, vector<Rect> bboxes2) {
 
 vector<Rect> expandBBoxes(vector<Rect> bboxes, const float MULT) {
     vector<Rect> ret;
-    // Given boxes are returned with expanded width of constant MULT
+    // Given boxes are returned with expanded width (X MULT)
     for(auto b : bboxes){
         Rect new_b(b.x-(b.width*MULT-b.width)/2, b.y-(b.width*MULT-b.width)/2, b.width*MULT, b.width*MULT);
         ret.push_back(new_b);
@@ -85,7 +85,7 @@ vector<Rect> expandBBoxes(vector<Rect> bboxes, const float MULT) {
 
 vector<Rect> expandBBoxes2(vector<Rect> bboxes, const int DELTA) {
     vector<Rect> ret;
-    // Given boxes are returned with expanded width of constant MULT
+    // Given boxes are returned with expanded width (+ DELTA)
     for(auto b : bboxes){
         Rect new_b(b.x-DELTA/2, b.y-DELTA/2, b.width+DELTA, b.width+DELTA);
         ret.push_back(new_b);

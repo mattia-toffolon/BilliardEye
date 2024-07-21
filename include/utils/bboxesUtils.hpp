@@ -49,6 +49,14 @@ void drawBBoxesCanvas(cv::Mat img, std::vector<cv::Rect> bboxes1, std::vector<cv
  */
 std::vector<cv::Rect> expandBBoxes(std::vector<cv::Rect> bboxes, const float MULT);
 
+/**
+ * @brief Function that modifies the given boxes by increasing their width/height by 
+ * the given constant while keeping the box center fixed 
+ * 
+ * @param bboxes vector of boxes (Rect)
+ * @param MULT box width expansion factor
+ * @return enhanced vector of boxes (Rect)
+ */
 std::vector<cv::Rect> expandBBoxes2(std::vector<cv::Rect> bboxes, const int DELTA);
 
 #endif

@@ -270,3 +270,9 @@ Figure \ref{fig:refine} shows an example in which a ball was not precisely detec
 It must be noted that sometimes the \textit{GrabCut} algorithm fails to return an accurate ball segmentation since it sometimes considers table borders, holes and shadow of the ball as part of the latter.
 In such cases, \textit{HoughCircles} won't find any circles and therefore the relative bounding box won't be updated.
 For the same reason, this algorithm is adopted only in this last step and it is not used as backbone of the whole ball localization and segmentation procedure.
+\newline \\
+As briefly mentioned before, the found bounding boxes are very tight. This is a consequence of the chosen convertion method from found circles and boxes.
+This proved to be a nice property to have for the ball classification task, since less background is included in the boxes.
+Although, the latters are not always perfect with respect to the localization task (bounding box precision), as some ball pixels may be left out. For these reasons the following decision has been made.
+Just for the ball classification step the original (tight) bounding boxes were used, instead to initialize
+the vector of \textit{Ball} structs an augmented (width increased by $2$) version of them was used.

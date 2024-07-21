@@ -80,10 +80,9 @@ add_library(perfTesting
 )
 target_include_directories(perfTesting PRIVATE ${OpenCV_INCLUDE_DIRS})
 
-# add_executable(segBill ./src/main.cpp)
-add_executable(segBill ./src/shared_main.cpp)
-add_executable(perfBill ./src/performance_main.cpp)
-target_link_libraries(segBill
+add_executable(outMain ./src/output_main.cpp)
+add_executable(perfMain ./src/performance_main.cpp)
+target_link_libraries(outMain
     segTable 
     segBalls
     ballIdentifier
@@ -98,8 +97,9 @@ target_link_libraries(segBill
     perfTesting
     ${OpenCV_LIBS}
     )
-target_link_libraries(perfBill
+target_link_libraries(perfMain
     perfTesting
     balls
     bboxesUtils
-    ${OpenCV_LIBS})
+    ${OpenCV_LIBS}
+    )

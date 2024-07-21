@@ -11,6 +11,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include "recognition/ballIdentifier.h"
+#include "utils/bboxesUtils.hpp"
 using namespace cv;
 using std::vector;
 
@@ -358,11 +359,12 @@ vector<Ball> classifyBalls(Mat image, vector<Rect> windows)
     }
 
     vector<Ball> ans;
+    vector<Rect> enhanced_bboxes = expandBBoxes2(windows, 2); 
     for (int i = 0; i<windows.size(); i++)
         if (i != cueball && i != eightball)
-            ans.push_back({windows[i],getBallType(image(windows[i]))});
-    ans.push_back({windows[cueball],BallType::CUE});
-    ans.push_back({windows[eightball],BallType::EIGHT});
+            ans.push_back({enhanced_bboxes[i], getBallType(image(windows[i]))});
+    ans.push_back({enhanced_bboxes[cueball], BallType::CUE});
+    ans.push_back({enhanced_bboxes[eightball], BallType::EIGHT});
     return ans;
 }
 
