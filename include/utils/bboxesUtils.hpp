@@ -49,4 +49,6 @@ void drawBBoxesCanvas(cv::Mat img, std::vector<cv::Rect> bboxes1, std::vector<cv
  */
 std::vector<cv::Rect> expandBBoxes(std::vector<cv::Rect> bboxes, const float MULT);
 
+std::vector<cv::Rect> expandBBoxes2(std::vector<cv::Rect> bboxes, const int DELTA);
+
 #endif

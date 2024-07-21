@@ -59,7 +59,7 @@ vector<Rect> getBBoxes(Mat img, Mat mask, Mat transf) {
     // Bounding boxes are refined
     vector<Rect> ref_bboxes = refineBBoxes(crop_HSV, filtered_bboxes);
 
-    return ref_bboxes;
+    return expandBBoxes2(ref_bboxes, 4);
 }
 
 Mat subtractTable(Mat img) {

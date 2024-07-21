@@ -49,8 +49,8 @@ Mat drawCircles(vector<Ball> balls, Size s, Scalar color, Mat initial){
     return ret;
 }
 
-float compute_average_precision(std::vector<Rect> prediction, std::vector<Rect> ground_truth, float threshold){
-        std::map<float, float> res = precisionRecallCurve(prediction, ground_truth, threshold);
+float compute_average_precision(vector<Rect> prediction, vector<Rect> ground_truth, float threshold){
+        map<float, float> res = precisionRecallCurve(prediction, ground_truth, threshold);
         return averagePrecision(res);
 }
 
@@ -66,47 +66,47 @@ float compute_average_precision(std::vector<Rect> prediction, std::vector<Rect> 
 //letters in variable names:
 int main(int argc, char** argv) {
     if(argc < 3){
-        std::cout << "not enough an arguments provided";
+        cout << "not enough an arguments provided";
         exit(1);
     }
-    int samples = std::stoi(argv[2]);
-    std::string directory = "/sample";
-    std::string ground_mask_first = "/ground_mask_first";
-    std::string ground_mask_last = "/ground_mask_last";
-    std::string predicted_mask = "/predicted_mask";
-    std::string predicted_ball_last = "/predicted_balls_last";
-    std::string ground_balls_last = "/ground_balls_last";
-    std::string predicted_ball_first = "/predicted_balls_first";
-    std::string ground_balls_first = "/ground_balls_first";
-    std::string txt = ".txt";
-    std::string png = ".png";
+    int samples = stoi(argv[2]);
+    string directory = "/sample";
+    string ground_mask_first = "/ground_mask_first";
+    string ground_mask_last = "/ground_mask_last";
+    string predicted_mask = "/predicted_mask";
+    string predicted_ball_last = "/predicted_balls_last";
+    string ground_balls_last = "/ground_balls_last";
+    string predicted_ball_first = "/predicted_balls_first";
+    string ground_balls_first = "/ground_balls_first";
+    string txt = ".txt";
+    string png = ".png";
     
-    std::vector<Mat> ground_truth_masks_first, ground_truth_masks_last, predicted_masks;
-    std::vector<std::vector<Ball>> ground_truth_balls_first, predicted_balls_first,ground_truth_balls_last, predicted_balls_last;
+    vector<Mat> ground_truth_masks_first, ground_truth_masks_last, predicted_masks;
+    vector<vector<Ball>> ground_truth_balls_first, predicted_balls_first,ground_truth_balls_last, predicted_balls_last;
 
     //read output files and ground truth
     for(int i = 0; i < samples; i++){
-        ground_truth_masks_first.push_back(imread(argv[1] + directory + std::to_string(i) + ground_mask_first + png, IMREAD_GRAYSCALE));
-        ground_truth_masks_last.push_back(imread(argv[1] + directory + std::to_string(i) + ground_mask_last + png, IMREAD_GRAYSCALE));
-        predicted_masks.push_back(imread(argv[1] + directory + std::to_string(i) + predicted_mask + png, IMREAD_GRAYSCALE));
-        ground_truth_balls_first.push_back(readBallsFile(argv[1] + directory + std::to_string(i) + ground_balls_first + txt));
-        predicted_balls_first.push_back(readBallsFile(argv[1] + directory + std::to_string(i) + predicted_ball_first + txt));
-        ground_truth_balls_last.push_back(readBallsFile(argv[1] + directory + std::to_string(i) + ground_balls_last + txt));
-        predicted_balls_last.push_back(readBallsFile(argv[1] + directory + std::to_string(i) + predicted_ball_last + txt));
+        ground_truth_masks_first.push_back(imread(argv[1] + directory + to_string(i) + ground_mask_first + png, IMREAD_GRAYSCALE));
+        ground_truth_masks_last.push_back(imread(argv[1] + directory + to_string(i) + ground_mask_last + png, IMREAD_GRAYSCALE));
+        predicted_masks.push_back(imread(argv[1] + directory + to_string(i) + predicted_mask + png, IMREAD_GRAYSCALE));
+        ground_truth_balls_first.push_back(readBallsFile(argv[1] + directory + to_string(i) + ground_balls_first + txt));
+        predicted_balls_first.push_back(readBallsFile(argv[1] + directory + to_string(i) + predicted_ball_first + txt));
+        ground_truth_balls_last.push_back(readBallsFile(argv[1] + directory + to_string(i) + ground_balls_last + txt));
+        predicted_balls_last.push_back(readBallsFile(argv[1] + directory + to_string(i) + predicted_ball_last + txt));
     }
 
     //iou threshold for map
     double threshold = 0.5;
     //metrics vectors
 
-    std::vector<float> precisionsf, precisionsl,
+    vector<float> precisionsf, precisionsl,
         precisionMaskFirst,precisionMaskLast,
         precisionCueFirst,precisionCueLast,
         precisionEightFirst,precisionEightLast,
         precisionSolidFirst,precisionSolidLast,
         precisionStripedFirst,precisionStripedLast;
 
-    std::vector<float> ioufcueseg,ioufeightseg,ioufsolidseg,ioufstripedseg
+    vector<float> ioufcueseg,ioufeightseg,ioufsolidseg,ioufstripedseg
                         ,ioulcueseg,iouleightseg,ioulsolidseg,ioulstripedseg
                         ,ioufbackground, ioulbackground,
                         iouallBallsf, iouallBallsl;
@@ -114,11 +114,11 @@ int main(int argc, char** argv) {
     //compute performance for each sample
     for(int i = 0; i < samples; i ++){
         //current balls
-        std::vector<Ball> curft, curfp, curlt, curlp;
+        vector<Ball> curft, curfp, curlt, curlp;
         //current rectangles
-        std::vector<Rect> curftr, curfpr, curltr, curlpr;
+        vector<Rect> curftr, curfpr, curltr, curlpr;
         //current rectangles divided by type
-        std::vector<Rect>
+        vector<Rect>
             cueft, cuefp, cuelt, cuelp,
             eightft, eightfp, eightlt, eightlp,
             stripedfp, stripedft,stripedlt, stripedlp,
@@ -229,35 +229,37 @@ int main(int argc, char** argv) {
         precisionStripedLast.push_back(compute_average_precision(stripedlp, stripedlt, threshold));
     }
     for(int i = 0; i < samples; i ++){
-        std::cout << "sample " << i << std::endl;
-        std::cout << "average precision localization (alone) first: " << precisionsf[i] << std::endl;
-        std::cout << "average precision localization (alone) last: " << precisionsl[i] << std::endl;
-        std::cout << "IOU localization (alone) first: " << iouallBallsf[i] << std::endl;
-        std::cout << "IOU localization (alone) last: " << iouallBallsl[i] << std::endl;
-        std::cout << "IoU segmentation cue first: " << ioufcueseg[i] << std::endl;
-        std::cout << "IoU segmentation cue last: " << ioulcueseg[i] << std::endl;
-        std::cout << "IoU segmentation eight first: " << ioufeightseg[i] << std::endl;
-        std::cout << "IoU segmentation eight last: " << iouleightseg[i] << std::endl;
-        std::cout << "IoU segmentation solid first: " << ioufsolidseg[i] << std::endl;
-        std::cout << "IoU segmentation solid last: " << ioulsolidseg[i] << std::endl;
-        std::cout << "IoU segmentation striped first: " << ioufstripedseg[i] << std::endl;
-        std::cout << "IoU segmentation striped last: " << ioulstripedseg[i] << std::endl;
-        std::cout << "IoU table first: " << precisionMaskFirst[i] << std::endl;
-        std::cout << "IoU table last: " << precisionMaskLast[i] << std::endl;
-        std::cout << "IoU background first: " << ioufbackground[i] << std::endl;
-        std::cout << "IoU background last: " << ioulbackground[i] << std::endl;
-        std::cout << "average precision cue first: " << precisionCueFirst[i] << std::endl;
-        std::cout << "average precision cue last: " << precisionCueLast[i] << std::endl;
-        std::cout << "average precision eight first: " << precisionEightFirst[i] << std::endl;
-        std::cout << "average precision eight last: " << precisionEightLast[i] << std::endl;
-        std::cout << "average precision solid first: " << precisionSolidFirst[i] << std::endl;
-        std::cout << "average precision solid last: " << precisionSolidLast[i] << std::endl;
-        std::cout << "average precision striped first: " << precisionStripedFirst[i] << std::endl;
-        std::cout << "average precision striped last: " << precisionStripedLast[i] << std::endl;
-        std::cout << "mIOU first: " << (ioufcueseg[i] + ioufeightseg[i] + ioufsolidseg[i] + ioufstripedseg[i] + precisionMaskFirst[i] + ioufbackground[i]) / 6.0 <<std::endl;
-        std::cout << "mIOU last: " << (ioulcueseg[i] + iouleightseg[i] + ioulsolidseg[i] + ioulstripedseg[i] + precisionMaskLast[i] + ioulbackground[i]) / 6.0 <<std::endl;
-        std::cout << "mAP first: " << (precisionCueFirst[i] + precisionEightFirst[i] + precisionSolidFirst[i] + precisionStripedFirst[i]) / 4.0 <<std::endl;
-        std::cout << "mAP last: " << (precisionCueLast[i] + precisionEightLast[i] + precisionSolidLast[i] + precisionStripedLast[i]) / 4.0 <<std::endl;
-        std::cout << std::endl;
+        cout << "sample " << i << endl;
+
+        cout << "\\hline" << endl;
+        cout << "AP localization (alone) & " << precisionsf[i] << " & " << precisionsl[i] << " \\\\ " <<  endl;
+        cout << "IOU localization (alone) & " << iouallBallsf[i] << " & " << iouallBallsl[i] << " \\\\ " << endl;
+        cout << "\\hline" << endl;
+
+        cout << "IoU table & " << precisionMaskFirst[i] << " & " << precisionMaskLast[i] << " \\\\ " << endl;
+        cout << "IoU background & " << ioufbackground[i] << " & " << ioulbackground[i] << " \\\\ " << endl;
+        cout << "\\hline" << endl;
+        
+        cout << "IoU segmentation cue & " << ioufcueseg[i] << " & " << ioulcueseg[i] << " \\\\ " << endl;
+        cout << "IoU segmentation eight & " << ioufeightseg[i] << " & " << iouleightseg[i] << " \\\\ " << endl;
+        cout << "IoU segmentation solid & " << ioufsolidseg[i] << " & " << ioulsolidseg[i] << " \\\\ " << endl;
+        cout << "IoU segmentation striped & " << ioufstripedseg[i] << " & " << ioulstripedseg[i] << " \\\\ " << endl;
+        cout << "\\hline" << endl;
+
+        cout << "AP cue & " << precisionCueFirst[i] << " & " << precisionCueLast[i] << " \\\\ " << endl;
+        cout << "AP eight & " << precisionEightFirst[i] << " & " << precisionEightLast[i] << " \\\\ " << endl;
+        cout << "AP solid & " << precisionSolidFirst[i] << " & " << precisionSolidLast[i] << " \\\\ " << endl;
+        cout << "AP striped & " << precisionStripedFirst[i] << " & " << precisionStripedLast[i] << " \\\\ " << endl;
+        cout << "\\hline" << endl;
+
+        float mIoU_first = (ioufcueseg[i] + ioufeightseg[i] + ioufsolidseg[i] + ioufstripedseg[i] + precisionMaskFirst[i] + ioufbackground[i]) / 6.0 ;
+        float mIoU_last = (ioulcueseg[i] + iouleightseg[i] + ioulsolidseg[i] + ioulstripedseg[i] + precisionMaskLast[i] + ioulbackground[i]) / 6.0 ;
+        float mAP_first = (precisionCueFirst[i] + precisionEightFirst[i] + precisionSolidFirst[i] + precisionStripedFirst[i]) / 4.0 ;
+        float mAP_last = (precisionCueLast[i] + precisionEightLast[i] + precisionSolidLast[i] + precisionStripedLast[i]) / 4.0 ;
+        cout << "mIOU & " << mIoU_first << " & " << mIoU_last << " \\\\ " << endl;
+        cout << "mAP & " << mAP_first << " & " << mAP_last << " \\\\ " << endl;
+        cout << "\\hline" << endl;
+
+        cout << endl;
     }
 }

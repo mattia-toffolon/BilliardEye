@@ -82,3 +82,14 @@ vector<Rect> expandBBoxes(vector<Rect> bboxes, const float MULT) {
 
     return ret;
 }
+
+vector<Rect> expandBBoxes2(vector<Rect> bboxes, const int DELTA) {
+    vector<Rect> ret;
+    // Given boxes are returned with expanded width of constant MULT
+    for(auto b : bboxes){
+        Rect new_b(b.x-DELTA/2, b.y-DELTA/2, b.width+DELTA, b.width+DELTA);
+        ret.push_back(new_b);
+    }
+
+    return ret;
+}
