@@ -38,3 +38,4 @@ cd build
 ./outMain "path-to-video" "path-to-first-frame" "path-to-output-dir"
 ./perfMain "path-to-samples-folder" "number-of-samples"
 ```
+> **_NOTE:_**  The system is based on OpenCV. To succesfully execute the program, such library shall be correctly installed.
